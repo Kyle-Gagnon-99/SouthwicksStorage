@@ -24,15 +24,15 @@ public class CustomErrorController implements ErrorController{
 			Integer statusCode = Integer.valueOf(status.toString());
 			
 			if(statusCode == HttpStatus.NOT_FOUND.value()) {
-				page = "/error/404.html";
+				page = "error/404.html";
 			}
 			
 			if(statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-				page = "/error/500.html";
+				page = "error/500.html";
 			}
 			
 			if(statusCode == HttpStatus.FORBIDDEN.value()) {
-				page = "/error/403.html";
+				page = "error/403.html";
 			}
 		}
 		
