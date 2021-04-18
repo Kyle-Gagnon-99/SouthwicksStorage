@@ -35,8 +35,6 @@ public class CreateUserController {
 	@RequestMapping(value = "/create/user", method = RequestMethod.GET)
 	public ModelAndView getCreateUser(Model model) {
 		model.addAttribute("createEditUserForm", new CreateEditUserFormModel());
-		model.addAttribute("name", "Kyle Gagnon");
-		model.addAttribute("role", "Team Member");
 		return new ModelAndView("create/createuser.html");
 	}
 	
