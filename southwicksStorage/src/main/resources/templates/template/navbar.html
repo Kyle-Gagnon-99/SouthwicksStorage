@@ -10,9 +10,11 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 	<title>Southwick's Storage</title>
 
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<link href="/css/modern.css" rel="stylesheet">
 	<script src="/js/settings.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js" integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf" crossorigin="anonymous"></script>
 </head>
 <body>
 	<div class="splash active" th:fragment="navbar-header">
@@ -54,9 +56,10 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 							<i class="align-middle me-2 fas fa-fw fa-list"></i> <span class="align-middle">View</span>
 						</a>
 						<ul id="view" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
-							<li class="sidebar-item"><a class="sidebar-link" href="/">Storage Items</a></li>
+							<li class="sidebar-item"><a sec:authorize="hasRole('MANAGER')" class="sidebar-link" href="/">Storage Items</a></li>
 							<li class="sidebar-item"><a class="sidebar-link" href="/">Stand Items</a></li>
-							<li class="sidebar-item"><a class="sidebar-link" href="/">Audit Log</a></li>
+							<li class="sidebar-item"><a sec:authorize="hasRole('MANAGER')" class="sidebar-link" href="/view/users">Users</a></li>
+							<li class="sidebar-item"><a sec:authorize="hasRole('MANAGER')" class="sidebar-link" href="/">Audit Log</a></li>
 						</ul>
 					</li>
 					<li sec:authorize="hasRole('MANAGER')" class="sidebar-header">
@@ -74,10 +77,10 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 							<li class="sidebar-item"><a class="sidebar-link" href="/">Type of Storage</a></li>
 						</ul>
 					</li>
-					<li class="sidebar-header">
+					<li sec:authorize="hasRole('MANAGER')" class="sidebar-header">
 						Edit
 					</li>
-					<li class="sidebar-item">
+					<li sec:authorize="hasRole('MANAGER')" class="sidebar-item">
 						<a data-bs-target="#edit" data-bs-toggle="collapse" class="sidebar-link collapsed">
 							<i class="align-middle me-2 fas fa-fw fa-edit"></i> <span class="align-middle">Edit</span>
 						</a>
@@ -89,10 +92,10 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 							<li class="sidebar-item"><a class="sidebar-link" href="/">Type of Storage</a></li>
 						</ul>
 					</li>
-					<li class="sidebar-header">
+					<li sec:authorize="hasRole('MANAGER')" class="sidebar-header">
 						Notifications
 					</li>
-					<li class="sidebar-item">
+					<li sec:authorize="hasRole('MANAGER')" class="sidebar-item">
 						<a data-bs-target="#notifications" data-bs-toggle="collapse" class="sidebar-link collapsed">
 							<i class="align-middle me-2 fas fa-fw fa-exclamation-triangle"></i> <span class="align-middle">Notifications</span>
 						</a>
@@ -100,10 +103,10 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 							<li class="sidebar-item"><a class="sidebar-link" href="/">Notifications</a></li>
 						</ul>
 					</li>
-					<li class="sidebar-header">
+					<li sec:authorize="hasRole('MANAGER')" class="sidebar-header">
 						Reports
 					</li>
-					<li class="sidebar-item">
+					<li sec:authorize="hasRole('MANAGER')" class="sidebar-item">
 						<a data-bs-target="#reports" data-bs-toggle="collapse" class="sidebar-link collapsed">
 							<i class="align-middle me-2 fas fa-fw fa-file"></i> <span class="align-middle">Reports</span>
 						</a>
@@ -112,10 +115,10 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 							<li class="sidebar-item"><a class="sidebar-link" href="/">Order Report</a></li>
 						</ul>
 					</li>
-					<li class="sidebar-header">
+					<li sec:authorize="hasRole('MANAGER')" class="sidebar-header">
 						Settings
 					</li>
-					<li class="sidebar-item">
+					<li sec:authorize="hasRole('MANAGER')" class="sidebar-item">
 						<a data-bs-target="#settings" data-bs-toggle="collapse" class="sidebar-link collapsed">
 							<i class="align-middle me-2 fas fa-fw fa-cog"></i> <span class="align-middle">Settings</span>
 						</a>

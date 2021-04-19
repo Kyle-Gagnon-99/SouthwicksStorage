@@ -1,4 +1,4 @@
-package com.southwicksstorage.southwicksstorage.securityConfigurations;
+package com.southwicksstorage.southwicksstorage.configurations;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

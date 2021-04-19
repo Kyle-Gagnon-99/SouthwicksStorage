@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.southwicksstorage.southwicksstorage.constants.Constants;
 import com.southwicksstorage.southwicksstorage.entities.UserModelEntity;
 import com.southwicksstorage.southwicksstorage.models.formModels.CreateEditUserFormModel;
 import com.southwicksstorage.southwicksstorage.repositories.UserDao;
@@ -30,7 +31,7 @@ public class CreateUserController {
 	@Autowired
 	private UserDao userRepo;
 	
-	private static final String DEFAULT_PASSWORD = "Password123!";
+	private static final String DEFAULT_PASSWORD = Constants.DEFAULT_PASSWORD;
 	
 	@RequestMapping(value = "/create/user", method = RequestMethod.GET)
 	public ModelAndView getCreateUser(Model model) {
