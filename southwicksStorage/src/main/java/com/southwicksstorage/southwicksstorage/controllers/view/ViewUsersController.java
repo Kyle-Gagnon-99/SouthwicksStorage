@@ -139,4 +139,37 @@ public class ViewUsersController {
 		return new ModelAndView("redirect:/view/users");
 	}
 	
+	@RequestMapping(value = "/view/deleteUser", method = RequestMethod.POST)
+	public ModelAndView deleteUser(@ModelAttribute("editUserForm") EditUserFormModel editUserForm, BindingResult bindingResult,
+			RedirectAttributes redirectAttributes) {
+		String showModal = "false";
+		String modalType = null;
+		String modalTitle = null;
+		String modalMessage = null;
+		
+		/* Find user based on id from form */
+		Optional<UserModelEntity> findUser = repo.findById(editUserForm.getId());
+		
+		if(findUser.isEmpty()) {
+			showModal  = "true";
+			modalType = "error";
+			modalTitle = "Sorry!";
+			modalMessage = "It seems like something went wrong on our end!";
+		} else {
+			UserModelEntity userToDelete = findUser.get();
+			repo.delete(userToDelete);
+			
+			showModal  = "true";
+			modalType = "success";
+			modalTitle = "Success!";
+			modalMessage = "Successfully deleted user " + editUserForm.getUsername();
+		}
+		
+		redirectAttributes.addFlashAttribute("showModal", showModal);
+		redirectAttributes.addFlashAttribute("modalType", modalType);
+		redirectAttributes.addFlashAttribute("modalTitle", modalTitle);
+		redirectAttributes.addFlashAttribute("modalMessage", modalMessage);
+		return new ModelAndView("redirect:/view/users");
+	}
+	
 }
