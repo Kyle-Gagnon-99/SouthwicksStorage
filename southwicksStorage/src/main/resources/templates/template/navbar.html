@@ -93,12 +93,29 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 					<li sec:authorize="hasRole('MANAGER')" class="sidebar-header">
 						Notifications
 					</li>
-					<li sec:authorize="hasRole('MANAGER')" class="sidebar-item">
+					<li class="sidebar-item">
 						<a data-bs-target="#notifications" data-bs-toggle="collapse" class="sidebar-link collapsed">
 							<i class="align-middle me-2 fas fa-fw fa-exclamation-triangle"></i> <span class="align-middle">Notifications</span>
+							<div th:if="${notificationBadge != null}">
+								<div th:switch="${notificationBadge}">
+									<span th:case="'INFO'" class="sidebar-badge badge rounded-pill bg-primary">New</span>
+									<span th:case="'SUCCESS'" class="sidebar-badge badge rounded-pill bg-success">New</span>
+									<span th:case="'WARNING'" class="sidebar-badge badge rounded-pill bg-warning">New</span>
+									<span th:case="'ERROR'" class="sidebar-badge badge rounded-pill bg-danger">New</span>
+								</div>
+							</div>
 						</a>
 						<ul id="notifications" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
-							<li class="sidebar-item"><a class="sidebar-link" href="/">Notifications</a></li>
+							<li class="sidebar-item"><a class="sidebar-link" href="/notification/notification">Notifications
+							<div th:if="${notificationBadge != null}">
+								<div th:switch="${notificationBadge}">
+									<span th:case="'INFO'" class="sidebar-badge badge rounded-pill bg-primary">New</span>
+									<span th:case="'SUCCESS'" class="sidebar-badge badge rounded-pill bg-success">New</span>
+									<span th:case="'WARNING'" class="sidebar-badge badge rounded-pill bg-warning">New</span>
+									<span th:case="'ERROR'" class="sidebar-badge badge rounded-pill bg-danger">New</span>
+								</div>
+							</div>
+							</a></li>
 						</ul>
 					</li>
 					<li sec:authorize="hasRole('MANAGER')" class="sidebar-header">
@@ -116,12 +133,13 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 					<li sec:authorize="hasRole('MANAGER')" class="sidebar-header">
 						Settings
 					</li>
-					<li sec:authorize="hasRole('MANAGER')" class="sidebar-item">
+					<li class="sidebar-item">
 						<a data-bs-target="#settings" data-bs-toggle="collapse" class="sidebar-link collapsed">
 							<i class="align-middle me-2 fas fa-fw fa-cog"></i> <span class="align-middle">Settings</span>
 						</a>
 						<ul id="settings" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
-							<li class="sidebar-item"><a class="sidebar-link" href="/">Warning / Danger Settings</a></li>
+							<li sec:authorize="hasRole('MANAGER')" class="sidebar-item"><a class="sidebar-link" href="/">Warning / Danger Settings</a></li>
+							<li class="sidebar-item"><a class="sidebar-link" href="/auth/resetpassword">Reset Password</a></li>
 						</ul>
 					</li>
 				</ul>
@@ -155,10 +173,10 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 	<script src="/js/app.js"></script>
 	
 	<script>
-		var showModal = "[[${showModal}]]";
-	    var message = "[[${modalMessage}]]";
-	    var title = "[[${modalTitle}]]";
-	    var type = "[[${modalType}]]";
+		var showModal = "[[${modal.showModal}]]";
+	    var message = "[[${modal.modalMessage}]]";
+	    var title = "[[${modal.modalTitle}]]";
+	    var type = "[[${modal.modalType}]]";
 	
 	    toastr.options = {
 	        "closeButton": true,

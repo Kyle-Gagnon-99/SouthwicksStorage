@@ -10,6 +10,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.southwicksstorage.southwicksstorage.constants.Roles;
+
 @Entity
 @Table(name = "users")
 public class UserModelEntity {
@@ -38,15 +40,14 @@ public class UserModelEntity {
 	@Column(name = "password")
 	private String password;
 	
-	@NotEmpty(message = "Please select a role")
 	@Column(name = "role")
-	private String role;
+	private Roles role;
 	
 	public UserModelEntity() {
 		/* Default Constructor */
 	}
 	
-	public UserModelEntity(String firstName, String lastName, String username, String password, String role) {
+	public UserModelEntity(String firstName, String lastName, String username, String password, Roles role) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = username;
@@ -94,11 +95,11 @@ public class UserModelEntity {
 		this.password = password;
 	}
 
-	public String getRole() {
+	public Roles getRole() {
 		return role;
 	}
 
-	public void setRole(String role) {
+	public void setRole(Roles role) {
 		this.role = role;
 	}
 	

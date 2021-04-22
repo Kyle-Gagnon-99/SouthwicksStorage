@@ -26,8 +26,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.southwicksstorage.southwicksstorage.constants.Constants;
+import com.southwicksstorage.southwicksstorage.constants.Roles;
 import com.southwicksstorage.southwicksstorage.entities.UserModelEntity;
 import com.southwicksstorage.southwicksstorage.models.UserModel;
+import com.southwicksstorage.southwicksstorage.models.attribute.Modal;
 import com.southwicksstorage.southwicksstorage.models.formModels.EditUserFormModel;
 import com.southwicksstorage.southwicksstorage.repositories.UserDao;
 
@@ -56,7 +58,7 @@ public class ViewUsersController {
 	public UserModel returnUser(Integer id) {
 		Optional<UserModelEntity> returnedUser =  repo.findById(id);
 		UserModelEntity userModel = returnedUser.get();
-		UserModel returnedUserModel = new UserModel(userModel.getId(), userModel.getUsername(), userModel.getFirstName(), userModel.getLastName(), userModel.getRole());
+		UserModel returnedUserModel = new UserModel(userModel.getId(), userModel.getUsername(), userModel.getFirstName(), userModel.getLastName(), userModel.getRole().getRole());
 		return returnedUserModel;
 	}
 	
@@ -67,6 +69,7 @@ public class ViewUsersController {
 		/* Initialize variables */
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 		Validator validator = factory.getValidator();
+		Modal modal = null;
 		String showModal = "false";
 		String modalType = null;
 		String modalTitle = null;
@@ -87,7 +90,7 @@ public class ViewUsersController {
 			/* Validate before we update the database to catch constraint violations*/
 			try {
 				UserModelEntity validateInput = new UserModelEntity(editUserForm.getFirstName(), editUserForm.getLastName(), editUserForm.getUsername(),
-						Constants.DEFAULT_PASSWORD, editUserForm.getRole());
+						Constants.DEFAULT_PASSWORD, Roles.valueOf(editUserForm.getRole()));
 				Set<ConstraintViolation<UserModelEntity>> violations = validator.validate(validateInput);
 				if(!violations.isEmpty()) {
 					throw new ConstraintViolationException(violations);
@@ -114,7 +117,7 @@ public class ViewUsersController {
 			} else {
 				userToEdit.setFirstName(editUserForm.getFirstName());
 				userToEdit.setLastName(editUserForm.getLastName());
-				userToEdit.setRole(editUserForm.getRole());
+				userToEdit.setRole(Roles.valueOf(editUserForm.getRole()));
 				userToEdit.setUsername(editUserForm.getUsername());
 				if(!StringUtils.isEmpty(editUserForm.getResetPassword())) {
 					userToEdit.setPassword(bCryptPasswordEncoder.encode(Constants.DEFAULT_PASSWORD));
@@ -132,16 +135,15 @@ public class ViewUsersController {
 			modalMessage = "It seems like something went wrong on our end!";
 		}
 		
-		redirectAttributes.addFlashAttribute("showModal", showModal);
-		redirectAttributes.addFlashAttribute("modalType", modalType);
-		redirectAttributes.addFlashAttribute("modalTitle", modalTitle);
-		redirectAttributes.addFlashAttribute("modalMessage", modalMessage);
+		modal = new Modal(showModal, modalType, modalTitle, modalMessage);
+		redirectAttributes.addFlashAttribute("modal", modal);
 		return new ModelAndView("redirect:/view/users");
 	}
 	
 	@RequestMapping(value = "/view/deleteUser", method = RequestMethod.POST)
 	public ModelAndView deleteUser(@ModelAttribute("editUserForm") EditUserFormModel editUserForm, BindingResult bindingResult,
 			RedirectAttributes redirectAttributes) {
+		Modal modal = null;
 		String showModal = "false";
 		String modalType = null;
 		String modalTitle = null;
@@ -165,10 +167,8 @@ public class ViewUsersController {
 			modalMessage = "Successfully deleted user " + editUserForm.getUsername();
 		}
 		
-		redirectAttributes.addFlashAttribute("showModal", showModal);
-		redirectAttributes.addFlashAttribute("modalType", modalType);
-		redirectAttributes.addFlashAttribute("modalTitle", modalTitle);
-		redirectAttributes.addFlashAttribute("modalMessage", modalMessage);
+		modal = new Modal(showModal, modalType, modalTitle, modalMessage);
+		redirectAttributes.addFlashAttribute("modal", modal);
 		return new ModelAndView("redirect:/view/users");
 	}
 	

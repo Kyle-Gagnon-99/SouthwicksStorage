@@ -16,6 +16,7 @@ public class CustomUserDetails implements UserDetails{
 	 * 
 	 */
 	private static final long serialVersionUID = -8887110533108811549L;
+	private int id;
 	private String username;
 	private String password;
 	private String firstName;
@@ -28,8 +29,9 @@ public class CustomUserDetails implements UserDetails{
 		this.password = user.getPassword();
 		this.firstName = user.getFirstName();
 		this.lastName = user.getLastName();
-		this.role = user.getRole();
+		this.role = user.getRole().getRole();
 		this.fullName = user.getFirstName() + " " + user.getLastName();
+		this.id = user.getId();
 	}
 
 	@Override
@@ -105,6 +107,20 @@ public class CustomUserDetails implements UserDetails{
 	
 	public String getFullName() {
 		return fullName;
+	}
+
+	/**
+	 * @return the id
+	 */
+	public int getId() {
+		return id;
+	}
+
+	/**
+	 * @param id the id to set
+	 */
+	public void setId(int id) {
+		this.id = id;
 	}
 
 }

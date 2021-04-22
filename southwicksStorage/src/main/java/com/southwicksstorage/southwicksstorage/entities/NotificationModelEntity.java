@@ -1,6 +1,5 @@
 package com.southwicksstorage.southwicksstorage.entities;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +10,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.southwicksstorage.southwicksstorage.constants.NotificationMessages;
+import com.southwicksstorage.southwicksstorage.constants.NotificationTypes;
+
 @Entity()
 @Table(name = "user_notification")
 public class NotificationModelEntity {
@@ -20,13 +22,16 @@ public class NotificationModelEntity {
 	@Column(name = "id")
 	private int id;
 	
-	@Column(name = "notificationMessage", length = 2500)
-	private String message;
+	@Column(name = "notificationMessage")
+	private NotificationMessages message;
 	
 	@Column(name = "isRead")
 	private boolean isRead;
 	
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@Column(name = "notificationType")
+	private NotificationTypes notificationType;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName="id")
 	private UserModelEntity userModel;
 	
@@ -34,8 +39,9 @@ public class NotificationModelEntity {
 		/* Defualt Constructor */
 	}
 	
-	public NotificationModelEntity(String message, boolean isRead, UserModelEntity userModel) {
+	public NotificationModelEntity(NotificationMessages message, NotificationTypes notificationType, boolean isRead, UserModelEntity userModel) {
 		this.message = message;
+		this.notificationType = notificationType;
 		this.isRead = isRead;
 		this.userModel = userModel;
 	}
@@ -48,14 +54,22 @@ public class NotificationModelEntity {
 		this.id = id;
 	}
 
-	public String getMessage() {
+	public NotificationMessages getMessage() {
 		return message;
 	}
 
-	public void setMessage(String message) {
+	public void setMessage(NotificationMessages message) {
 		this.message = message;
 	}
 
+	public NotificationTypes getNotificationType() {
+		return notificationType;
+	}
+	
+	public void setNotificationType(NotificationTypes notificationType) {
+		this.notificationType = notificationType;
+	}
+	
 	public boolean isRead() {
 		return isRead;
 	}

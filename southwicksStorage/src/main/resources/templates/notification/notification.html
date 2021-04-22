@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{template/navbar.html}">
+<head>
+    <title>Title</title>
+</head>
+<body>
+    <main class="content" layout:fragment="mainSection">
+        <div class="container-fluid">
+            <div class="header">
+                <h1 class="header-title">
+                    Notifications
+                </h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Notifications</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">View Notifications</h5>
+                            <h6 class="card-subtitle text-muted">View all notifications</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+	                            <table id="datatables-basic" class="table table-striped">
+	                                <thead>
+	                                    <tr>
+	                                        <th>Notification Type</th>
+	                                        <th>Notification Message</th>
+	                                        <th>Actions</th>
+	                                    </tr>
+	                                </thead>
+	                                <tbody>
+	                                    <div th:each="notifications : ${userNotifications}">
+	                                    	<div th:switch="${notifications.notificationType.getType()}">
+	                                    		<tr th:case="'INFO'" class="table-primary">
+	                                    			<td>
+	                                    				<i class="align-middle fas fa-fw fa-2x fa-circle text-primary"></i>
+	                                    			</td>
+			                                        <td><strong th:if="${!notifications.isRead}"><span th:text="${notifications.message.getMessage()}">Notification Message</span></strong></td>
+			                                        <td class="table-action">
+			                                            <a href="#" class="btn readButton"><i class="align-middle fas fa-2x fa-fw fa-eye"></i></a>
+														<a href="#" class="btn deleteButton"><i class="align-middle fas fa-2x fa-fw fa-trash"></i></a>
+			                                        </td>
+			                                    </tr>
+	                                    		<tr th:case="'SUCCESS'" class="table-success">
+	                                    			<td>
+	                                    				<i class="align-middle fas fa-fw fa-2x fa-check-circle text-success"></i>
+	                                    			</td>
+			                                        <td><strong th:if="${!notifications.isRead}"><span th:text="${notifications.message.getMessage()}">Notification Message</span></strong></td>
+			                                        <td class="table-action">
+			                                            <a href="#" class="btn readButton"><i class="align-middle fas fa-2x fa-fw fa-eye"></i></a>
+														<a href="#" class="btn deleteButton"><i class="align-middle fas fa-2x fa-fw fa-trash"></i></a>
+			                                        </td>
+			                                    </tr>
+	                                    		<tr th:case="'WARNING'" class="table-warning">
+	                                    			<td>
+	                                    				<i class="align-middle fas fa-fw fa-2x fa-exclamation-triangle text-warning"></i>
+	                                    			</td>
+			                                        <td><strong th:if="${!notifications.isRead}"><span th:text="${notifications.message.getMessage()}">Notification Message</span></strong></td>
+			                                        <td class="table-action">
+			                                        	<form method="POST" action="#" th:action = "@{/notification/readNotification}" th:object = "${readNotificationForm}" id="readNotificationForm">
+			                                        		<input type="hidden" th:field="*{id}" th:value="${notifications.id}">
+			                                        		<button type="submit" class="btn readButton"><i class="align-middle fas fa-2x fa-fw fa-eye"></i></button>
+			                                        	</form>
+			                     
+														<a th:href="@{findById/(id=${notifications.id})}" class="btn deleteButton"><i class="align-middle fas fa-2x fa-fw fa-trash"></i></a>
+			                                        </td>
+			                                    </tr>
+	                                    		<tr th:case="'ERROR'" class="table-danger">
+			                                        <td>
+	                                    				<i class="align-middle fas fa-fw fa-2x fa-times-circle text-danger"></i>
+	                                    			</td>
+			                                        <td><strong th:if="${!notifications.isRead}"><span th:text="${notifications.message.getMessage()}">Notification Message</span></strong></td>
+			                                        <td class="table-action">
+			                                            <a href="#" class="btn readButton"><i class="align-middle fas fa-2x fa-fw fa-eye"></i></a>
+														<a href="#" class="btn deleteButton"><i class="align-middle fas fa-2x fa-fw fa-trash"></i></a>
+			                                        </td>
+		                                    	</tr>
+	                                    	</div>
+	                                    </div>
+	                                </tbody>
+                            	</table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="deleteNotification">
+        	<form method="POST" action="#">
+        		<div class="modal" id="deleteModal" tabindex="-1" role="dialog">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Delete User</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body m-3">
+								<div class="mb-3">
+									<p>Are you sure you want to delete this user?
+	                            </div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+								<button type="submit" class="btn btn-danger">Delete User</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+    </main>
+
+    <script layout:fragment="customJS">
+
+        document.addEventListener("DOMContentLoaded", function() {
+			// Datatables basic
+			$('#datatables-basic').DataTable({
+				//responsive: true
+			});
+		});
+        
+    </script>
+</body>
+</html>

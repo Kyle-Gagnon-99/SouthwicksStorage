@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.southwicksstorage.southwicksstorage.constants.Constants;
+import com.southwicksstorage.southwicksstorage.constants.NotificationMessages;
 import com.southwicksstorage.southwicksstorage.entities.NotificationModelEntity;
 import com.southwicksstorage.southwicksstorage.entities.UserModelEntity;
 import com.southwicksstorage.southwicksstorage.models.CustomUserDetails;
+import com.southwicksstorage.southwicksstorage.models.attribute.Modal;
 import com.southwicksstorage.southwicksstorage.repositories.NotificationDao;
 import com.southwicksstorage.southwicksstorage.repositories.UserDao;
 
@@ -46,13 +48,14 @@ public class HomeController {
 			if(userOptional.isPresent()) {
 				UserModelEntity user = userOptional.get();
 				
-				NotificationModelEntity notificationEntity = new NotificationModelEntity("You still have the default password. Please change it", false, user);
-				notiRepo.saveAndFlush(notificationEntity);
+				Optional<NotificationModelEntity> notificationExists = notiRepo.findByMessageAndUserModel(NotificationMessages.DEFAULT_PASSWORD_MESSAGE, user);
 				
-				model.addAttribute("showModal", "true");
-				model.addAttribute("modalType", "warning");
-				model.addAttribute("modalMessage", "You still have the default password. Please change it");
-				model.addAttribute("modalTitle", "Change password");
+				if(notificationExists.isPresent()) {
+					NotificationModelEntity notificationEntity = notificationExists.get();
+					model.addAttribute("modal", new Modal("true", notificationEntity.getNotificationType().getType().toLowerCase(), 
+							"Change password", notificationEntity.getMessage().getMessage()));
+					
+				}
 			}
 		}
 		

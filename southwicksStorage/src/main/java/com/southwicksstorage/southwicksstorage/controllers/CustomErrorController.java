@@ -18,7 +18,7 @@ public class CustomErrorController implements ErrorController{
 	public ModelAndView errorPage(Model model, HttpServletRequest request) {
 		
 		Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
-		String page = "/error/error.html";
+		String page = "error/error.html";
 		
 		if(status != null) {
 			Integer statusCode = Integer.valueOf(status.toString());

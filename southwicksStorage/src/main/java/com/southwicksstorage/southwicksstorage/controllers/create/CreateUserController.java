@@ -18,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.southwicksstorage.southwicksstorage.constants.Constants;
+import com.southwicksstorage.southwicksstorage.constants.Roles;
 import com.southwicksstorage.southwicksstorage.entities.UserModelEntity;
 import com.southwicksstorage.southwicksstorage.models.formModels.CreateEditUserFormModel;
 import com.southwicksstorage.southwicksstorage.repositories.UserDao;
@@ -49,7 +50,8 @@ public class CreateUserController {
 		
 		String encodedPassword = bCryptPasswordEncoder.encode(DEFAULT_PASSWORD);
 		
-		UserModelEntity addUser = new UserModelEntity(createEditUserForm.getFirstName(), createEditUserForm.getLastName(), createEditUserForm.getUsername(), encodedPassword, createEditUserForm.getRole());
+		UserModelEntity addUser = new UserModelEntity(createEditUserForm.getFirstName(), createEditUserForm.getLastName(), createEditUserForm.getUsername(), 
+				encodedPassword, Roles.valueOf(createEditUserForm.getRole()));
 		
 		try {
 			userRepo.saveAndFlush(addUser);
