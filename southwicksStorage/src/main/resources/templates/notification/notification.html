@@ -40,46 +40,42 @@
 	                                    	<div th:switch="${notifications.notificationType.getType()}">
 	                                    		<tr th:case="'INFO'" class="table-primary">
 	                                    			<td>
-	                                    				<i class="align-middle fas fa-fw fa-2x fa-circle text-primary"></i>
+	                                    				<i class="align-middle fas fa-fw fa-1x fa-circle text-primary"></i>
 	                                    			</td>
-			                                        <td><strong th:if="${!notifications.isRead}"><span th:text="${notifications.message.getMessage()}">Notification Message</span></strong></td>
+			                                        <td><p th:class="${!notifications.isRead ? 'fw-bolder' : 'fw-normal'}"><span class="spanClass" th:text="${notifications.message.getMessage()}">Notification Message</span></p></td>
 			                                        <td class="table-action">
-			                                            <a href="#" class="btn readButton"><i class="align-middle fas fa-2x fa-fw fa-eye"></i></a>
-														<a href="#" class="btn deleteButton"><i class="align-middle fas fa-2x fa-fw fa-trash"></i></a>
+			                                            <a th:href="@{readNotification/(id=${notifications.id})}" class="btn readButton"><i class="align-middle fas fa-1x fa-fw fa-eye"></i></a>
+														<a th:href="@{findById/(id=${notifications.id})}" class="btn deleteButton"><i class="align-middle fas fa-1x fa-fw fa-trash"></i></a>
 			                                        </td>
 			                                    </tr>
 	                                    		<tr th:case="'SUCCESS'" class="table-success">
 	                                    			<td>
-	                                    				<i class="align-middle fas fa-fw fa-2x fa-check-circle text-success"></i>
+	                                    				<i class="align-middle fas fa-fw fa-1x fa-check-circle text-success"></i>
 	                                    			</td>
-			                                        <td><strong th:if="${!notifications.isRead}"><span th:text="${notifications.message.getMessage()}">Notification Message</span></strong></td>
+			                                        <td><p th:class="${!notifications.isRead ? 'fw-bolder' : 'fw-normal'}"><span class="spanClass" th:text="${notifications.message.getMessage()}">Notification Message</span></p></td>
 			                                        <td class="table-action">
-			                                            <a href="#" class="btn readButton"><i class="align-middle fas fa-2x fa-fw fa-eye"></i></a>
-														<a href="#" class="btn deleteButton"><i class="align-middle fas fa-2x fa-fw fa-trash"></i></a>
+			                                            <a th:href="@{readNotification/(id=${notifications.id})}" class="btn readButton"><i class="align-middle fas fa-1x fa-fw fa-eye"></i></a>
+														<a th:href="@{findById/(id=${notifications.id})}" class="btn deleteButton"><i class="align-middle fas fa-1x fa-fw fa-trash"></i></a>
 			                                        </td>
 			                                    </tr>
 	                                    		<tr th:case="'WARNING'" class="table-warning">
 	                                    			<td>
-	                                    				<i class="align-middle fas fa-fw fa-2x fa-exclamation-triangle text-warning"></i>
+	                                    				<i class="align-middle fas fa-fw fa-1x fa-exclamation-triangle text-warning"></i>
 	                                    			</td>
-			                                        <td><strong th:if="${!notifications.isRead}"><span th:text="${notifications.message.getMessage()}">Notification Message</span></strong></td>
+			                                        <td><p th:class="${!notifications.isRead ? 'fw-bolder' : 'fw-normal'}"><span class="spanClass" th:text="${notifications.message.getMessage()}">Notification Message</span></p></td>
 			                                        <td class="table-action">
-			                                        	<form method="POST" action="#" th:action = "@{/notification/readNotification}" th:object = "${readNotificationForm}" id="readNotificationForm">
-			                                        		<input type="hidden" th:field="*{id}" th:value="${notifications.id}">
-			                                        		<button type="submit" class="btn readButton"><i class="align-middle fas fa-2x fa-fw fa-eye"></i></button>
-			                                        	</form>
-			                     
-														<a th:href="@{findById/(id=${notifications.id})}" class="btn deleteButton"><i class="align-middle fas fa-2x fa-fw fa-trash"></i></a>
+			                                        	<a th:href="@{readNotification/(id=${notifications.id})}" class="btn readButton"><i class="align-middle fas fa-1x fa-fw fa-eye"></i></a>
+														<a th:href="@{findById/(id=${notifications.id})}" class="btn deleteButton"><i class="align-middle fas fa-1x fa-fw fa-trash"></i></a>
 			                                        </td>
 			                                    </tr>
 	                                    		<tr th:case="'ERROR'" class="table-danger">
 			                                        <td>
-	                                    				<i class="align-middle fas fa-fw fa-2x fa-times-circle text-danger"></i>
+	                                    				<i class="align-middle fas fa-fw fa-1x fa-times-circle text-danger"></i>
 	                                    			</td>
-			                                        <td><strong th:if="${!notifications.isRead}"><span th:text="${notifications.message.getMessage()}">Notification Message</span></strong></td>
+			                                        <td><p th:class="${!notifications.isRead ? 'fw-bolder' : 'fw-normal'}"><span class="spanClass" th:text="${notifications.message.getMessage()}">Notification Message</span></p></td>
 			                                        <td class="table-action">
-			                                            <a href="#" class="btn readButton"><i class="align-middle fas fa-2x fa-fw fa-eye"></i></a>
-														<a href="#" class="btn deleteButton"><i class="align-middle fas fa-2x fa-fw fa-trash"></i></a>
+			                                            <a th:href="@{readNotification/(id=${notifications.id})}" class="btn readButton"><i class="align-middle fas fa-1x fa-fw fa-eye"></i></a>
+														<a th:href="@{findById/(id=${notifications.id})}" class="btn deleteButton"><i class="align-middle fas fa-1x fa-fw fa-trash"></i></a>
 			                                        </td>
 		                                    	</tr>
 	                                    	</div>
@@ -93,38 +89,125 @@
             </div>
         </div>
         <div class="deleteNotification">
-        	<form method="POST" action="#">
-        		<div class="modal" id="deleteModal" tabindex="-1" role="dialog">
-					<div class="modal-dialog" role="document">
-						<div class="modal-content">
-							<div class="modal-header">
-								<h5 class="modal-title">Delete User</h5>
-								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-							</div>
-							<div class="modal-body m-3">
-								<div class="mb-3">
-									<p>Are you sure you want to delete this user?
-	                            </div>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-								<button type="submit" class="btn btn-danger">Delete User</button>
-							</div>
+       		<div class="modal" id="deleteModal" tabindex="-1" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Delete Notification</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body m-3">
+							<div class="mb-3">
+								<p>Are you sure you want to delete this notification?
+                            </div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+							<button type="button" class="btn btn-danger deleteNotificationForm" data-bs-dismiss="modal">Delete Notification</button>
 						</div>
 					</div>
 				</div>
-			</form>
+			</div>
 		</div>
     </main>
 
     <script layout:fragment="customJS">
 
+    	var notiId = 0;
         document.addEventListener("DOMContentLoaded", function() {
 			// Datatables basic
 			$('#datatables-basic').DataTable({
 				//responsive: true
 			});
 		});
+        
+        $('.table .readButton').on('click', function(event) {
+        	event.preventDefault();
+        	var href = $(this).attr('href');
+        	// Unbold to show that the notification has been read
+        	$(this).parent().parent().find(".fw-bolder").removeClass('fw-bolder');
+        	$.ajax({
+        		url: href,
+        		type: 'GET',
+        		dataType: 'html',
+        		success: function(response) {
+        			
+        			$.ajax({
+        				url: '/notification/getNewNotifications',
+        				type: 'GET',
+        				dataType: 'json',
+        				success: function(secondResponse) {
+        					if(!secondResponse.length) {
+        						$("span.sidebar-badge").remove();
+        					} else {
+        						var notiTypes = [];
+        						for(var index in secondResponse) {
+        							notiTypes[notiTypes.length] = secondResponse[index].notificationType;
+        						}
+        						if(jQuery.inArray("ERROR", notiTypes) !== -1) {
+        							$("span.sidebar-badge").removeClass('bg-warning').removeClass('bg-success').removeClass('bg-primary').addClass('bg-danger');
+        						} else if(jQuery.inArray("WARNING", notiTypes) !== -1) {
+        							$("span.sidebar-badge").removeClass('bg-danger').removeClass('bg-success').removeClass('bg-primary').addClass('bg-warning');
+        						} else if(jQuery.inArray("SUCCESS", notiTypes) !== -1) {
+        							$("span.sidebar-badge").removeClass('bg-warning').removeClass('bg-danger').removeClass('bg-primary').addClass('bg-success');
+        						} else if(jQuery.inArray("INFO", notiTypes) !== -1) {
+        							$("span.sidebar-badge").removeClass('bg-warning').removeClass('bg-success').removeClass('bg-danger').addClass('bg-primary');
+        						}
+        					}
+        				},
+        				error: function(res) {
+        					console.log(res);
+        				}
+        			});
+        		},
+        		error: function(res) {
+        			console.log(res);
+        		}
+        	});
+        });
+        
+        $('.table .deleteButton').on('click', function(event) {
+        	event.preventDefault();
+        	var testVar = $(this);
+        	$('.deleteNotification #deleteModal').modal('show');
+    		var href = $(this).attr('href');
+    		$.get(href, function(notification, status){
+    			$('.deleteNotification .deleteNotificationForm').on('click', function(event) {
+    				console.log(notification);
+    				testVar.parent().parent().remove();
+    				$.post('deleteNotification', {id: notification.id}, function(returnedData) {
+    					$.ajax({
+            				url: '/notification/getNewNotifications',
+            				type: 'GET',
+            				dataType: 'json',
+            				success: function(secondResponse) {
+            					if(!secondResponse.length) {
+            						$("span.sidebar-badge").remove();
+            					} else {
+            						var notiTypes = [];
+            						for(var index in secondResponse) {
+            							notiTypes[notiTypes.length] = secondResponse[index].notificationType;
+            						}
+            						if(jQuery.inArray("ERROR", notiTypes) !== -1) {
+            							$("span.sidebar-badge").removeClass('bg-warning').removeClass('bg-success').removeClass('bg-primary').addClass('bg-danger');
+            						} else if(jQuery.inArray("WARNING", notiTypes) !== -1) {
+            							$("span.sidebar-badge").removeClass('bg-danger').removeClass('bg-success').removeClass('bg-primary').addClass('bg-warning');
+            						} else if(jQuery.inArray("SUCCESS", notiTypes) !== -1) {
+            							$("span.sidebar-badge").removeClass('bg-warning').removeClass('bg-danger').removeClass('bg-primary').addClass('bg-success');
+            						} else if(jQuery.inArray("INFO", notiTypes) !== -1) {
+            							$("span.sidebar-badge").removeClass('bg-warning').removeClass('bg-success').removeClass('bg-danger').addClass('bg-primary');
+            						}
+            					}
+            				},
+            				error: function(res) {
+            					console.log(res);
+            				}
+            			});
+    				});
+    			});
+    		});
+    		
+        });
         
     </script>
 </body>

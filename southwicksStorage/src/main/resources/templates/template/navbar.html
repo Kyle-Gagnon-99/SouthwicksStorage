@@ -108,7 +108,7 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 						<ul id="notifications" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
 							<li class="sidebar-item"><a class="sidebar-link" href="/notification/notification">Notifications
 							<div th:if="${notificationBadge != null}">
-								<div th:switch="${notificationBadge}">
+								<div th:switch="${notificationBadge}" class="notificationBadge">
 									<span th:case="'INFO'" class="sidebar-badge badge rounded-pill bg-primary">New</span>
 									<span th:case="'SUCCESS'" class="sidebar-badge badge rounded-pill bg-success">New</span>
 									<span th:case="'WARNING'" class="sidebar-badge badge rounded-pill bg-warning">New</span>

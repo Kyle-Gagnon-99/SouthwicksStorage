@@ -70,7 +70,7 @@ public class NotificationModelEntity {
 		this.notificationType = notificationType;
 	}
 	
-	public boolean isRead() {
+	public boolean getIsRead() {
 		return isRead;
 	}
 

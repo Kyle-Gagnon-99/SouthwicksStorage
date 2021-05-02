@@ -44,6 +44,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 		http.csrf().disable().authorizeRequests()
 		.antMatchers("/").hasAnyAuthority(MANAGER, TEAM_MEMBER)
 		.antMatchers("/auth/resetpassword").hasAnyAuthority(MANAGER, TEAM_MEMBER)
+		.antMatchers("/notification").hasAnyAuthority(MANAGER, TEAM_MEMBER)
 		.antMatchers("/view/users").hasAnyAuthority(MANAGER)
 		.and().formLogin().loginPage("/auth/login").permitAll().and().logout().permitAll();
 	}

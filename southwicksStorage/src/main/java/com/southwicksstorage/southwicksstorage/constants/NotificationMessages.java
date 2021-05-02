@@ -5,7 +5,10 @@ public enum NotificationMessages {
 	/* If adding new notification messages add them to the bottom of the list to prevent
 	 * any messed up data in the db
 	 */
-	DEFAULT_PASSWORD_MESSAGE("Your password is the default password. Please change it");
+	DEFAULT_PASSWORD_MESSAGE("Your password is the default password. Please change it"),
+	RESET_PASSWORD_MESSAGE("You need to reset your password in 30 days"),
+	EMPLOYEE_OF_THE_MONTH("You are the employee of the month!"),
+	ZEBRA_OUT_OF_STOCK_MESSAGE("Zebra is out of some items! You may need to stock these items as soon as possible");
 	
 	private String message;
 	
