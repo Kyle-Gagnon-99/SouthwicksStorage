@@ -13,6 +13,8 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<link href="/css/modern.css" rel="stylesheet">
 	<script src="/js/settings.js"></script>
+	<script src="/js/jquery.validate.js"></script>
+	<script src="/js/additional-methods.js"></script>
 </head>
 <body>
 	<div class="splash active" th:fragment="navbar-header">
@@ -56,6 +58,7 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 						<ul id="view" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
 							<li class="sidebar-item"><a sec:authorize="hasRole('MANAGER')" class="sidebar-link" href="/">Storage Items</a></li>
 							<li class="sidebar-item"><a class="sidebar-link" href="/">Stand Items</a></li>
+							<li class="sidebar-item"><a sec:authorize="hasRole('MANAGER')" class="sidebar-link" href="/view/vendor">Vendors</a></li>
 							<li class="sidebar-item"><a sec:authorize="hasRole('MANAGER')" class="sidebar-link" href="/view/users">Users</a></li>
 							<li class="sidebar-item"><a sec:authorize="hasRole('MANAGER')" class="sidebar-link" href="/">Audit Log</a></li>
 						</ul>
@@ -69,7 +72,7 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 						</a>
 						<ul id="create" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
 							<li class="sidebar-item"><a class="sidebar-link" href="/create/user">User</a></li>
-							<li class="sidebar-item"><a class="sidebar-link" href="/">Vendor</a></li>
+							<li class="sidebar-item"><a class="sidebar-link" href="/create/vendor">Vendor</a></li>
 							<li class="sidebar-item"><a class="sidebar-link" href="/">Item</a></li>
 							<li class="sidebar-item"><a class="sidebar-link" href="/">Stand</a></li>
 							<li class="sidebar-item"><a class="sidebar-link" href="/">Type of Storage</a></li>
@@ -173,11 +176,11 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 	<script src="/js/app.js"></script>
 	
 	<script>
-		var showModal = "[[${modal.showModal}]]";
-	    var message = "[[${modal.modalMessage}]]";
-	    var title = "[[${modal.modalTitle}]]";
-	    var type = "[[${modal.modalType}]]";
-	
+		var showModal = "[[${showModal}]]";
+	    var message = "[[${modalMessage}]]";
+	    var title = "[[${modalTitle}]]";
+	    var type = "[[${modalType}]]";
+	    
 	    toastr.options = {
 	        "closeButton": true,
 	        "debug": false,

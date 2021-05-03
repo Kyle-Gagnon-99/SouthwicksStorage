@@ -17,5 +17,11 @@ public class Constants {
 	
 	/* Security Constants */
 	public static final String NOT_LOGGED_IN = "anonymousUser";
+	
+	/* Enitty Constants */
+	public static final String ADDITIONAL_INFO_EXCEED = "Additional Information can not exceed 500 characters";
+	
+	/* Error messages */
+	public static final String ERROR_500 = "Sorry about that! It seems like something went wrong on our end";
 
 }

@@ -168,13 +168,13 @@
         
         $('.table .deleteButton').on('click', function(event) {
         	event.preventDefault();
-        	var testVar = $(this);
+        	var button = $(this);
         	$('.deleteNotification #deleteModal').modal('show');
     		var href = $(this).attr('href');
     		$.get(href, function(notification, status){
     			$('.deleteNotification .deleteNotificationForm').on('click', function(event) {
     				console.log(notification);
-    				testVar.parent().parent().remove();
+    				button.parent().parent().remove();
     				$.post('deleteNotification', {id: notification.id}, function(returnedData) {
     					$.ajax({
             				url: '/notification/getNewNotifications',

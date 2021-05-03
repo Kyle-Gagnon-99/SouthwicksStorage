@@ -7,27 +7,28 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.southwicksstorage.southwicksstorage.constants.Constants;
-import com.southwicksstorage.southwicksstorage.constants.NotificationMessages;
-import com.southwicksstorage.southwicksstorage.constants.NotificationTypes;
 import com.southwicksstorage.southwicksstorage.constants.Roles;
-import com.southwicksstorage.southwicksstorage.entities.NotificationModelEntity;
 import com.southwicksstorage.southwicksstorage.entities.UserModelEntity;
+import com.southwicksstorage.southwicksstorage.entities.VendorEntity;
 import com.southwicksstorage.southwicksstorage.repositories.NotificationDao;
 import com.southwicksstorage.southwicksstorage.repositories.UserDao;
+import com.southwicksstorage.southwicksstorage.repositories.VendorDao;
 
 @Component
 public class DataLoader implements ApplicationRunner {
 
 	private UserDao userRepo;
 	private NotificationDao notiRepo;
+	private VendorDao vendorRepo;
 	private PasswordEncoder bCryptPasswordEncoder;
 	
 	private static final String DEFAULT_PASSWORD = Constants.DEFAULT_PASSWORD;
 	
 	@Autowired
-	public DataLoader(UserDao userRepo, NotificationDao notiRepo, PasswordEncoder bCryptPasswordEncoder) {
+	public DataLoader(UserDao userRepo, NotificationDao notiRepo, VendorDao vendorRepo, PasswordEncoder bCryptPasswordEncoder) {
 		this.userRepo = userRepo;
 		this.notiRepo = notiRepo;
+		this.vendorRepo = vendorRepo;
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 	}
 	
@@ -45,13 +46,9 @@ public class DataLoader implements ApplicationRunner {
 			userRepo.save(new UserModelEntity("Lauren", "Plumb", "lplumb", bCryptPasswordEncoder.encode(DEFAULT_PASSWORD), Roles.TEAM_MEMBER));
 		}
 		
-		notiRepo.save(new NotificationModelEntity(NotificationMessages.ZEBRA_OUT_OF_STOCK_MESSAGE, NotificationTypes.ERROR, false, 
-				userRepo.findByUsername("kgagnon").get()));
-		notiRepo.save(new NotificationModelEntity(NotificationMessages.EMPLOYEE_OF_THE_MONTH, NotificationTypes.SUCCESS, false, 
-				userRepo.findByUsername("kgagnon").get()));
-		notiRepo.save(new NotificationModelEntity(NotificationMessages.RESET_PASSWORD_MESSAGE, NotificationTypes.INFO, false, 
-				userRepo.findByUsername("kgagnon").get()));
 		
+		vendorRepo.save(new VendorEntity("Sysco", "Sean", "(508) 212-6660", "Orders on Thursday"));
+		vendorRepo.save(new VendorEntity("Pepsi", "Pat", "(508) 212-6660", "Orders on Friday"));
 	}
 
 	

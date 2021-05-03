@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{template/navbar.html}">
+<head>
+    <title>Title</title>
+</head>
+<body>
+    <main class="content" layout:fragment="mainSection">
+        <div class="container-fluid">
+            <div class="header">
+                <h1 class="header-title">
+                    Create Vendor
+                </h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Create Vendor</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="row">
+                <div class="col-12 col-xl-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Create User</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method = "POST" action = "#" th:action = "@{/create/vendor}" th:object = "${createEditVendorForm}">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="mb-3">
+                                            <label for="username">Vendor Name</label>
+                                            <input th:field="*{vendorName}" type="text" class="form-control" id="vendorName" placeholder="Vendor Name" th:errorclass="is-invalid">
+                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('vendorName')}" th:errors="*{vendorName}">Vendor name error</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="firstName">Contact Name</label>
+                                            <input th:field="*{contactName}" type="text" class="form-control" id="contactName" placeholder="Contact Name" th:errorclass="is-invalid">
+                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('contactName')}" th:errors="*{contactName}">Contact name error</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="lastName">Contact Phone</label>
+                                            <input th:field="*{contactPhoneNumber}" type="text" class="form-control" id="contactPhoneNumber" placeholder="Contact Phone" th:errorclass="is-invalid" data-mask="(000) 000-0000">
+                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('contactPhoneNumber')}" th:errors="*{contactPhoneNumber}">Contact phone error</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="lastName">Additional Information</label>
+                                            <textarea th:field="*{additionalInfo}" type="text" class="form-control" id="additionalInfo" placeholder="Additional Information" th:errorclass="is-invalid" />
+                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('additionalInfo')}" th:errors="*{additionalInfo}">Additional info error</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
