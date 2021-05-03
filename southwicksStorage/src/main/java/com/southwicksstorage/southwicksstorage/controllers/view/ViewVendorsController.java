@@ -73,4 +73,10 @@ public class ViewVendorsController {
 		
 		return vendorToEdit;
 	}
+	
+	@RequestMapping(value = "/view/vendor/getAllVendors", method = RequestMethod.GET)
+	@ResponseBody
+	public List<VendorEntity> getAllVendors() {
+		return dao.findAll();
+	}
 }

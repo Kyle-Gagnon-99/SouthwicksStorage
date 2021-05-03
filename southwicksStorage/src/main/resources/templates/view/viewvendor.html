@@ -39,6 +39,7 @@
 	                                </thead>
 	                                <tbody>
 	                                    <tr th:each="vendors : ${vendorList}">
+	                                    	<td style="display:none;"><span th:text="${vendors.id}" class="vendorIdClass">Vendor Id</span></td>
 	                                        <td><span th:text="${vendors.vendorName}" class="vendorNameClass">Vendor name</span></td>
 	                                        <td><span th:text="${vendors.contactName}" class="contactNameClass">Contact name</span></td>
 	                                        <td><span th:text="${vendors.contactPhoneNumber}" class="contactPhoneClass">Contact Phone number</span></td>
@@ -258,6 +259,26 @@
         		
         		$('.additionalInfoModal #additionalInfoModalSub').modal('show');
         	});
+        	
+        	// Get all rows
+        	var rows = $($('.table').children('tbody').children('tr'));
+        	
+        	function updateTable() {
+        		$.get('/view/vendor/getAllVendors', function(data){
+            		for(index = 0; index < data.length; index++){
+            			for(innerIndex = 0; innerIndex < rows.length; innerIndex++){
+            				if($(rows[innerIndex]).find(".vendorIdClass").text() == data[index].id){
+            					var tr = $(rows[innerIndex]);
+            					tr.find('vendorNameClass').text(data[index].vendorName);
+            					tr.find('contactNameClass').text(data[index].contactName);
+            					tr.find('contactPhoneClass').text(data[index].contactPhoneNumber);
+            				}
+            			}
+            		}
+            	});
+        	}
+        	
+        	setInterval(updateTable, 5000);
         	
         });
 
