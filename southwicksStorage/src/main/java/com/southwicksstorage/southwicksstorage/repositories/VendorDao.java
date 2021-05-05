@@ -19,4 +19,5 @@ public interface VendorDao extends JpaRepository<VendorEntity, Long> {
 
 	public boolean existsByVendorName(String vendorName);
 	public Optional<VendorEntity> findById(int id);
+	public Optional<VendorEntity> findByVendorName(String name);
 }

@@ -12,5 +12,6 @@ public interface TypeOfStorageDao extends JpaRepository<TypeOfStorageEntity, Lon
 
 	boolean existsByName(String name);
 	Optional<TypeOfStorageEntity> findById(int id);
+	Optional<TypeOfStorageEntity> findByName(String name);
 	
 }

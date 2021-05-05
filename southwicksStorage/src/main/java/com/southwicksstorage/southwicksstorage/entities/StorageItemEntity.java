@@ -3,6 +3,8 @@
  */
 package com.southwicksstorage.southwicksstorage.entities;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -27,7 +29,12 @@ import com.southwicksstorage.southwicksstorage.constants.StorageType;
  */
 @Entity
 @Table(name = "storage_item")
-public class StorageItemEntity {
+public class StorageItemEntity implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5373908574936516693L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -56,11 +63,11 @@ public class StorageItemEntity {
 	private String additionalInfo;
 	
 	@NotNull(message = "You need to have a vendor associated to this item")
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "vendor_id", referencedColumnName="id")
 	private VendorEntity vendor;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "type_of_storage_id", referencedColumnName="id")
 	private TypeOfStorageEntity typeOfStorage;
 	

@@ -28,7 +28,7 @@ public class ViewStandController {
 	
 	@RequestMapping(value = "/view/stand", method = RequestMethod.GET)
 	public ModelAndView getViewStand(Model model) {
-		model.addAttribute("standList", repo.findAll());
+		model.addAttribute("standList", repo.findAll());		
 		return new ModelAndView("view/viewstand.html");
 	}
 	
