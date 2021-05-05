@@ -3,6 +3,8 @@
  */
 package com.southwicksstorage.southwicksstorage.entities;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,8 +22,13 @@ import com.southwicksstorage.southwicksstorage.constants.Constants;
  */
 @Entity
 @Table(name = "type_of_storage")
-public class TypeOfStorageEntity {
+public class TypeOfStorageEntity implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 873464216629630070L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
@@ -39,10 +46,9 @@ public class TypeOfStorageEntity {
 		
 	}
 
-	public TypeOfStorageEntity(int id, @NotEmpty(message = "Name of storage type can not be empty") String name,
+	public TypeOfStorageEntity(@NotEmpty(message = "Name of storage type can not be empty") String name,
 			@Size(max = 500, message = "Additional Information can not exceed 500 characters") String additionalInfo) {
 		super();
-		this.id = id;
 		this.name = name;
 		this.additionalInfo = additionalInfo;
 	}

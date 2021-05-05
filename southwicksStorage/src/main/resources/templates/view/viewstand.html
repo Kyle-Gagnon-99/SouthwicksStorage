@@ -9,12 +9,12 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title">
-                    View Vendors
+                    View Stand
                 </h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">View Vendors</li>
+                        <li class="breadcrumb-item active" aria-current="page">View Stand</li>
                     </ol>
                 </nav>
             </div>
@@ -22,33 +22,29 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="card-title">View Vendors</h5>
-                            <h6 class="card-subtitle text-muted">View all vendors</h6>
+                            <h5 class="card-title">View Stand</h5>
+                            <h6 class="card-subtitle text-muted">View all stands</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
 	                            <table id="datatables-basic" class="table table-striped">
 	                                <thead>
 	                                    <tr>
-	                                        <th>Vendor Name</th>
-	                                        <th>Contact Name</th>
-	                                        <th>Contact Phone Number</th>
+	                                        <th>Stand Name</th>
 	                                        <th>Additional Information</th>
 	                                        <th>Actions</th>
 	                                    </tr>
 	                                </thead>
 	                                <tbody>
-	                                    <tr th:each="vendors : ${vendorList}">
-	                                    	<td style="display:none;"><span th:text="${vendors.id}" class="vendorIdClass">Vendor Id</span></td>
-	                                        <td><span th:text="${vendors.vendorName}" class="vendorNameClass">Vendor name</span></td>
-	                                        <td><span th:text="${vendors.contactName}" class="contactNameClass">Contact name</span></td>
-	                                        <td><span th:text="${vendors.contactPhoneNumber}" class="contactPhoneClass">Contact Phone number</span></td>
+	                                    <tr th:each="stand : ${standList}">
+	                                    	<td style="display:none;"><span th:text="${stand.id}" class="standIdClass">Vendor Id</span></td>
+	                                        <td><span th:text="${stand.name}" class="standNameClass">Stand name</span></td>
 	                                        <td class="table-action">
-	                                        	<a th:href="@{vendor/findById/(id=${vendors.id})}" class="btn viewAdditionalInfo"><i class="align-middle fas fa-fw fa-eye"></i></a>
+	                                        	<a th:href="@{stand/findById/(id=${stand.id})}" class="btn viewAdditionalInfo"><i class="align-middle fas fa-fw fa-eye"></i></a>
 	                                        </td>
 	                                        <td class="table-action">
-	                                            <a th:href="@{vendor/findById/(id=${vendors.id})}" class="btn editButton"><i class="align-middle fas fa-fw fa-pen"></i></a>
-												<a th:href="@{vendor/findById/(id=${vendors.id})}" class="btn deleteButton"><i class="align-middle fas fa-fw fa-trash"></i></a>
+	                                            <a th:href="@{stand/findById/(id=${stand.id})}" class="btn editButton"><i class="align-middle fas fa-fw fa-pen"></i></a>
+												<a th:href="@{stand/findById/(id=${stand.id})}" class="btn deleteButton"><i class="align-middle fas fa-fw fa-trash"></i></a>
 	                                        </td>
 	                                    </tr>
 	                                </tbody>
@@ -59,28 +55,20 @@
                 </div>
             </div>
         </div>
-        <div class="editVendor">
+        <div class="editStand">
        		<div class="modal" id="editModal" tabindex="-1" role="dialog">
 				<div class="modal-dialog" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title">Edit Vendor</h5>
+							<h5 class="modal-title">Edit Stand</h5>
 							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
-						<form id="validateForm">
+						<form id="editStandForm">
 							<div class="modal-body m-3">
 								<div class="mb-3">
-									<input type="hidden" id="editVendorId">
-	                                <label for="vendorName">Vendor Name</label>
-	                                <input type="text" class="form-control" id="editVendorName" name="vendorName" placeholder="Vendor">
-	                            </div>
-	                            <div class="mb-3">
-	                                <label for="contactName">Contact Name</label>
-	                                <input type="text" class="form-control" id="editContactName" name="contactName" placeholder="Contact Name">
-	                            </div>
-	                            <div class="mb-3">
-	                                <label for="contactPhoneNumber">Contact Phone Number</label>
-	                                <input type="text" class="form-control" id="editContactPhoneNumber" name="contactPhoneNumber" placeholder="Contact Phone Number" data-mask="(000) 000-0000">
+									<input type="hidden" id="editStandId">
+	                                <label for="standName">Stand Name</label>
+	                                <input type="text" class="form-control" id="editStandName" name="editStandName" placeholder="Stand Name">
 	                            </div>
 	                            <div class="mb-3">
 	                               	<label for="additionalInfo">Additional Information</label>
@@ -89,7 +77,7 @@
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-								<button type="submit" class="btn btn-primary editVendorForm">Save changes</button>
+								<button type="submit" class="btn btn-primary editStandForm">Save changes</button>
 							</div>
 						</form>
 					</div>
@@ -117,26 +105,26 @@
 				</div>
 			</div>
         </div>
-        <div class="deleteVendor">
-        	<form id="deleteVendorForm">
+        <div class="deleteStand">
+        	<form id="deleteStandForm">
         		<div class="modal" id="deleteModal" tabindex="-1" role="dialog">
 					<div class="modal-dialog" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title">Delete Vendor</h5>
+								<h5 class="modal-title">Delete Stand</h5>
 								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 							</div>
 							<div class="modal-body m-3">
 								<div class="mb-3">
-									<p>Are you sure you want to delete this vendor?</p>
-									<p>WARNING: Deleting this vendor will remove the vendor from all products associated to this vendor</p>
-									<p>The products will still be there but the vendor will be gone</p> 
-									<input type="hidden" id="deleteVendorId">
+									<p>Are you sure you want to delete this stand?</p>
+									<p>WARNING: By deleting the stand you will delete the stand including the items in the stand</p>
+									<p>It will not delete the storage items just the list of items in the stand</p>
+									<input type="hidden" id="deleteStandId">
 	                            </div>
 							</div>
 							<div class="modal-footer">
 								<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-								<button type="submit" class="btn btn-danger" id="deleteVendorButton">Delete Vendor</button>
+								<button type="submit" class="btn btn-danger" id="deleteStandButton">Delete Stand</button>
 							</div>
 						</div>
 					</div>
@@ -157,27 +145,24 @@
 
         $(document).ready(function() {
         	// Prevent submit
-        	$('#validateForm').on('submit', function(event){
+        	$('#editStandForm').on('submit', function(event){
         		event.preventDefault();
         	});
         	
         	// Handle delete submit button function here since we are not using validation
-        	$('#deleteVendorForm').on('submit', function(event){
+        	$('#deleteStandForm').on('submit', function(event){
         		event.preventDefault();
-        		$.post('/view/vendor/deleteVendor', {id: $('.deleteVendor #deleteVendorId').val()}, function(e){
+        		$.post('/view/stand/deleteStand', {id: $('.deleteStand #deleteStandId').val()}, function(e){
         			
         		});
         		deleteButton.parent().parent().remove();
-        		$('.deleteVendor #deleteModal').modal('hide');
+        		$('.deleteStand #deleteModal').modal('hide');
         	});
         	
         	// Validate the results of saving the changes to the vendor
-        	$("#validateForm").validate({
+        	$("#editStandForm").validate({
         		rules: {
-        			vendorName: {
-        				required: true
-        			},
-        			contactName: {
+        			editStandName: {
         				required: true
         			},
         			additionalInfo: {
@@ -185,9 +170,8 @@
         			}
         		},
 				messages: {
-					vendorName: "Vendor Name is required",
-					contactName: "Contact Name is required",
-					additionalInfo: "Additional Information can not be more than 500 characters"
+					editStandName: "Stand name is required",
+					additionalInfo: "Additional information can not be more than 500 characters"
 				},
         		// Errors
 				errorPlacement: function errorPlacement(error, element) {
@@ -203,20 +187,15 @@
 					$(element).parents().find(".is-invalid").removeClass("is-invalid");
 				},
 				submitHandler: function(form) {
-            		var vendorId = $('#editVendorId').val();
-            		var vendorName = $('#editVendorName').val();
-            		var contactName = $('#editContactName').val();
-            		var contactPhoneNumber = $('#editContactPhoneNumber').val();
+            		var standID = $('#editStandId').val();
+            		var standName = $('#editStandName').val();
             		var additionalInfo = $('#editAdditionalInfo').val();
-            		$.post('/view/vendor/editVendor', 
-            				{id: vendorId, vendorName: vendorName, contactName: contactName, contactPhoneNumber: contactPhoneNumber, additionalInfo: additionalInfo}, 
+            		$.post('/view/stand/editStand', 
+            				{id: standID, name: standName, additionalInfo: additionalInfo}, 
             				function(returnedData){
-            					//var button = $('#validateForm :submit');
-            					editButton.parent().parent().children().find(".vendorNameClass").text(returnedData.vendorName);
-            					editButton.parent().parent().children().find(".contactNameClass").text(returnedData.contactName);
-            					editButton.parent().parent().children().find(".contactPhoneClass").text(returnedData.contactPhoneNumber);
+            					editButton.parent().parent().children().find(".standNameClass").text(returnedData[0].name);
             				});
-            		$('.editVendor #editModal').modal('hide');
+            		$('.editStand #editModal').modal('hide');
 				}
         	});
         	
@@ -225,16 +204,14 @@
         		event.preventDefault();
         		var href = $(this).attr('href');
         		editButton = $(this);
-        		$.get(href, function(vendor, status){
-        			$('.editVendor #editVendorId').val(vendor.id);
-        			$('.editVendor #editVendorName').val(vendor.vendorName);
-        			$('.editVendor #editContactName').val(vendor.contactName);
-        			$('.editVendor #editContactPhoneNumber').val(vendor.contactPhoneNumber);
-        			$('.editVendor #editAdditionalInfo').val(vendor.additionalInfo);
+        		$.get(href, function(stand, status){
+        			$('.editStand #editStandId').val(stand.id);
+        			$('.editStand #editStandName').val(stand.name);
+        			$('.editStand #editAdditionalInfo').val(stand.additionalInfo);
         		});
         		
         		// Show edit modal
-        		$('.editVendor #editModal').modal('show');
+        		$('.editStand #editModal').modal('show');
         		
         	});
         	
@@ -243,11 +220,11 @@
         		event.preventDefault();
         		deleteButton = $(this);
         		var href = $(this).attr('href');
-        		$.get(href, function(vendor, status){
-        			$('.deleteVendor #deleteVendorId').val(vendor.id);
+        		$.get(href, function(storage, status){
+        			$('.deleteStand #deleteStandId').val(storage.id);
         		});
         		
-        		$('.deleteVendor #deleteModal').modal('show');
+        		$('.deleteStand #deleteModal').modal('show');
         	});
         	
         	// Bring up a modal to show different modals
@@ -266,14 +243,12 @@
         	
         	// Update the table (this is used to update all clients)
         	function updateTable() {
-        		$.get('/view/vendor/getAllVendors', function(data){
+        		$.get('/view/stand/getAllStands', function(data){
             		for(index = 0; index < data.length; index++){
             			for(innerIndex = 0; innerIndex < rows.length; innerIndex++){
-            				if($(rows[innerIndex]).find(".vendorIdClass").text() == data[index].id){
+            				if($(rows[innerIndex]).find(".standIdClass").text() == data[index].id){
             					var tr = $(rows[innerIndex]);
-            					tr.find('.vendorNameClass').text(data[index].vendorName);
-            					tr.find('.contactNameClass').text(data[index].contactName);
-            					tr.find('.contactPhoneClass').text(data[index].contactPhoneNumber);
+            					tr.find('.standNameClass').text(data[index].vendorName);
             				}
             			}
             		}

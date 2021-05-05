@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{template/navbar.html}">
+<head>
+    <title>Title</title>
+</head>
+<body>
+    <main class="content" layout:fragment="mainSection">
+        <div class="container-fluid">
+            <div class="header">
+                <h1 class="header-title">
+                    Create Storage Item
+                </h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Create Storage Item</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="row">
+                <div class="col-12 col-xl-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Create Storage Item</h5>
+                        </div>
+                        <div class="card-body">
+                        	<div th:if="${vendorList != null}" class="validForm">
+                            	<form method = "POST" action = "#" th:action = "@{/create/storageItem}" th:object = "${createStorageItemForm}">
+                                	<div class="row">
+	                                    <div class="col-md-8">
+	                                        <div class="mb-3">
+	                                            <label for="name">Storage Item Name</label>
+	                                            <input th:field="*{name}" type="text" class="form-control" id="name" placeholder="Storage Item Name" th:errorclass="is-invalid">
+	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Storage Item Name error</div>
+	                                        </div>
+	                                        <div class="mb-3">
+	                                            <label for="amount">Amount in Storage</label>
+	                                            <input th:field="*{amount}" type="number" class="form-control" id="amount" placeholder="0" th:errorclass="is-invalid">
+	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">Amount error</div>
+	                                        </div>
+	                                        <div class="mb-3">
+	                                            <label for="amountExpected">Amount Expected in Storage</label>
+	                                            <input th:field="*{amountExpected}" type="number" class="form-control" id="amountExpected" placeholder="0" th:errorclass="is-invalid">
+	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('amountExpected')}" th:errors="*{amountExpected}">Amount Expected error</div>
+	                                        </div>
+	                                        <div class="mb-3">
+	                                            <label for="storedIn">Item is stored as</label>
+	                                            <select class="form-control selectpicker" th:field="*{storedIn}" id="storedIn">
+							                		<option th:each="storeType : ${T(com.southwicksstorage.southwicksstorage.constants.StorageType).values()}"
+							                				th:text = "${storeType.getStorageTypeName}"
+							                				th:value = "${storeType}">storeType
+							                		</option>
+							                	</select>
+	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('storedIn')}" th:errors="*{storedIn}">Stored In error</div>
+	                                        </div>
+	                                        <div class="mb-3">
+	                                            <label for="vendor">Vendor For Item</label>
+	                                            <select class="form-control selectpicker" th:field="*{vendor}" id="vendor">
+							                		<option th:each="vendorEach : ${vendorList}"
+							                				th:text = "${vendorEach.vendorName}"
+							                				th:value = "${vendorEach.id}">vendor
+							                		</option>
+							                	</select>
+	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('vendor')}" th:errors="*{vendor}">Vendor error</div>
+	                                        </div>
+	                                        <div class="mb-3">
+	                                            <label for="typeOfStorage">This item is stored in a</label>
+	                                            <div th:if="${typeOfStorageList != null}">
+	                                            	<select class="form-control selectpicker" th:field="*{typeOfStorage}" id="typeOfStorage">
+								                		<option th:each="typeOfStorageEach : ${typeOfStorageList}"
+								                				th:text = "${typeOfStorageEach.name}"
+								                				th:value = "${typeOfStorageEach.id}">typeOfStorage
+								                		</option>
+								                	</select>
+	                                            </div>
+	                                            <div th:if="${typeOfStorageList == null}">
+	                                            	<span class="font-13 text-muted">To use this create a <a href="/create/typeOfStorage">type of storage</a></span>
+	                                            	<select class="form-control selectpicker" th:field="*{typeOfStorage}" id="typeOfStorage" disabled>
+								                		<option text="Not Available" value="" </option>
+								                	</select>
+	                                            </div>
+	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('typeOfStorage')}" th:errors="*{typeOfStorage}">Type of Storage error</div>
+	                                        </div>
+	                                        <div class="mb-3">
+	                                            <label for="lastName">Additional Information</label>
+	                                            <textarea th:field="*{additionalInfo}" type="text" class="form-control" id="additionalInfo" placeholder="Additional Information" th:errorclass="is-invalid" />
+	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('additionalInfo')}" th:errors="*{additionalInfo}">Additional info error</div>
+	                                        </div>
+	                                    </div>
+	                                </div>
+	                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            	</form>
+                            </div>
+                        	<div th:if="${vendorList == null}" class="validForm">
+                            	<form method = "POST" action = "#" th:action = "@{/create/storageItem}" th:object = "${createStorageItemForm}">
+                                	<div class="row">
+	                                    <div class="col-md-8">
+	                                        <div class="mb-3">
+	                                            <label for="name">Storage Item Name</label>
+	                                            <input th:field="*{name}" type="text" class="form-control" id="name" placeholder="Storage Item Name" th:errorclass="is-invalid" disabled>
+	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Storage Item Name error</div>
+	                                        </div>
+	                                        <div class="mb-3">
+	                                            <label for="amount">Amount in Storage</label>
+	                                            <input th:field="*{amount}" type="number" class="form-control" id="amount" placeholder="0" th:errorclass="is-invalid" disabled>
+	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">Amount error</div>
+	                                        </div>
+	                                        <div class="mb-3">
+	                                            <label for="amountExpected">Amount Expected in Storage</label>
+	                                            <input th:field="*{amountExpected}" type="number" class="form-control" id="amountExpected" placeholder="0" th:errorclass="is-invalid" disabled>
+	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('amountExpected')}" th:errors="*{amountExpected}">Amount Expected error</div>
+	                                        </div>
+	                                        <div class="mb-3">
+	                                            <label for="storedIn">Item is stored as</label>
+	                                            <select class="form-control selectpicker" th:field="*{storedIn}" id="storedIn" disabled>
+							                		<option th:each="storeType : ${T(com.southwicksstorage.southwicksstorage.constants.StorageType).values()}"
+							                				th:text = "${storeType.getStorageTypeName}"
+							                				th:value = "${storeType}">storeType
+							                		</option>
+							                	</select>
+	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('storedIn')}" th:errors="*{storedIn}">Stored In error</div>
+	                                        </div>
+	                                        <div class="mb-3">
+	                                            <label for="vendor">Vendor For Item</label>
+	                                            <select class="form-control selectpicker" th:field="*{vendor}" id="vendor" disabled>
+							                		<option th:each="vendorEach : ${vendorList}"
+							                				th:text = "${vendorEach.vendorName}"
+							                				th:value = "${vendorEach.id}">vendorEach
+							                		</option>
+							                	</select>
+	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('vendor')}" th:errors="*{vendor}">Vendor error</div>
+	                                        </div>
+	                                        <div class="mb-3">
+	                                            <label for="typeOfStorage">This item is stored in a</label>
+	                                            <div th:if="${typeOfStorageList != null}">
+	                                            	<select class="form-control selectpicker" th:field="*{typeOfStorage}" id="typeOfStorage" disabled>
+								                		<option th:each="typeOfStorageEach : ${typeOfStorageList}"
+								                				th:text = "${typeOfStorageEach.name}"
+								                				th:value = "${typeOfStorageEach.id}">typeOfStorageEach
+								                		</option>
+								                	</select>
+	                                            </div>
+	                                            <div th:if="${typeOfStorageList == null}">
+	                                            	<span class="font-13 text-muted">To use this create a <a href="/create/typeOfStorage">type of storage</a></span>
+	                                            	<select class="form-control selectpicker" th:field="*{typeOfStorage}" id="typeOfStorage" disabled>
+								                		<option text="Not Available" value="-1" </option>
+								                	</select>
+	                                            </div>
+	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('typeOfStorage')}" th:errors="*{typeOfStorage}">Type of Storage error</div>
+	                                        </div>
+	                                        <div class="mb-3">
+	                                            <label for="lastName">Additional Information</label>
+	                                            <textarea th:field="*{additionalInfo}" type="text" class="form-control" id="additionalInfo" placeholder="Additional Information" th:errorclass="is-invalid" disabled />
+	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('additionalInfo')}" th:errors="*{additionalInfo}">Additional info error</div>
+	                                        </div>
+	                                    </div>
+	                                </div>
+	                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            	</form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

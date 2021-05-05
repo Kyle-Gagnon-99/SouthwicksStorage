@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{template/navbar.html}">
+<head>
+    <title>Title</title>
+</head>
+<body>
+    <main class="content" layout:fragment="mainSection">
+        <div class="container-fluid">
+            <div class="header">
+                <h1 class="header-title">
+                    Create Stand
+                </h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Create Stand</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="row">
+                <div class="col-12 col-xl-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Create Stand</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method = "POST" action = "#" th:action = "@{/create/stand}" th:object = "${createStandForm}">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="mb-3">
+                                            <label for="name">Stand Name</label>
+                                            <input th:field="*{name}" type="text" class="form-control" id="name" placeholder="Stand Name" th:errorclass="is-invalid">
+                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Type Of Storage error</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="additionalInfo">Additional Information</label>
+                                            <textarea th:field="*{additionalInfo}" type="text" class="form-control" id="additionalInfo" placeholder="Additional Information" th:errorclass="is-invalid" />
+                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('additionalInfo')}" th:errors="*{additionalInfo}">Additional info error</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

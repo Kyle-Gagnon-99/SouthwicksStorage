@@ -13,7 +13,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Range;
 
 import com.southwicksstorage.southwicksstorage.constants.Constants;
 import com.southwicksstorage.southwicksstorage.constants.StorageType;
@@ -36,11 +39,15 @@ public class StorageItemEntity {
 	@Column(name = "name")
 	private String name;
 	
-	@NotEmpty(message = "Amount of this storage item can not be empty")
+	@Range(min = 0, message = "Amount in storage can not be less than 0")
 	@Column(name = "amount")
 	private int amount;
 	
-	@NotEmpty(message = "Storage in type can not be empty")
+	@Range(min = 0, message = "Amount expected in storage per week can not be less than 0")
+	@Column(name = "amount_expected")
+	private int amountExpected;
+	
+	@NotNull(message = "Storage in type can not be empty")
 	@Column(name = "stored_in")
 	private StorageType storedIn;
 	
@@ -48,7 +55,7 @@ public class StorageItemEntity {
 	@Column(name = "additional_info")
 	private String additionalInfo;
 	
-	@NotEmpty(message = "You need to have a vendor associated to this item")
+	@NotNull(message = "You need to have a vendor associated to this item")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "vendor_id", referencedColumnName="id")
 	private VendorEntity vendor;
@@ -61,17 +68,17 @@ public class StorageItemEntity {
 		
 	}
 
-	public StorageItemEntity(int id,
-			@NotEmpty(message = "Storage item name can not be empty") @Size(max = 100, message = "Storage item name can not exceed 100 characters") String name,
-			@NotEmpty(message = "Amount of this storage item can not be empty") int amount,
-			@NotEmpty(message = "Storage in type can not be empty") StorageType storedIn,
-			@Size(max = 500, message = "Additional Information can not exceed 500 characters") String additionalInfo,
-			@NotEmpty(message = "You need to have a vendor associated to this item") VendorEntity vendor,
+	public StorageItemEntity(
+			String name,
+			int amount,
+			int amountExpected,
+			StorageType storedIn,
+			String additionalInfo,
+			VendorEntity vendor,
 			TypeOfStorageEntity typeOfStorage) {
-		super();
-		this.id = id;
 		this.name = name;
 		this.amount = amount;
+		this.amountExpected = amountExpected;
 		this.storedIn = storedIn;
 		this.additionalInfo = additionalInfo;
 		this.vendor = vendor;
@@ -100,6 +107,14 @@ public class StorageItemEntity {
 
 	public void setAmount(int amount) {
 		this.amount = amount;
+	}
+	
+	public int getAmountExpected() {
+		return amountExpected;
+	}
+	
+	public void setAmountExpected(int amountExpected) {
+		this.amountExpected = amountExpected;
 	}
 
 	public StorageType getStoredIn() {

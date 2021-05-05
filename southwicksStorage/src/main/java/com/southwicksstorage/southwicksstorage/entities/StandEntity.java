@@ -39,10 +39,8 @@ public class StandEntity {
 		/* Default Constructor */
 	}
 
-	public StandEntity(int id, @NotEmpty(message = "Stand name can not be empty") String name,
+	public StandEntity(@NotEmpty(message = "Stand name can not be empty") String name,
 			@Size(max = 500, message = "Additional Information can not exceed 500 characters") String additionalInfo) {
-		super();
-		this.id = id;
 		this.name = name;
 		this.additionalInfo = additionalInfo;
 	}

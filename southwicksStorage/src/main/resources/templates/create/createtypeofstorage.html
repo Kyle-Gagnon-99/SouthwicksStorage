@@ -9,12 +9,12 @@
         <div class="container-fluid">
             <div class="header">
                 <h1 class="header-title">
-                    Create Vendor
+                    Create Type of Storage
                 </h1>
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Create Vendor</li>
+                        <li class="breadcrumb-item active" aria-current="page">Create Type Of Storage</li>
                     </ol>
                 </nav>
             </div>
@@ -22,26 +22,16 @@
                 <div class="col-12 col-xl-6">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="card-title mb-0">Create Vendor</h5>
+                            <h5 class="card-title mb-0">Create Type of Storage</h5>
                         </div>
                         <div class="card-body">
-                            <form method = "POST" action = "#" th:action = "@{/create/vendor}" th:object = "${createEditVendorForm}">
+                            <form method = "POST" action = "#" th:action = "@{/create/typeOfStorage}" th:object = "${createTypeOfStorageForm}">
                                 <div class="row">
                                     <div class="col-md-8">
                                         <div class="mb-3">
-                                            <label for="username">Vendor Name</label>
-                                            <input th:field="*{vendorName}" type="text" class="form-control" id="vendorName" placeholder="Vendor Name" th:errorclass="is-invalid">
-                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('vendorName')}" th:errors="*{vendorName}">Vendor name error</div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="firstName">Contact Name</label>
-                                            <input th:field="*{contactName}" type="text" class="form-control" id="contactName" placeholder="Contact Name" th:errorclass="is-invalid">
-                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('contactName')}" th:errors="*{contactName}">Contact name error</div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="lastName">Contact Phone</label>
-                                            <input th:field="*{contactPhoneNumber}" type="text" class="form-control" id="contactPhoneNumber" placeholder="Contact Phone" th:errorclass="is-invalid" data-mask="(000) 000-0000">
-                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('contactPhoneNumber')}" th:errors="*{contactPhoneNumber}">Contact phone error</div>
+                                            <label for="name">Type of Storage Name</label>
+                                            <input th:field="*{name}" type="text" class="form-control" id="name" placeholder="Type Of Storage Name" th:errorclass="is-invalid">
+                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Type Of Storage error</div>
                                         </div>
                                         <div class="mb-3">
                                             <label for="lastName">Additional Information</label>

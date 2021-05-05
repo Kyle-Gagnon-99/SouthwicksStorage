@@ -1,5 +1,7 @@
 package com.southwicksstorage.southwicksstorage.entities;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,7 +15,12 @@ import com.southwicksstorage.southwicksstorage.validation.Phone;
 
 @Entity
 @Table(name = "vendor")
-public class VendorEntity {
+public class VendorEntity implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

@@ -32,8 +32,6 @@ public class ViewVendorsController {
 	public ModelAndView getViewVendor(Model model) {
 		
 		List<VendorEntity> retreivedVendorList = dao.findAll();
-		
-		retreivedVendorList.stream().forEach((vendor) -> System.out.print(vendor.getVendorName()));
 		model.addAttribute("vendorList", retreivedVendorList);
 		
 		return new ModelAndView("view/viewvendor.html");
