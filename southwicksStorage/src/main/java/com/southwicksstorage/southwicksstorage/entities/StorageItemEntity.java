@@ -56,7 +56,7 @@ public class StorageItemEntity implements Serializable{
 	
 	@NotNull(message = "Storage in type can not be empty")
 	@Column(name = "stored_in")
-	private StorageType storedIn;
+	private StorageType storedType;
 	
 	@Size(max = 500, message = Constants.ADDITIONAL_INFO_EXCEED)
 	@Column(name = "additional_info")
@@ -79,14 +79,14 @@ public class StorageItemEntity implements Serializable{
 			String name,
 			int amount,
 			int amountExpected,
-			StorageType storedIn,
+			StorageType storedType,
 			String additionalInfo,
 			VendorEntity vendor,
 			TypeOfStorageEntity typeOfStorage) {
 		this.name = name;
 		this.amount = amount;
 		this.amountExpected = amountExpected;
-		this.storedIn = storedIn;
+		this.storedType = storedType;
 		this.additionalInfo = additionalInfo;
 		this.vendor = vendor;
 		this.typeOfStorage = typeOfStorage;
@@ -124,12 +124,12 @@ public class StorageItemEntity implements Serializable{
 		this.amountExpected = amountExpected;
 	}
 
-	public StorageType getStoredIn() {
-		return storedIn;
+	public StorageType getStoredType() {
+		return storedType;
 	}
 
-	public void setStoredIn(StorageType storedIn) {
-		this.storedIn = storedIn;
+	public void setStoredType(StorageType storedType) {
+		this.storedType = storedType;
 	}
 
 	public String getAdditionalInfo() {

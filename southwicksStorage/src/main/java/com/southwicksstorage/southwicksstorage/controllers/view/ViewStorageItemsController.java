@@ -76,23 +76,26 @@ public class ViewStorageItemsController {
 	@RequestMapping(value = "/view/storageItem/deleteItem", method = RequestMethod.POST)
 	@ResponseBody
 	public List<StorageItemEntity> deleteStorageItem(Integer id) {
-		return null;
+		storageItemRepo.delete(storageItemRepo.findById(id).get());
+		return storageItemRepo.findAll();
 	}
 	
 	@RequestMapping(value = "/view/storageItem/editItem", method = RequestMethod.POST)
 	@ResponseBody
 	public StorageItemEntity editStorageItem(Integer id, String name, Integer amount, Integer amountExpected,
-			String storedIn, Integer vendor, Integer typeOfStorage, String additionalInfo) {
+			String storedType, Integer vendor, Integer typeOfStorage, String additionalInfo) {
 		
 		StorageItemEntity item = storageItemRepo.findById(id).get();
 		
 		item.setName(name);
 		item.setAmount(amount);
 		item.setAmountExpected(amountExpected);
-		item.setStoredIn(StorageType.valueOf(storedIn));
+		item.setStoredType(StorageType.valueOf(storedType));
 		item.setVendor(vendorRepo.findById(vendor).get());
 		if(tosRepo.findById(typeOfStorage).isPresent()) {
 			item.setTypeOfStorage(tosRepo.findById(typeOfStorage).get());
+		} else if(typeOfStorage == -1) {
+			item.setTypeOfStorage(null);
 		}
 		item.setAdditionalInfo(additionalInfo);
 		
@@ -116,10 +119,6 @@ public class ViewStorageItemsController {
 		String modalType = NotificationTypes.ERROR.getType().toLowerCase();
 		String modalMessage = Constants.ERROR_500;
 		
-		System.out.printf("Name: %s\nAmount: %d\nAmount Expected: %d\nStored In: %s\nVendor: %d\nType Of Storage: %d\nAdditional Information: %s\n",
-				itemForm.getName(), itemForm.getAmount(), itemForm.getAmountExpected(), itemForm.getStoredIn(), itemForm.getVendor(), 
-				itemForm.getTypeOfStorage(), itemForm.getAdditionalInfo());
-		
 		if(storageItemRepo.existsByNameAndVendor(itemForm.getName(), vendorRepo.findById(itemForm.getVendor()).get())) {
 			List<VendorEntity> vendorList = vendorRepo.findAll();
 			List<TypeOfStorageEntity> typeOfStorageList = tosRepo.findAll();
@@ -131,6 +130,13 @@ public class ViewStorageItemsController {
 			model.addAttribute(Constants.MODAL_TITLE, modalTitle);
 			model.addAttribute(Constants.MODAL_TYPE, modalType);
 			model.addAttribute(Constants.MODAL_MESSAGE, modalMessage);
+			if(vendorList.size() > 0) {
+				model.addAttribute("vendorList", vendorList);
+			}
+			if(typeOfStorageList.size() > 0) {
+				model.addAttribute("typeOfStorageList", typeOfStorageList);
+			}
+			model.addAttribute("storageItemList", storageItemRepo.findAll());
 			return new ModelAndView("view/viewstorageitem.html");
 		}
 		
@@ -145,7 +151,7 @@ public class ViewStorageItemsController {
 		}
 		
 		StorageItemEntity createItem = new StorageItemEntity(itemForm.getName(), itemForm.getAmount(), itemForm.getAmountExpected(),
-				StorageType.valueOf(itemForm.getStoredIn()), itemForm.getAdditionalInfo(), vendorToRetreive, tosToRetreive);
+				StorageType.valueOf(itemForm.getStoredType()), itemForm.getAdditionalInfo(), vendorToRetreive, tosToRetreive);
 		
 		try {
 			if(!bindingResult.hasErrors()) {
@@ -186,7 +192,7 @@ public class ViewStorageItemsController {
 			if(typeOfStorageList.size() > 0) {
 				model.addAttribute("typeOfStorageList", typeOfStorageList);
 			}
-			
+			model.addAttribute("storageItemList", storageItemRepo.findAll());
 			return new ModelAndView("view/viewstorageitem.html");
 		} else {
 			showModal = "true";
@@ -201,6 +207,7 @@ public class ViewStorageItemsController {
 		redirectAttribute.addFlashAttribute(Constants.MODAL_MESSAGE, modalMessage);
 		redirectAttribute.addFlashAttribute("vendorList", vendorList);
 		redirectAttribute.addFlashAttribute("typeOfStorageList", typeOfStorageList);
+		redirectAttribute.addFlashAttribute("storageItemList", storageItemRepo.findAll());
 		
 		return new ModelAndView("redirect:/view/storageItem");
 	}

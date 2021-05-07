@@ -57,7 +57,7 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 						</a>
 						<ul id="view" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
 							<li class="sidebar-item"><a sec:authorize="hasRole('MANAGER')" class="sidebar-link" href="/view/storageItem">Storage Items</a></li>
-							<li class="sidebar-item"><a class="sidebar-link" href="/">Stand Items</a></li>
+							<li class="sidebar-item"><a class="sidebar-link" href="/view/standItem">Stand Items</a></li>
 							<li class="sidebar-item"><a sec:authorize="hasRole('MANAGER')" class="sidebar-link" href="/view/vendor">Vendors</a></li>
 							<li class="sidebar-item"><a sec:authorize="hasRole('MANAGER')" class="sidebar-link" href="/view/users">Users</a></li>
 							<li class="sidebar-item"><a sec:authorize="hasRole('MANAGER')" class="sidebar-link" href="/view/typeOfStorage">Type of Storage</a></li>
@@ -120,7 +120,7 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 							<li class="sidebar-item"><a class="sidebar-link" href="/">Order Report</a></li>
 						</ul>
 					</li>
-					<li sec:authorize="hasRole('MANAGER')" class="sidebar-header">
+					<li class="sidebar-header">
 						Settings
 					</li>
 					<li class="sidebar-item">

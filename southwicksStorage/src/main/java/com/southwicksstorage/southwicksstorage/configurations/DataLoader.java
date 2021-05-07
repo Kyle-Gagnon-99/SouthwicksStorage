@@ -12,11 +12,15 @@ import com.southwicksstorage.southwicksstorage.constants.NotificationTypes;
 import com.southwicksstorage.southwicksstorage.constants.Roles;
 import com.southwicksstorage.southwicksstorage.constants.StorageType;
 import com.southwicksstorage.southwicksstorage.entities.NotificationModelEntity;
+import com.southwicksstorage.southwicksstorage.entities.StandEntity;
+import com.southwicksstorage.southwicksstorage.entities.StandItemEntity;
 import com.southwicksstorage.southwicksstorage.entities.StorageItemEntity;
 import com.southwicksstorage.southwicksstorage.entities.TypeOfStorageEntity;
 import com.southwicksstorage.southwicksstorage.entities.UserModelEntity;
 import com.southwicksstorage.southwicksstorage.entities.VendorEntity;
 import com.southwicksstorage.southwicksstorage.repositories.NotificationDao;
+import com.southwicksstorage.southwicksstorage.repositories.StandDao;
+import com.southwicksstorage.southwicksstorage.repositories.StandItemDao;
 import com.southwicksstorage.southwicksstorage.repositories.StorageItemDao;
 import com.southwicksstorage.southwicksstorage.repositories.TypeOfStorageDao;
 import com.southwicksstorage.southwicksstorage.repositories.UserDao;
@@ -30,18 +34,22 @@ public class DataLoader implements ApplicationRunner {
 	private VendorDao vendorRepo;
 	private TypeOfStorageDao storageRepo;
 	private StorageItemDao itemRepo;
+	private StandDao standRepo;
+	private StandItemDao standItemRepo;
 	private PasswordEncoder bCryptPasswordEncoder;
 	
 	private static final String DEFAULT_PASSWORD = Constants.DEFAULT_PASSWORD;
 	
 	@Autowired
 	public DataLoader(UserDao userRepo, NotificationDao notiRepo, VendorDao vendorRepo, TypeOfStorageDao storageRepo,
-			StorageItemDao itemRepo, PasswordEncoder bCryptPasswordEncoder) {
+			StorageItemDao itemRepo, StandDao standRepo, StandItemDao standItemRepo, PasswordEncoder bCryptPasswordEncoder) {
 		this.userRepo = userRepo;
 		this.notiRepo = notiRepo;
 		this.vendorRepo = vendorRepo;
 		this.storageRepo = storageRepo;
 		this.itemRepo = itemRepo;
+		this.standRepo = standRepo;
+		this.standItemRepo = standItemRepo;
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 	}
 	
@@ -81,16 +89,30 @@ public class DataLoader implements ApplicationRunner {
 		notiRepo.save(new NotificationModelEntity(NotificationMessages.ZEBRA_OUT_OF_STOCK_MESSAGE, NotificationTypes.ERROR, false, 
 				userRepo.findByUsername("rhorn").get()));
 		
+		// Stand
+		standRepo.save(new StandEntity("Zebra", null));
+		standRepo.save(new StandEntity("Ice Cream", null));
+		
 		VendorEntity pepsiVendor = vendorRepo.findByVendorName("Pepsi").get();
 		VendorEntity syscoVendor = vendorRepo.findByVendorName("Sysco").get();
 		
 		TypeOfStorageEntity rackStore = storageRepo.findByName("Rack").get();
 		TypeOfStorageEntity caseStore = storageRepo.findByName("Case").get();
 		
+		StandEntity zebraStand = standRepo.findByName("Zebra").get();
+		StandEntity iceCreamStand = standRepo.findByName("Ice Cream").get();
+		
 		// Storage Item
 		itemRepo.save(new StorageItemEntity("Fries", 5, 10, StorageType.FROZEN_STORAGE, null, syscoVendor, caseStore));
 		itemRepo.save(new StorageItemEntity("Pepsi", 8, 9, StorageType.DRY_STORAGE, "July 4th so order ahead", pepsiVendor, null));
 		
+		StorageItemEntity friesItem = itemRepo.findByName("Fries").get();
+		StorageItemEntity pepsiItem = itemRepo.findByName("Pepsi").get();
+		
+		//Stand Item
+		standItemRepo.save(new StandItemEntity(3, 5, "Out until Friday May 7th", friesItem, zebraStand));
+		standItemRepo.save(new StandItemEntity(1, 4, null, pepsiItem, zebraStand));
+		standItemRepo.save(new StandItemEntity(2, 4, null, pepsiItem, iceCreamStand));
 	}
 
 	

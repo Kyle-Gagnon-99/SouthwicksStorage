@@ -76,7 +76,7 @@ public class CreateStorageItemController {
 		String modalMessage = Constants.ERROR_500;
 		
 		System.out.printf("Name: %s\nAmount: %d\nAmount Expected: %d\nStored In: %s\nVendor: %d\nType Of Storage: %d\nAdditional Information: %s\n",
-				itemForm.getName(), itemForm.getAmount(), itemForm.getAmountExpected(), itemForm.getStoredIn(), itemForm.getVendor(), 
+				itemForm.getName(), itemForm.getAmount(), itemForm.getAmountExpected(), itemForm.getStoredType(), itemForm.getVendor(), 
 				itemForm.getTypeOfStorage(), itemForm.getAdditionalInfo());
 		
 		if(repo.existsByNameAndVendor(itemForm.getName(), vendorRepo.findById(itemForm.getVendor()).get())) {
@@ -104,7 +104,7 @@ public class CreateStorageItemController {
 		}
 		
 		StorageItemEntity createItem = new StorageItemEntity(itemForm.getName(), itemForm.getAmount(), itemForm.getAmountExpected(),
-				StorageType.valueOf(itemForm.getStoredIn()), itemForm.getAdditionalInfo(), vendorToRetreive, tosToRetreive);
+				StorageType.valueOf(itemForm.getStoredType()), itemForm.getAdditionalInfo(), vendorToRetreive, tosToRetreive);
 		
 		try {
 			if(!bindingResult.hasErrors()) {

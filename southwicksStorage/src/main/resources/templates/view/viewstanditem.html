@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{template/navbar.html}">
+<head>
+    <title>Stand Items</title>
+</head>
+<body>
+    <main class="content" layout:fragment="mainSection">
+        <div class="container-fluid">
+            <div class="header">
+                <h1 class="header-title">
+                    View Stand Items
+                </h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">View Stand Items</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">View Stand Items</h5>
+                            <h6 class="card-subtitle text-muted">View all stand items</h6>
+                        </div>
+                        <div class="card-body">
+                        	<div class="mb-4 text-center">
+                        		<p>Select which stand you would like to view</p>
+	                        	<select class="form-control selectpicker" id="selectStandToView">
+	                        		<option value="-1">None</option>
+	                        		<option th:each="standId : ${standList}"
+	                        			   th:text="${standId.name}"
+	                        			   th:value="${standId.id}">standId
+	                        		</option>
+	                        	</select>
+                        	</div>
+							<div th:each="stand : ${standList}" th:id="'stand' + ${stand.id}">
+								<div class="table-responsive">
+									<table class="table table-striped" th:id="'standTable' + ${stand.id}">
+										<thead>
+											<tr>
+												<th>Id</th>
+		                                        <th>Name</th>
+		                                        <th>Amount in Stand</th>
+		                                        <th>Amount Expected</th>
+		                                        <th>View Additional Information</th>
+		                                        <th>Actions</th>
+											</tr>
+										</thead>
+									</table>
+								</div>
+							</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+         <div class="additionalInfoModal">
+       		<div class="modal" id="additionalInfoModalSub" tabindex="-1" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">View Additional Information</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body m-3">
+							<div class="mb-3 text-center">
+								<p>Additional Information</p>
+								<textarea id="additionalInfoTextArea" class="additionalInfoTextArea" style="min-width: 100%" readonly></textarea>
+                            </div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+        </div>
+        <div class="deleteStandItem">
+        	<form id="deleteStandItemForm">
+        		<div class="modal" id="deleteModal" tabindex="-1" role="dialog">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Delete Stand Item</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body m-3">
+								<div class="mb-3">
+									<p>Are you sure you want to delete stand item?</p>
+									<p>WARNING: Deleting this stand item will delete it forever</p> 
+									<input type="hidden" id="deleteStandItemId">
+	                            </div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+								<button type="submit" class="btn btn-danger" id="deleteStorageButton">Delete Stand Item</button>
+							</div>
+						</div>
+					</div>
+				</div>
+        	</form>
+        </div>
+        <div class="editStandItem">
+       		<div class="modal" id="editModal" tabindex="-1" role="dialog">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">Edit Storage</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<form id="editStandItemForm">
+							<div class="modal-body m-3">
+								<div class="mb-3">
+									<input type="hidden" id="editStandItemId">
+	                                <label for="editStandItemName">Type of Storage Name</label>
+	                                <input type="text" class="form-control" id="editStandItemName" name="editStandItemName" placeholder="Stand Item Name" readonly>
+	                            </div>
+								<div class="mb-3">
+                                    <label for="amount">Amount in Stand</label>
+                                    <input type="number" class="form-control" id="editStandItemAmount" name="editStandItemAmount" placeholder="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="amount">Amount Expected</label>
+                                    <input type="number" class="form-control" id="editStandItemAmountExpected" name="editStandItemAmountExpected" placeholder="0">
+                                </div>
+	                            <div class="mb-3">
+	                               	<label for="additionalInfo">Additional Information</label>
+	                                <textarea type="text" class="form-control" id="editAdditionalInfo" name="additionalInfo" placeholder="Additional Information"></textarea>
+	                            </div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+								<button type="submit" class="btn btn-primary editStorageForm">Save changes</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+        </div>
+        <div class="createStandItem">
+        	<form id="createStandItemForm">
+        		<div class="modal" id="createModal" tabindex="-1" role="dialog">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title">Create Stand Item</h5>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							</div>
+							<div class="modal-body m-3">
+								<div class="mb-3">
+									<label for="selectItemToAdd">Storage Item to Add</label>
+									<select class="form-control selectpicker select2" id="selectItemToAdd" name="selectItemToAdd" data-bs-toggle="select2">
+										<optgroup label="Dry Goods">
+											<option th:each="dryGood : ${dryStorageItemList}"
+													th:text="${dryGood.name}"
+													th:value="${dryGood.id}">dryGood
+											</option>
+										</optgroup>
+										<optgroup label="Refrigerated Goods">
+											<option th:each="fridgeGood : ${refridgeItemList}"
+													th:text="${fridgeGood.name}"
+													th:value="${fridgeGood.id}">fridgeGood
+											</option>
+										</optgroup>
+										<optgroup label="Frozen Goods">
+											<option th:each="frozenGood : ${frozenStorageItemList}"
+													th:text="${frozenGood.name}"
+													th:value="${frozenGood.id}">frozenGood
+											</option>
+										</optgroup>
+									</select>
+	                            </div>
+	                            <div class="mb-3">
+                                    <label for="createStandItemAmount">Amount in Stand</label>
+                                    <input type="number" class="form-control" id="createStandItemAmount" name="createStandItemAmount" placeholder="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="createStandItemAmountExpected">Amount Expected</label>
+                                    <input type="number" class="form-control" id="createStandItemAmountExpected" name="createStandItemAmountExpected" placeholder="0">
+                                </div>
+	                            <div class="mb-3">
+	                               	<label for="createAdditionalInfo">Additional Information</label>
+	                                <textarea type="text" class="form-control" id="createAdditionalInfo" name="createAdditionalInfo" placeholder="Additional Information"></textarea>
+	                            </div>
+	                            <div class="mb-3">
+	                                <input type="hidden" class="form-control" id="createStand" name="createStand"></textarea>
+	                            </div>
+							</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+								<button type="submit" class="btn btn-primary" id="createStandItemButton">Add Item to Stand</button>
+							</div>
+						</div>
+					</div>
+				</div>
+        	</form>
+        </div>
+    </main>
+
+    <script layout:fragment="customJS" th:inline="javascript">
+    	
+    	var stands = [[${standList}]];
+    	var role = [[${userRole}]];
+    	var standDivId = [];
+    	var editButton = '';
+		var deleteButton = '';
+		var tables = [];
+    	
+    	stands.forEach(function(item){
+    		idToString = item.id.toString();
+    		standDivId.push(idToString);
+    	});
+    	
+    	$.fn.dataTable.ext.buttons.create = {
+    		    text: 'Create',
+    		    action: function ( e, dt, node, config ) {
+    		    	$('.createStandItem #createStand').val($('#selectStandToView').val());
+    		    	if(role === 'Manager') {
+    		    		$('.createStandItem #createModal').modal('show');
+    		    	}
+    		    }
+    		};
+    	
+    	// Datatable
+        document.addEventListener("DOMContentLoaded", function() {
+        	
+        	standDivId.forEach(function(item){
+        		$('#stand'.concat(item)).hide();
+        	});
+        	
+        	$('#selectStandToView').on('change', function(event){
+        		
+        		standDivId.forEach(function(item){
+            		$('#stand'.concat(item)).hide();
+            	});
+        		
+        		if($(this).val() !== -1) {
+        			$('#stand'.concat($(this).val())).show();
+        		}
+        	});
+        	
+			standDivId.forEach(function(item){
+				var table = $('#standTable'.concat(item)).DataTable({
+					"processing": false,
+					"info": false,
+					"ajax": {
+			            "url": "/view/standItem/getAllItems",
+			            "type": "POST",
+			            "dataType": "json",
+			            "contentType": "application/json",
+			            "dataSrc": '',
+			            "data": function (d) {
+			                return JSON.stringify(d);
+			          	}
+					},
+					"columns": [
+						{"data": "id"},
+						{"data": "storageItem.name"},
+						{"data": "amount"},
+						{"data": "amountExpected"},
+					],
+					"columnDefs": [
+						{
+							"targets": [0],
+							"visible": false,
+							"searchable": false
+						},
+						{
+							"targets": [4],
+							"searchable": false,
+							"defaultContent": '<button class="btn viewAdditionalInfo"><i class="align-middle fas fa-fw fa-eye"></i></button>'
+						},
+						{
+							"targets": [5],
+							"searchable": false,
+							"defaultContent": '<button class="btn editButton"><i class="align-middle fas fa-fw fa-pen"></i></button>' +
+											  '<button class="btn deleteButton"><i class="align-middle fas fa-fw fa-trash"></i></button>'
+						}
+					],
+					"rowCallback": function(row, data, index) {
+						if(data.stand.id != (item * 1)) {
+							$(row).hide();
+						}
+					},
+					"buttons": ["create"],
+					dom: 'Bfrtip',
+					"autoWidth": false
+				});
+				
+				
+				$('#standTable'.concat(item) + ' tbody').on('click', '.viewAdditionalInfo', function(event){
+					var data = table.row( $(this).parents('tr') ).data();
+					$('.additionalInfoModal #additionalInfoTextArea').val(data.additionalInfo);
+					$('.additionalInfoModal #additionalInfoModalSub').modal('show');
+				});
+				
+				$('#standTable'.concat(item) + ' tbody').on('click', '.editButton', function(event){
+					var data = table.row( $(this).parents('tr') ).data();
+					$('.editStandItem #editStandItemId').val(data.id);
+					$('.editStandItem #editStandItemName').val(data.storageItem.name);
+					$('.editStandItem #editStandItemAmount').val(data.amount);
+					$('.editStandItem #editStandItemAmountExpected').val(data.amountExpected);
+					$('.editStandItem #editAdditionalInfo').val(data.additionalInfo);
+					$('.editStandItem #editModal').modal('show');
+					
+					if(role !== 'Manager') {
+						$('#editStandItemAmountExpected').prop("disabled", true);
+						$('#editAdditionalInfo').prop("disabled", true);
+					}
+				});
+				
+				$('#standTable'.concat(item) + ' tbody').on('click', '.deleteButton', function(event){
+					var data = table.row( $(this).parents('tr') ).data();
+					$('.deleteStandItem #deleteStandItemId').val(data.id);
+					
+					if(role === 'Manager') {
+						$('.deleteStandItem #deleteModal').modal('show');
+					}
+				});
+				
+				
+				$('#standTable'.concat(item) + '_processing').hide();
+				
+				tables.push(table);
+			});
+			
+        	// Validate the results of saving the changes to the vendor
+        	$("#editStandItemForm").validate({
+        		rules: {
+        			editStandItemName: {
+        				required: true
+        			},
+        			editStandItemAmount: {
+        				min: 0
+        			},
+        			editStandItemAmountExpected: {
+        				min: 0
+        			},
+        			editAdditionalInfo: {
+        				maxlength: 500
+        			}
+        		},
+				messages: {
+					editStandItemName: "Stand item name can not be blank",
+					editStandItemAmount: "The amount in the stand can not be less than 0",
+					editStandItemAmountExpected: "The amount expected in the stand can not be less than 0",
+					editAdditionalInfo: "Additional information can not be more than 500 characters"
+				},
+        		// Errors
+				errorPlacement: function errorPlacement(error, element) {
+					error.addClass('jquery-validation-error small form-text invalid-feedback')
+					element.parent().append(error);
+				},
+				highlight: function(element) {
+					var $el = $(element);
+					var $parent = $el.parents(".error-placeholder");
+					$el.addClass("is-invalid");
+				},
+				unhighlight: function(element) {
+					$(element).parents().find(".is-invalid").removeClass("is-invalid");
+				},
+				submitHandler: function(form) {
+            		var standItemId = $('#editStandItemId').val();
+            		var amount = $('#editStandItemAmount').val();
+            		var amountExpected = $('#editStandItemAmountExpected').val();
+            		var additionalInfo = $('#editAdditionalInfo').val();
+            		$.post('/view/standItem/editStandItem', 
+            				{id: standItemId, amount: amount, amountExpected: amountExpected, additionalInfo: additionalInfo}, 
+            				function(storageItem){
+            					tables.forEach(function(item){
+            						item.ajax.reload();
+            					});
+            				});
+            		$('.editStandItem #editModal').modal('hide');
+				}
+        	});
+        	
+        	// Validate the results of saving the changes to the vendor
+        	$("#createStandItemForm").validate({
+        		rules: {
+        			selectItemToAdd: {
+        				required: true
+        			},
+        			createStandItemAmount: {
+        				min: 0
+        			},
+        			createStandItemAmountExpected: {
+        				min: 0
+        			},
+        			createAdditionalInfo: {
+        				maxlength: 500
+        			}
+        		},
+				messages: {
+					selectItemToAdd: "Stand item can not be blank",
+					createStandItemAmount: "The amount in the stand can not be less than 0",
+					createStandItemAmountExpected: "The amount expected in the stand can not be less than 0",
+					createAdditionalInfo: "Additional information can not be more than 500 characters"
+				},
+        		// Errors
+				errorPlacement: function errorPlacement(error, element) {
+					error.addClass('jquery-validation-error small form-text invalid-feedback')
+					element.parent().append(error);
+				},
+				highlight: function(element) {
+					var $el = $(element);
+					var $parent = $el.parents(".error-placeholder");
+					$el.addClass("is-invalid");
+				},
+				unhighlight: function(element) {
+					$(element).parents().find(".is-invalid").removeClass("is-invalid");
+				},
+				submitHandler: function(form) {
+					var itemId = $('#selectItemToAdd').val()
+            		var amount = $('#createStandItemAmount').val();
+            		var amountExpected = $('#createStandItemAmountExpected').val();
+            		var additionalInfo = $('#createAdditionalInfo').val();
+            		var stand = $('#createStand').val();
+            		$.post('/view/standItem/createStandItem', 
+            				{itemId: itemId, amount: amount, amountExpected: amountExpected, additionalInfo: additionalInfo, stand : stand}, 
+            				function(standItem){
+            					tables.forEach(function(item){
+            						item.ajax.reload();
+            					});
+            				});
+            		$('.createStandItem #createModal').modal('hide');
+				}
+        	});
+        	
+        	// Handle delete submit button function here since we are not using validation
+        	$('#deleteStandItemForm').on('submit', function(event){
+        		event.preventDefault();
+        		$.post('/view/standItem/deleteStandItem', {id: $('.deleteStandItem #deleteStandItemId').val()}, function(e){
+        			tables.forEach(function(item){
+    					item.ajax.reload();
+    				});
+        		});
+        		
+        		$('.deleteStandItem #deleteModal').modal('hide');
+        	});
+        	
+        	$('#createStorageItemForm').on('submit', function(event){
+        		event.preventDefault();
+        	});
+        	
+        	function updateTable() {
+        		tables.forEach(function(item){
+    				item.ajax.reload();
+    			});
+        	}
+        	
+        	setInterval(updateTable, 5000);
+			
+		});
+    
+    </script>
+</body>
+</html>

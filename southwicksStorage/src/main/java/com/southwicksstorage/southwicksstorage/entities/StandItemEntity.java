@@ -13,6 +13,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Range;
+
+import com.southwicksstorage.southwicksstorage.constants.Constants;
 
 /**
  * @author kyle
@@ -27,31 +33,42 @@ public class StandItemEntity {
 	@Column(name = "id")
 	private int id;
 	
-	@NotEmpty(message = "Amount in stand can not be empty")
+	@Range(min = 0, message = "Amount in the stand can not be less than 0")
 	@Column(name = "amount")
 	private int amount;
 	
-	@NotEmpty(message = "Storage item can not be empty")
-	@ManyToOne(fetch = FetchType.LAZY)
+	@Range(min = 0, message = "Amount expected in the stand per week can not be less than 0")
+	@Column(name = "amount_expected")
+	private int amountExpected;
+	
+	@Size(max = 500, message = Constants.ADDITIONAL_INFO_EXCEED)
+	@Column(name = "additional_info")
+	private String additionalInfo;
+	
+	@NotNull(message = "Storage item can not be empty")
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "storage_item_id", referencedColumnName="id")
 	private StorageItemEntity storageItem;
 	
-	@NotEmpty(message = "Stand name can not be empty")
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "stand_id", referencedColumnName="id")
-	private StandEntity standId;
+	@NotNull(message = "Stand name can not be empty")
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "stand", referencedColumnName="id")
+	private StandEntity stand;
 	
 	public StandItemEntity() {
 		
 	}
 	
-	public StandItemEntity(int id, @NotEmpty(message = "Amount in stand can not be empty") int amount,
+	public StandItemEntity(@NotEmpty(message = "Amount in stand can not be empty") int amount,
+			int amountExpected,
+			String additionalInfo,
 			@NotEmpty(message = "Storage item can not be empty") StorageItemEntity storageItem,
-			@NotEmpty(message = "Stand name can not be empty") StandEntity standId) {
-		this.id = id;
+			@NotEmpty(message = "Stand name can not be empty") StandEntity stand) {
 		this.amount = amount;
+		this.amountExpected = amountExpected;
+		this.additionalInfo = additionalInfo;
 		this.storageItem = storageItem;
-		this.standId = standId;
+		this.stand = stand;
 	}
 
 	public int getId() {
@@ -69,6 +86,22 @@ public class StandItemEntity {
 	public void setAmount(int amount) {
 		this.amount = amount;
 	}
+	
+	public int getAmountExpected() {
+		return amountExpected;
+	}
+
+	public void setAmountExpected(int amountExpected) {
+		this.amountExpected = amountExpected;
+	}
+	
+	public String getAdditionalInfo() {
+		return additionalInfo;
+	}
+
+	public void setAdditionalInfo(String additionalInfo) {
+		this.additionalInfo = additionalInfo;
+	}
 
 	public StorageItemEntity getStorageItem() {
 		return storageItem;
@@ -78,12 +111,12 @@ public class StandItemEntity {
 		this.storageItem = storageItem;
 	}
 
-	public StandEntity getStandId() {
-		return standId;
+	public StandEntity getStand() {
+		return stand;
 	}
 
-	public void setStandId(StandEntity standId) {
-		this.standId = standId;
+	public void setStand(StandEntity stand) {
+		this.stand = stand;
 	}
 
 }

@@ -12,5 +12,6 @@ public interface StandDao extends JpaRepository<StandEntity, Long> {
 	
 	boolean existsByName(String name);
 	Optional<StandEntity> findById(int id);
+	Optional<StandEntity> findByName(String name);
 
 }

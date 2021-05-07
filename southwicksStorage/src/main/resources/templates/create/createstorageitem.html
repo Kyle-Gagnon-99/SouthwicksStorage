@@ -45,14 +45,14 @@
 	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('amountExpected')}" th:errors="*{amountExpected}">Amount Expected error</div>
 	                                        </div>
 	                                        <div class="mb-3">
-	                                            <label for="storedIn">Item is stored as</label>
-	                                            <select class="form-control selectpicker" th:field="*{storedIn}" id="storedIn">
+	                                            <label for="storedType">Item is stored as</label>
+	                                            <select class="form-control selectpicker" th:field="*{storedType}" id="storedType">
 							                		<option th:each="storeType : ${T(com.southwicksstorage.southwicksstorage.constants.StorageType).values()}"
 							                				th:text = "${storeType.getStorageTypeName}"
 							                				th:value = "${storeType}">storeType
 							                		</option>
 							                	</select>
-	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('storedIn')}" th:errors="*{storedIn}">Stored In error</div>
+	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('storedType')}" th:errors="*{storedType}">Stored In error</div>
 	                                        </div>
 	                                        <div class="mb-3">
 	                                            <label for="vendor">Vendor For Item</label>
@@ -112,14 +112,14 @@
 	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('amountExpected')}" th:errors="*{amountExpected}">Amount Expected error</div>
 	                                        </div>
 	                                        <div class="mb-3">
-	                                            <label for="storedIn">Item is stored as</label>
-	                                            <select class="form-control selectpicker" th:field="*{storedIn}" id="storedIn" disabled>
+	                                            <label for="storedType">Item is stored as</label>
+	                                            <select class="form-control selectpicker" th:field="*{storedType}" id="storedType" disabled>
 							                		<option th:each="storeType : ${T(com.southwicksstorage.southwicksstorage.constants.StorageType).values()}"
 							                				th:text = "${storeType.getStorageTypeName}"
 							                				th:value = "${storeType}">storeType
 							                		</option>
 							                	</select>
-	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('storedIn')}" th:errors="*{storedIn}">Stored In error</div>
+	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('storedType')}" th:errors="*{storedType}">Stored In error</div>
 	                                        </div>
 	                                        <div class="mb-3">
 	                                            <label for="vendor">Vendor For Item</label>

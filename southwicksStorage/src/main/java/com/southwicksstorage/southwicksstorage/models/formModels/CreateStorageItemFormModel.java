@@ -12,7 +12,7 @@ public class CreateStorageItemFormModel {
 	private String name;
 	private int amount;
 	private int amountExpected;
-	private String storedIn;
+	private String storedType;
 	private String additionalInfo;
 	private int vendor;
 	private int typeOfStorage;
@@ -21,12 +21,12 @@ public class CreateStorageItemFormModel {
 		
 	}
 
-	public CreateStorageItemFormModel(String name, int amount, int amountExpected, String storedIn,
+	public CreateStorageItemFormModel(String name, int amount, int amountExpected, String storedType,
 			String additionalInfo, int vendor, int typeOfStorage) {
 		this.name = name;
 		this.amount = amount;
 		this.amountExpected = amountExpected;
-		this.storedIn = storedIn;
+		this.storedType = storedType;
 		this.additionalInfo = additionalInfo;
 		this.vendor = vendor;
 		this.typeOfStorage = typeOfStorage;
@@ -56,12 +56,12 @@ public class CreateStorageItemFormModel {
 		this.amountExpected = amountExpected;
 	}
 
-	public String getStoredIn() {
-		return storedIn;
+	public String getStoredType() {
+		return storedType;
 	}
 
-	public void setStoredIn(String storedIn) {
-		this.storedIn = storedIn;
+	public void setStoredType(String storedType) {
+		this.storedType = storedType;
 	}
 
 	public String getAdditionalInfo() {
