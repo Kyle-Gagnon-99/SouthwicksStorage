@@ -45,9 +45,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 		.antMatchers("/").hasAnyAuthority(MANAGER, TEAM_MEMBER)
 		.antMatchers("/auth/resetpassword").hasAnyAuthority(MANAGER, TEAM_MEMBER)
 		.antMatchers("/notification/**").hasAnyAuthority(MANAGER, TEAM_MEMBER)
-		.antMatchers("/view/users").hasAnyAuthority(MANAGER)
+		.antMatchers("/view/users/**").hasAnyAuthority(MANAGER)
 		.antMatchers("/create/vendor/**").hasAnyAuthority(MANAGER)
 		.antMatchers("/view/vendor/**").hasAnyAuthority(MANAGER)
+		.antMatchers("/report/**").hasAnyAuthority(MANAGER)
 		.and().formLogin().loginPage("/auth/login").permitAll().and().logout().permitAll();
 	}
 

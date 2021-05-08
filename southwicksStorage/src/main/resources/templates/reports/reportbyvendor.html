@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{template/navbar.html}">
+<head>
+    <title>Title</title>
+</head>
+<body>
+    <main class="content" layout:fragment="mainSection">
+        <div class="container-fluid">
+            <div class="header">
+                <h1 class="header-title">
+                    View Stand
+                </h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Report By Vendor</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">View Report by Vendor</h5>
+                            <h6 class="card-subtitle text-muted">View reports by vendor</h6>
+                        </div>
+                        <div class="card-body">
+							<div class="mb-4 text-center">
+                        		<p>View Report by</p>
+	                        	<select class="form-control selectpicker" id="selectReportToView">
+	                        		<option value="showNormalReport">None</option>
+	                        		<option value="showReportByVendor">Vendor</option>
+	                        	</select>
+                        	</div>
+                        	<div id="showNormalReport">
+                        		<div class="table-responsive">
+                        			<table id="normalReportTable" class="table table-striped">
+                        				<thead>
+                        					<tr>
+		                                        <th>Name</th>
+		                                        <th>Amount to Order</th>
+		                                        <th>Amount in Storage</th>
+		                                        <th>Amount Expected in Storage</th>
+		                                        <th>Vendor</th>
+		                                    </tr>
+                        				</thead>
+                        				<tbody>
+                        					<tr th:each="orderItem : ${orderReportList}">
+                        						<td><span th:text="${orderItem.storageItem.name}">Name</span></td>
+                        						<td><span th:text="${orderItem.amountToOrder}">Amount to Order</span></td>
+                        						<td><span th:text="${orderItem.storageItem.amount}">Amount in Storage</span></td>
+                        						<td><span th:text="${orderItem.storageItem.amountExpected}">Amount Expected in Storage</span></td>
+                        						<td><span th:text="${orderItem.storageItem.vendor.vendorName}">Vendor Name</span></td>
+                        					</tr>
+                        				</tbody>
+                        			</table>
+                        		</div>
+                        	</div>
+                        	<div id="showReportByVendor">
+                        		<div th:each="vendor : ${vendorList}">
+                        			<h1><span th:text="${vendor.vendorName}"></span></h1>
+                        			<div class="table-responsive">
+                        				<table class="table table-striped" th:id="'vendorReportTable' + ${vendor.id}">
+                        					<thead>
+	                        					<tr>
+			                                        <th>Name</th>
+			                                        <th>Amount to Order</th>
+			                                        <th>Amount in Storage</th>
+			                                        <th>Amount Expected in Storage</th>
+			                                        <th>Vendor</th>
+			                                    </tr>
+	                        				</thead>
+	                        				<tbody>
+	                        					<div th:each="orderItem : ${orderReportList}" th:if="${orderItem.storageItem.vendor} eq ${vendor}">
+	                        						<tr>
+		                        						<td><span th:text="${orderItem.storageItem.name}">Name</span></td>
+		                        						<td><span th:text="${orderItem.amountToOrder}">Amount to Order</span></td>
+		                        						<td><span th:text="${orderItem.storageItem.amount}">Amount in Storage</span></td>
+		                        						<td><span th:text="${orderItem.storageItem.amountExpected}">Amount Expected in Storage</span></td>
+		                        						<td><span th:text="${orderItem.storageItem.vendor.vendorName}">Vendor Name</span></td>
+		                        					</tr>
+	                        					</div>
+	                        				</tbody>
+                        				</table>
+                        			</div>
+                        		</div>
+                        	</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script layout:fragment="customJS" th:inline="javascript">
+
+    	var vendors = [[${vendorList}]];
+    	var vendorId = [];
+    	
+    	vendors.forEach(function(item){
+    		vendorId.push(item.id);
+    	});
+    
+    	console.log(vendorId);
+    	
+    	document.addEventListener("DOMContentLoaded", function() {
+    		
+    		var reportDivs = ["showNormalReport", "showReportByVendor"];
+    		
+    		// Hide any reports but the normal one
+    		$('#showReportByVendor').hide();
+    		
+    		// Watch the select and show the div based on the select value
+    		$('#selectReportToView').on('change', function(event){
+    			// Hide all divs
+    			reportDivs.forEach(function(item){
+    				$('#'.concat(item)).hide();
+    			});
+    			
+    			// Show the div based on the select value (select value will be the ids of the divs to show)
+    			$('#'.concat($(this).val())).show();
+    		});
+    		
+    		$('#normalReportTable').DataTable({
+    			
+    		});
+    		
+    		vendorId.forEach(function(item){
+    			$('#vendorReportTable'.concat(item)).DataTable({
+    				
+    			});
+    		});
+    		
+    	});
+
+    </script>
+</body>
+</html>

@@ -3,7 +3,6 @@ package com.southwicksstorage.southwicksstorage.handler;
 import java.util.List;
 import java.util.Optional;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -21,9 +20,13 @@ import com.southwicksstorage.southwicksstorage.constants.Constants;
 import com.southwicksstorage.southwicksstorage.constants.NotificationMessages;
 import com.southwicksstorage.southwicksstorage.constants.NotificationTypes;
 import com.southwicksstorage.southwicksstorage.entities.NotificationModelEntity;
+import com.southwicksstorage.southwicksstorage.entities.OrderReportEntity;
+import com.southwicksstorage.southwicksstorage.entities.StorageItemEntity;
 import com.southwicksstorage.southwicksstorage.entities.UserModelEntity;
 import com.southwicksstorage.southwicksstorage.models.CustomUserDetails;
 import com.southwicksstorage.southwicksstorage.repositories.NotificationDao;
+import com.southwicksstorage.southwicksstorage.repositories.OrderReportDao;
+import com.southwicksstorage.southwicksstorage.repositories.StorageItemDao;
 import com.southwicksstorage.southwicksstorage.repositories.UserDao;
 
 @Component
@@ -38,11 +41,19 @@ public class RequestInterceptor implements HandlerInterceptor {
 	@Autowired
 	private UserDao userRepo;
 	
+	@Autowired
+	private StorageItemDao storageItemRepo;
+	
+	@Autowired
+	private OrderReportDao orderReportRepo;
+	
+	@SuppressWarnings("unused")
 	private static Logger logger = LogManager.getLogger(RequestInterceptor.class);
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
+		
 		UserModelEntity user = null;
 		Optional<UserModelEntity> userOptional = null;
 		List<NotificationModelEntity> notifications = null;
@@ -109,6 +120,8 @@ public class RequestInterceptor implements HandlerInterceptor {
 			
 		}
 		
+		addToOrderReport();
+		
 		return true;
 	}
 	
@@ -143,6 +156,25 @@ public class RequestInterceptor implements HandlerInterceptor {
 		}
 		
 		return returnDetails;
+	}
+	
+	public void addToOrderReport() {
+		
+		List<StorageItemEntity> storageItems = storageItemRepo.findAll();
+		
+		storageItems.stream().forEach((storageItem) -> {
+			int amountNeeded = storageItem.getAmountExpected() - storageItem.getAmount();
+			
+			if(amountNeeded >= 1 && !orderReportRepo.existsByStorageItem(storageItem)) {
+				OrderReportEntity addToOrder = new OrderReportEntity(amountNeeded, storageItem);
+				orderReportRepo.save(addToOrder);
+			} else if(amountNeeded >= 1 && orderReportRepo.existsByStorageItem(storageItem)) {
+				OrderReportEntity getItemFromOrder = orderReportRepo.findByStorageItem(storageItem).get();
+				getItemFromOrder.setAmountToOrder(amountNeeded);
+				orderReportRepo.save(getItemFromOrder);
+			}
+		});
+		
 	}
 	
 	

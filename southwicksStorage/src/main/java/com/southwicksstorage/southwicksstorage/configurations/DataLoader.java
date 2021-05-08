@@ -76,10 +76,12 @@ public class DataLoader implements ApplicationRunner {
 		// Vendor
 		vendorRepo.save(new VendorEntity("Sysco", "Sean", "(508) 212-6660", "Orders on Thursday"));
 		vendorRepo.save(new VendorEntity("Pepsi", "Pat", "(508) 212-6660", "Orders on Friday"));
+		vendorRepo.save(new VendorEntity("New England Ice Cream", "John", "(508) 212-6660", "Orders on Thursday"));
 		
 		// Type of Storage
 		storageRepo.save(new TypeOfStorageEntity("Rack", "Used to store Claise breads"));
 		storageRepo.save(new TypeOfStorageEntity("Case", "These will be our default storage item"));
+		storageRepo.save(new TypeOfStorageEntity("Tub", "Used to store ice cream"));
 		
 		// Notification
 		notiRepo.save(new NotificationModelEntity(NotificationMessages.CHECK_STAND_STOCK, NotificationTypes.INFO, false, 
@@ -92,19 +94,27 @@ public class DataLoader implements ApplicationRunner {
 		// Stand
 		standRepo.save(new StandEntity("Zebra", null));
 		standRepo.save(new StandEntity("Ice Cream", null));
+		standRepo.save(new StandEntity("Deli", null));
 		
 		VendorEntity pepsiVendor = vendorRepo.findByVendorName("Pepsi").get();
 		VendorEntity syscoVendor = vendorRepo.findByVendorName("Sysco").get();
+		VendorEntity newEnglandIC = vendorRepo.findByVendorName("New England Ice Cream").get();
 		
 		TypeOfStorageEntity rackStore = storageRepo.findByName("Rack").get();
 		TypeOfStorageEntity caseStore = storageRepo.findByName("Case").get();
+		TypeOfStorageEntity tubStore = storageRepo.findByName("Tub").get();
 		
 		StandEntity zebraStand = standRepo.findByName("Zebra").get();
 		StandEntity iceCreamStand = standRepo.findByName("Ice Cream").get();
+		StandEntity deliStand = standRepo.findByName("Deli").get();
 		
 		// Storage Item
 		itemRepo.save(new StorageItemEntity("Fries", 5, 10, StorageType.FROZEN_STORAGE, null, syscoVendor, caseStore));
 		itemRepo.save(new StorageItemEntity("Pepsi", 8, 9, StorageType.DRY_STORAGE, "July 4th so order ahead", pepsiVendor, null));
+		itemRepo.save(new StorageItemEntity("Spiderman Ice Cream", 3, 10, StorageType.FROZEN_STORAGE, null, newEnglandIC, caseStore));
+		itemRepo.save(new StorageItemEntity("Lettuce", 3, 7, StorageType.REFRIGERATED_STORAGE, null, syscoVendor, caseStore));
+		itemRepo.save(new StorageItemEntity("Mint Ice Cream", 1, 4, StorageType.FROZEN_STORAGE, "Almost out", newEnglandIC, tubStore));
+		itemRepo.save(new StorageItemEntity("16\" Pizza Cardboard", 4, 4, StorageType.DRY_STORAGE, null, syscoVendor, caseStore));
 		
 		StorageItemEntity friesItem = itemRepo.findByName("Fries").get();
 		StorageItemEntity pepsiItem = itemRepo.findByName("Pepsi").get();
@@ -113,6 +123,13 @@ public class DataLoader implements ApplicationRunner {
 		standItemRepo.save(new StandItemEntity(3, 5, "Out until Friday May 7th", friesItem, zebraStand));
 		standItemRepo.save(new StandItemEntity(1, 4, null, pepsiItem, zebraStand));
 		standItemRepo.save(new StandItemEntity(2, 4, null, pepsiItem, iceCreamStand));
+		standItemRepo.save(new StandItemEntity(1, 1, null, itemRepo.findByName("Spiderman Ice Cream").get(), zebraStand));
+		standItemRepo.save(new StandItemEntity(1, 1, null, itemRepo.findByName("Spiderman Ice Cream").get(), iceCreamStand));
+		standItemRepo.save(new StandItemEntity(0, 1, null, itemRepo.findByName("Spiderman Ice Cream").get(), deliStand));
+		standItemRepo.save(new StandItemEntity(1, 2, null, itemRepo.findByName("Lettuce").get(), deliStand));
+		standItemRepo.save(new StandItemEntity(1, 1, "Don't turn it to 0 until lettuce is half way out", itemRepo.findByName("Lettuce").get(), zebraStand));
+		standItemRepo.save(new StandItemEntity(1, 1, null, itemRepo.findByName("16\" Pizza Cardboard").get(), zebraStand));
+		standItemRepo.save(new StandItemEntity(1, 2, null, itemRepo.findByName("Mint Ice Cream").get(), iceCreamStand));
 	}
 
 	
