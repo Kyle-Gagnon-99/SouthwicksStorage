@@ -11,10 +11,13 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+import org.hibernate.envers.Audited;
+
 import com.southwicksstorage.southwicksstorage.validation.Phone;
 
 @Entity
 @Table(name = "vendor")
+@Audited
 public class VendorEntity implements Serializable{
 
 	/**

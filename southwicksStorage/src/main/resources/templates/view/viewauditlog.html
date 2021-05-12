@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{template/navbar.html}">
+<head>
+    <title>Title</title>
+</head>
+<body>
+    <main class="content" layout:fragment="mainSection">
+        <div class="container-fluid">
+            <div class="header">
+                <h1 class="header-title">
+                    View Audit Log
+                </h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Audit Log</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                           	<h5 class="card-title" style="display:inline-block">View Audit Log</h5>
+                           	<button type="button" class="btn btn-primary float-end"><i class="fas fa-question-circle"></i></button>
+                           	<h6 class="card-subtitle text-muted">View all actions that have happened and by who</h6>
+                        </div>
+                        <div class="card-body">
+							<div class="standAuditLog">
+								<div class="table-responsive">
+									<table id="auditLogDataTable" class="table table-striped">
+										<thead>
+		                                    <tr>
+		                                        <th>Date and Time</th>
+		                                        <th>Audit Log Contents</th>
+		                                    </tr>
+		                                </thead>
+		                                <tbody>
+		                                	<tr th:each="auditLogList : ${auditLog}">
+		                                		<td>[<span class="fw-bolder" th:text="${#dates.format(auditLogList.timeDate, 'MM/dd/yyyy hh:mm')}"></span>]</td>
+		                                		<td><span th:text="${auditLogList.toString}"></span></td>
+		                                	</tr>
+		                                </tbody>
+									</table>
+								</div>
+							</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script layout:fragment="customJS" th:inline="javascript">
+
+    document.addEventListener("DOMContentLoaded", function() {
+		// Datatables basic
+		$('#auditLogDataTable').DataTable({
+			//responsive: true
+		});
+	});
+
+    </script>
+</body>
+</html>

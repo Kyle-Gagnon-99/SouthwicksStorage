@@ -18,6 +18,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.Range;
 
 import com.southwicksstorage.southwicksstorage.constants.Constants;
@@ -29,6 +30,7 @@ import com.southwicksstorage.southwicksstorage.constants.StorageType;
  */
 @Entity
 @Table(name = "storage_item")
+@Audited
 public class StorageItemEntity implements Serializable{
 
 	/**
@@ -154,6 +156,24 @@ public class StorageItemEntity implements Serializable{
 
 	public void setTypeOfStorage(TypeOfStorageEntity typeOfStorage) {
 		this.typeOfStorage = typeOfStorage;
+	}
+	
+	@Override
+	public String toString() {
+		
+		String returnString = "";
+		
+		if(typeOfStorage != null) {
+			returnString = String.format("Id: %d\nName: %s\nAmount: %d\nAmount Expected: %d\nStored In: %s\nAdditional Info: %s\nVendor Name: %s\nType of Storage: %s\n", 
+					this.id, this.name, this.amount, this.amountExpected, this.storedType.getStorageTypeName(), this.additionalInfo, this.vendor.getVendorName(),
+					this.typeOfStorage.getName());
+		} else {
+			returnString = String.format("Id: %d\nName: %s\nAmount: %d\nAmount Expected: %d\nStored In: %s\nAdditional Info: %s\nVendor Name: %s\nType of Storage: %s\n", 
+					this.id, this.name, this.amount, this.amountExpected, this.storedType.getStorageTypeName(), this.additionalInfo, this.vendor.getVendorName(),
+					null);
+		}
+		
+		return returnString;
 	}
 	
 }

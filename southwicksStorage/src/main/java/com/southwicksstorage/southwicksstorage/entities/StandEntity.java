@@ -12,6 +12,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+import org.hibernate.envers.Audited;
+
 import com.southwicksstorage.southwicksstorage.constants.Constants;
 
 /**
@@ -20,6 +22,7 @@ import com.southwicksstorage.southwicksstorage.constants.Constants;
  */
 @Entity
 @Table(name = "stand")
+@Audited
 public class StandEntity {
 
 	@Id
