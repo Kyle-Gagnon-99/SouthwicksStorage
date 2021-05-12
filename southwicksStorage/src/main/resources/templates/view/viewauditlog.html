@@ -38,7 +38,7 @@
 		                                </thead>
 		                                <tbody>
 		                                	<tr th:each="auditLogList : ${auditLog}">
-		                                		<td>[<span class="fw-bolder" th:text="${#dates.format(auditLogList.timeDate, 'MM/dd/yyyy hh:mm')}"></span>]</td>
+		                                		<td>[<span class="fw-bolder" th:text="${auditLogList.timeDate}"></span>]</td>
 		                                		<td><span th:text="${auditLogList.toString}"></span></td>
 		                                	</tr>
 		                                </tbody>

@@ -1,5 +1,7 @@
 package com.southwicksstorage.southwicksstorage.constants;
 
+import java.time.format.DateTimeFormatter;
+
 public class Constants {
 	
 	/* System Constants */
@@ -19,7 +21,7 @@ public class Constants {
 	/* Security Constants */
 	public static final String NOT_LOGGED_IN = "anonymousUser";
 	
-	/* Enitty Constants */
+	/* Entity Constants */
 	public static final String ADDITIONAL_INFO_EXCEED = "Additional Information can not exceed 500 characters";
 	
 	/* Error messages */
@@ -30,5 +32,9 @@ public class Constants {
 	public static final String STAND_ITEM_AUDIT_LOG = "audit_log_stand_item";
 	
 	/* Notification Messages */
+	
+	/* Date / Time Formats */
+	public static final String DATE_TIME_FORMAT = "MM/dd/yyyy hh:mm";
+	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
 
 }

@@ -3,8 +3,6 @@
  */
 package com.southwicksstorage.southwicksstorage.models.attribute;
 
-import java.util.Date;
-
 /**
  * @author kyle
  *
@@ -18,7 +16,7 @@ public class AuditLogModel {
 	/**
 	 * When it was changed
 	 */
-	private Date timeDate;
+	private String timeDate;
 	/**
 	 * The name of the entity
 	 */
@@ -56,7 +54,7 @@ public class AuditLogModel {
 	 * @param oldValue
 	 * @param newValue
 	 */
-	public AuditLogModel(String username, Date timeDate, String itemName, String itemLocation, Object oldValue,
+	public AuditLogModel(String username, String timeDate, String itemName, String itemLocation, Object oldValue,
 			Object newValue, boolean isInsert, boolean isModify, boolean isDelete) {
 		this.username = username;
 		this.timeDate = timeDate;
@@ -77,11 +75,11 @@ public class AuditLogModel {
 		this.username = username;
 	}
 
-	public Date getTimeDate() {
+	public String getTimeDate() {
 		return timeDate;
 	}
 
-	public void setTimeDate(Date timeDate) {
+	public void setTimeDate(String timeDate) {
 		this.timeDate = timeDate;
 	}
 

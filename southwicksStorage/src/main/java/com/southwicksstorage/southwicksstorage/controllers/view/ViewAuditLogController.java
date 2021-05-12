@@ -3,11 +3,8 @@
  */
 package com.southwicksstorage.southwicksstorage.controllers.view;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TimeZone;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -36,9 +33,11 @@ import com.southwicksstorage.southwicksstorage.repositories.StorageItemDao;
 @Controller
 public class ViewAuditLogController {
 	
+	@SuppressWarnings("unused")
 	@Autowired
 	private StorageItemDao storageItemRepo;
 	
+	@SuppressWarnings("unused")
 	@Autowired
 	private StandItemDao standItemRepo;
 	
@@ -49,10 +48,7 @@ public class ViewAuditLogController {
 	@RequestMapping(value = "/view/auditLog", method = RequestMethod.GET)
 	public ModelAndView getAuditLogView(Model model) {
 		
-		List<StorageItemEntity> listOfStorageItems = storageItemRepo.findAll();
-		List<StandItemEntity> listOfStandItems = standItemRepo.findAll();
 		List<AuditLogModel> auditLog = new ArrayList<AuditLogModel>();
-		SimpleDateFormat convertDate = new SimpleDateFormat("MM/dd/yyyy hh:mm");
 		
 		// Initialize
 		EntityManager em = emf.createEntityManager();

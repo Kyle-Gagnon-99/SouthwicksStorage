@@ -3,10 +3,10 @@
  */
 package com.southwicksstorage.southwicksstorage.entities;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
-import java.util.TimeZone;
 
 import javax.persistence.Entity;
 
@@ -15,6 +15,7 @@ import org.hibernate.envers.RevisionEntity;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import com.southwicksstorage.southwicksstorage.configurations.AuditingRevisionListener;
+import com.southwicksstorage.southwicksstorage.constants.Constants;
 
 /**
  * @author kyle
@@ -27,7 +28,7 @@ public class AuditedRevisionEntity extends DefaultRevisionEntity {
 	
 	private static final long serialVersionUID = -1175688867820627863L;
 	private String username;
-	private Date dateModified;
+	private String dateModified;
 
 	public String getUsername() {
 		return username;
@@ -40,22 +41,18 @@ public class AuditedRevisionEntity extends DefaultRevisionEntity {
 	/**
 	 * @return the dateModified
 	 */
-	public Date getDateModified() {
+	public String getDateModified() {
 		return dateModified;
 	}
 
 	/**
 	 * @param dateModified the dateModified to set
 	 */
-	public void setDateModified(Date dateModified) {
-		String dateToMod = dateModified.toString();
-		SimpleDateFormat isoFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm");
-		isoFormat.setTimeZone(TimeZone.getTimeZone("EST"));
-		try {
-			this.dateModified = isoFormat.parse(dateToMod);
-		} catch (ParseException e) {
-			this.dateModified = dateModified;
-		}
+	public void setDateModified(Date _temp) {
+		LocalDateTime currentTime = LocalDateTime.now();
+		ZonedDateTime currentTimeEast = currentTime.atZone(ZoneId.of("America/New_York"));
+		
+		this.dateModified = Constants.formatter.format(currentTimeEast);
 	}
 	
 }
