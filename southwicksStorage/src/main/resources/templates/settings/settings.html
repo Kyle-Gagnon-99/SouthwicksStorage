@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{template/navbar.html}">
+<head>
+    <title>Title</title>
+</head>
+<body>
+	<main class="content" layout:fragment="mainSection">
+		<div class="container-fluid">
+			<div class="header">
+                <h1 class="header-title">
+                    Settings
+                </h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Settings</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="row">
+            	<div class="col-md-3 col-xl-2">
+					<div class="card">
+						<div class="card-header">
+							<h5 class="card-title mb-0">Profile Settings</h5>
+						</div>
+		
+						<div class="list-group list-group-flush" role="tablist">
+							<a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="#warningDanger" role="tab" sec:authorize="hasRole('MANAGER')">
+								Low and Empty Stand Stock Notifications
+							</a>
+							<a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#customNotifications" role="tab" sec:authorize="hasRole('MANAGER')">
+								Custom Notifications
+							</a>
+						</div>
+					</div>
+                </div>
+                <div class="col-md-9 col-xl-10">
+					<div class="tab-content">
+						<div class="tab-pane fade show active" id="warningDanger" role="tabpanel">
+							<div class="card">
+								<div class="card-header">
+									<h5 class="card-title mb-0">Low and Empty Stand Notification Threshold</h5>
+								</div>
+								<div class="card-body">
+									<form method="POST" id="systemSettings">
+										<div class="row">
+											<div class="col-md-12">
+												<label for="lowThresholdInput">Stand Low on Stock Threshold Warning</label>
+												<div class="input-group mb-3">
+													<input type="number" class="form-control" id="lowThresholdInput" name="lowThresholdInput" placeholder="00" data-mask="00" th:value="${lowThreshold}">
+													<span class="input-group-text">%</span>
+												</div>
+												<label for="emptyThresholdInput">Stand Empty on Stock Threshold Warning</label>
+												<div class="input-group mb-3">
+													<input type="number" class="form-control" id="emptyThresholdInput" name="emptyThresholdInput" placeholder="00" data-mask="00" th:value="${emptyThreshold}">
+													<span class="input-group-text">%</span>
+												</div>
+											</div>
+										</div>
+										<button type="submit" class="btn btn-primary">Save changes</button>
+									</form>
+								</div>
+							</div>
+						</div>
+						<div class="tab-pane fade" id="customNotifications" role="tabpanel">
+							<div class="card">
+								<div class="card-header">
+									<h5 class="card-title mb-0">Custom Notifications</h5>
+								</div>
+								<div class="card-body">
+									<div class="row">
+										<div class="col-md-12">
+											<p>Currently not available. This is a planned feature!
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+            </div>
+		</div>
+	</main>
+	<script layout:fragment="customJS" th:inline="javascript">
+	
+		document.addEventListener("DOMContentLoaded", function() {
+        	$("#systemSettings").validate({
+        		rules: {
+        			lowThresholdInput: {
+        				required: true,
+        				min: 0,
+        				max: 100
+        			},
+        			emptyThresholdInput: {
+        				required: true,
+        				min: 0,
+        				max: 100
+        			}
+        		},
+				messages: {
+					lowThresholdInput: {
+						required: "This field is required",
+						min: "Low threshold warning can not be less than 0%",
+						max: "Low threshold warning can not be greather than 100%"
+					},
+					emptyThresholdInput: {
+						required: "This field is required",
+						min: "Empty threshold warning can not be less than 0%",
+						max: "Empty threshold warning can not be greather than 100%"
+					}
+				},
+        		// Errors
+				errorPlacement: function errorPlacement(error, element) {
+					error.addClass('jquery-validation-error small form-text invalid-feedback')
+					element.parent().append(error);
+				},
+				highlight: function(element) {
+					var $el = $(element);
+					var $parent = $el.parents(".error-placeholder");
+					$el.addClass("is-invalid");
+				},
+				unhighlight: function(element) {
+					$(element).parents().find(".is-invalid").removeClass("is-invalid");
+				},
+				submitHandler: function(form) {
+            		var lowThresholdInput = $('#lowThresholdInput').val();
+            		var emptyThresholdInput = $('#emptyThresholdInput').val();
+            		$.post('/settings/updateSettings', 
+            				{lowThresholdInput: lowThresholdInput, emptyThresholdInput: emptyThresholdInput}, 
+            				function(returnedData){
+            					
+            				});
+				}
+        	});
+		});
+		
+	</script>
+</body>
+</html>

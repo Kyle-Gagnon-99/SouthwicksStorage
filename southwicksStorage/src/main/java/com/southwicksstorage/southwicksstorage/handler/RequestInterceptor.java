@@ -19,14 +19,12 @@ import org.springframework.web.servlet.ModelAndView;
 import com.southwicksstorage.southwicksstorage.constants.Constants;
 import com.southwicksstorage.southwicksstorage.constants.NotificationMessages;
 import com.southwicksstorage.southwicksstorage.constants.NotificationTypes;
+import com.southwicksstorage.southwicksstorage.entities.NotificationMessageEntity;
 import com.southwicksstorage.southwicksstorage.entities.NotificationModelEntity;
-import com.southwicksstorage.southwicksstorage.entities.OrderReportEntity;
-import com.southwicksstorage.southwicksstorage.entities.StorageItemEntity;
 import com.southwicksstorage.southwicksstorage.entities.UserModelEntity;
 import com.southwicksstorage.southwicksstorage.models.CustomUserDetails;
 import com.southwicksstorage.southwicksstorage.repositories.NotificationDao;
-import com.southwicksstorage.southwicksstorage.repositories.OrderReportDao;
-import com.southwicksstorage.southwicksstorage.repositories.StorageItemDao;
+import com.southwicksstorage.southwicksstorage.repositories.NotificationMessageDao;
 import com.southwicksstorage.southwicksstorage.repositories.UserDao;
 
 @Component
@@ -42,10 +40,7 @@ public class RequestInterceptor implements HandlerInterceptor {
 	private UserDao userRepo;
 	
 	@Autowired
-	private StorageItemDao storageItemRepo;
-	
-	@Autowired
-	private OrderReportDao orderReportRepo;
+	private NotificationMessageDao notiMessageRepo;
 	
 	@SuppressWarnings("unused")
 	private static Logger logger = LogManager.getLogger(RequestInterceptor.class);
@@ -70,32 +65,28 @@ public class RequestInterceptor implements HandlerInterceptor {
 			 * Don't add more than one
 			 */
 			if(userOptional.isPresent()) {
+				
 				user = userOptional.get();
 				
-				/* So if the password is the default password lets add a notification */
-				if(bCryptPasswordEncoder.matches(Constants.DEFAULT_PASSWORD, user.getPassword())) {
-					Optional<NotificationModelEntity> notificationExists = notiRepo.findByMessageAndUserModel(NotificationMessages.DEFAULT_PASSWORD_MESSAGE, user);
-					
-					if(notificationExists.isEmpty()) {
-					
-						NotificationModelEntity notificationEntity = new NotificationModelEntity(NotificationMessages.DEFAULT_PASSWORD_MESSAGE, 
-								NotificationTypes.WARNING, false, user);
-						notiRepo.saveAndFlush(notificationEntity);
-						
-					}
 				/*
-				 * If not lets remove that notification
+				 * If the user's password is the default password
 				 */
-				} else {
-					Optional<NotificationModelEntity> notificationExists = notiRepo.findByMessageAndUserModel(NotificationMessages.DEFAULT_PASSWORD_MESSAGE, user);
+				if(bCryptPasswordEncoder.matches(Constants.DEFAULT_PASSWORD, user.getPassword())) {
+					/*
+					 * Get the default password message
+					 */
+					NotificationMessageEntity defaultPasswordMessage = notiMessageRepo.findByMessage(NotificationMessages.DEFAULT_PASSWORD_MESSAGE.getMessage()).get();
+					Optional<NotificationModelEntity> defaultPasswordNotificationOptional = notiRepo.findByMessageAndUserModel(defaultPasswordMessage, user);
 					
-					if(notificationExists.isPresent()) {
-					
-						NotificationModelEntity notificationEntity = notificationExists.get();
-						notiRepo.delete(notificationEntity);
-						
+					/*
+					 * If there is no notification for the user about the default password
+					 */
+					if(defaultPasswordNotificationOptional.isEmpty()) {
+						NotificationModelEntity addNoti = new NotificationModelEntity(defaultPasswordMessage, NotificationTypes.WARNING, false, user);
+						notiRepo.save(addNoti);
 					}
 				}
+				
 			}
 			
 			/*
@@ -119,8 +110,6 @@ public class RequestInterceptor implements HandlerInterceptor {
 			}
 			
 		}
-		
-		addToOrderReport();
 		
 		return true;
 	}
@@ -157,26 +146,5 @@ public class RequestInterceptor implements HandlerInterceptor {
 		
 		return returnDetails;
 	}
-	
-	public void addToOrderReport() {
-		
-		List<StorageItemEntity> storageItems = storageItemRepo.findAll();
-		
-		storageItems.stream().forEach((storageItem) -> {
-			int amountNeeded = storageItem.getAmountExpected() - storageItem.getAmount();
-			
-			if(amountNeeded >= 1 && !orderReportRepo.existsByStorageItem(storageItem)) {
-				OrderReportEntity addToOrder = new OrderReportEntity(amountNeeded, storageItem);
-				orderReportRepo.save(addToOrder);
-			} else if(amountNeeded >= 1 && orderReportRepo.existsByStorageItem(storageItem)) {
-				OrderReportEntity getItemFromOrder = orderReportRepo.findByStorageItem(storageItem).get();
-				getItemFromOrder.setAmountToOrder(amountNeeded);
-				orderReportRepo.save(getItemFromOrder);
-			}
-		});
-		
-	}
-	
-	
 	
 }

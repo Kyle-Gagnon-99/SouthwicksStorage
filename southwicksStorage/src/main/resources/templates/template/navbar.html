@@ -127,7 +127,7 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 							<i class="align-middle me-2 fas fa-fw fa-cog"></i> <span class="align-middle">Settings</span>
 						</a>
 						<ul id="settings" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
-							<li sec:authorize="hasRole('MANAGER')" class="sidebar-item"><a class="sidebar-link" href="/">Warning / Danger Settings</a></li>
+							<li sec:authorize="hasRole('MANAGER')" class="sidebar-item"><a class="sidebar-link" href="/settings">Settings</a></li>
 							<li class="sidebar-item"><a class="sidebar-link" href="/auth/resetpassword">Reset Password</a></li>
 						</ul>
 					</li>

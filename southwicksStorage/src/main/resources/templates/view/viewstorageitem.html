@@ -27,43 +27,21 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
-	                            <table id="datatables-basic" class="table table-striped">
+	                            <table id="storageItemTable" class="table table-striped">
 	                                <thead>
 	                                    <tr>
-	                                    	<th style="display:none;">Id</th>
+	                                    	<th>Id</th>
 	                                        <th>Name</th>
 	                                        <th>Amount in Storage</th>
 	                                        <th>Amount Expected</th>
 	                                        <th>Stored In</th>
 	                                        <th>Type of Storage</th>
 	                                        <th>Vendor</th>
+	                                        <th>Type of Storage Entity</th>
 	                                        <th>Additional Information</th>
 	                                        <th>Actions</th>
 	                                    </tr>
 	                                </thead>
-	                                <tbody>
-	                                    <tr th:each="item : ${storageItemList}">
-	                                    	<td style="display:none;"><span th:text="${item.id}" class="storageItemIdClass">Storage Item Id</span></td>
-	                                        <td><span th:text="${item.name}" class="storageItemNameClass">Storage Item name</span></td>
-	                                        <td><span th:text="${item.amount}" class="storageItemAmountClass">Storage Amount name</span></td>
-	                                        <td><span th:text="${item.amountExpected}" class="storageItemAmountExpectedClass">Storage Item Amount Expected</span></td>
-	                                        <td><span th:text="${item.storedType.getStorageTypeName}" class="storageItemstoredTypeClass">Storage Item Stored In</span></td>
-	                                        <div th:if="${item.typeOfStorage != null}">
-	                                        	<td><span th:text="${item.typeOfStorage.getName}" class="storageItemTOSClass">Storage Item TOS</span></td>
-	                                        </div>
-	                                        <div th:if="${item.typeOfStorage == null}">
-	                                        	<td><span class="storageItemTOSClass"></span></td>
-	                                        </div>
-	                                        <td><span th:text="${item.vendor.getVendorName}" class="storageItemVendorNameClass">Storage Item Vendor Name</span></td>
-	                                        <td class="table-action">
-	                                        	<a th:href="@{storageItem/findById/(id=${item.id})}" class="btn viewAdditionalInfo"><i class="align-middle fas fa-fw fa-eye"></i></a>
-	                                        </td>
-	                                        <td class="table-action">
-	                                            <a th:href="@{storageItem/findById/(id=${item.id})}" class="btn editButton"><i class="align-middle fas fa-fw fa-pen"></i></a>
-												<a th:href="@{storageItem/findById/(id=${item.id})}" class="btn deleteButton"><i class="align-middle fas fa-fw fa-trash"></i></a>
-	                                        </td>
-	                                    </tr>
-	                                </tbody>
                             	</table>
                             </div>
                         </div>
@@ -201,48 +179,43 @@
 						<div class="modal-body m-3">
 							<div class="mb-3">
 								<div th:if="${vendorList != null}" class="validForm">
-									<form method = "POST" action = "#" th:action = "@{/view/storageItem}" th:object = "${createStorageItemForm}" id="submitValidForm">
+									<form id="submitValidForm">
 	                                	<div class="row">
 		                                    <div class="col-md-8">
 		                                        <div class="mb-3">
 		                                            <label for="name">Storage Item Name</label>
-		                                            <input th:field="*{name}" type="text" class="form-control" id="name" placeholder="Storage Item Name" th:errorclass="is-invalid">
-		                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Storage Item Name error</div>
+		                                            <input type="text" class="form-control" id="createName" name="name" placeholder="Storage Item Name">
 		                                        </div>
 		                                        <div class="mb-3">
 		                                            <label for="amount">Amount in Storage</label>
-		                                            <input th:field="*{amount}" type="number" class="form-control" id="amount" placeholder="0" th:errorclass="is-invalid">
-		                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">Amount error</div>
+		                                            <input type="number" class="form-control" id="createAmount" name="amount" placeholder="0">
 		                                        </div>
 		                                        <div class="mb-3">
 		                                            <label for="amountExpected">Amount Expected in Storage</label>
-		                                            <input th:field="*{amountExpected}" type="number" class="form-control" id="amountExpected" placeholder="0" th:errorclass="is-invalid">
-		                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('amountExpected')}" th:errors="*{amountExpected}">Amount Expected error</div>
+		                                            <input type="number" class="form-control" id="createAmountExpected" name="amountExpected" placeholder="0">
 		                                        </div>
 		                                        <div class="mb-3">
 		                                            <label for="storedType">Item is stored as</label>
-		                                            <select class="form-control selectpicker" th:field="*{storedType}" id="storedType">
+		                                            <select class="form-control selectpicker" id="createStoredType" name="storedType">
 								                		<option th:each="storeType : ${T(com.southwicksstorage.southwicksstorage.constants.StorageType).values()}"
 								                				th:text = "${storeType.getStorageTypeName}"
 								                				th:value = "${storeType}">storeType
 								                		</option>
 								                	</select>
-		                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('storedType')}" th:errors="*{storedType}">Stored In error</div>
 		                                        </div>
 		                                        <div class="mb-3">
 		                                            <label for="vendor">Vendor For Item</label>
-		                                            <select class="form-control selectpicker" th:field="*{vendor}" id="vendor">
+		                                            <select class="form-control selectpicker" id="createVendor" name="vendor">
 								                		<option th:each="vendorEach : ${vendorList}"
 								                				th:text = "${vendorEach.vendorName}"
 								                				th:value = "${vendorEach.id}">vendor
 								                		</option>
 								                	</select>
-		                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('vendor')}" th:errors="*{vendor}">Vendor error</div>
 		                                        </div>
 		                                        <div class="mb-3">
 		                                            <label for="typeOfStorage">This item is stored in a</label>
 		                                            <div th:if="${typeOfStorageList != null}">
-		                                            	<select class="form-control selectpicker" th:field="*{typeOfStorage}" id="typeOfStorage">
+		                                            	<select class="form-control selectpicker" id="createTypeOfStorage" name="typeOfStorage">
 									                		<option value="-1">None</option>
 									                		<option th:each="typeOfStorageEach : ${typeOfStorageList}"
 									                				th:text = "${typeOfStorageEach.name}"
@@ -252,64 +225,57 @@
 		                                            </div>
 		                                            <div th:if="${typeOfStorageList == null}">
 		                                            	<span class="font-13 text-muted">To use this create a <a href="/create/typeOfStorage">type of storage</a></span>
-		                                            	<select class="form-control selectpicker" th:field="*{typeOfStorage}" id="typeOfStorage" disabled>
-									                		<option text="Not Available" value="" </option>
+		                                            	<select class="form-control selectpicker" id="createTypeOfStorage" name="typeOfStorage" disabled>
+									                		<option text="Not Available" value="-1" </option>
 									                	</select>
 		                                            </div>
-		                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('typeOfStorage')}" th:errors="*{typeOfStorage}">Type of Storage error</div>
 		                                        </div>
 		                                        <div class="mb-3">
 		                                            <label for="lastName">Additional Information</label>
-		                                            <textarea th:field="*{additionalInfo}" type="text" class="form-control" id="additionalInfo" placeholder="Additional Information" th:errorclass="is-invalid" />
-		                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('additionalInfo')}" th:errors="*{additionalInfo}">Additional info error</div>
+		                                            <textarea type="text" class="form-control" id="createAdditionalInfo" name="additionalInfo" placeholder="Additional Information"></textarea>
 		                                        </div>
 		                                    </div>
 		                                </div>
 	                            	</form>
 								</div>
-								<div th:if="${vendorList == null}" class="validForm">
-									<form method = "POST" action = "#" th:action = "@{/view/storageItem}" th:object = "${createStorageItemForm}">
+								<div th:if="${vendorList == null}" class="inValidForm">
+									<form>
 	                                	<div class="row">
 		                                    <div class="col-md-8">
 		                                        <div class="mb-3">
 		                                            <label for="name">Storage Item Name</label>
-		                                            <input th:field="*{name}" type="text" class="form-control" id="name" placeholder="Storage Item Name" th:errorclass="is-invalid" disabled>
-		                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Storage Item Name error</div>
+		                                            <input type="text" class="form-control" id="invalidName" placeholder="Storage Item Name" disabled>
 		                                        </div>
 		                                        <div class="mb-3">
 		                                            <label for="amount">Amount in Storage</label>
-		                                            <input th:field="*{amount}" type="number" class="form-control" id="amount" placeholder="0" th:errorclass="is-invalid" disabled>
-		                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">Amount error</div>
+		                                            <input type="number" class="form-control" id="invalidAmount" placeholder="0" disabled>
 		                                        </div>
 		                                        <div class="mb-3">
 		                                            <label for="amountExpected">Amount Expected in Storage</label>
-		                                            <input th:field="*{amountExpected}" type="number" class="form-control" id="amountExpected" placeholder="0" th:errorclass="is-invalid" disabled>
-		                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('amountExpected')}" th:errors="*{amountExpected}">Amount Expected error</div>
+		                                            <input type="number" class="form-control" id="invalidAmountExpected" placeholder="0" disabled>
 		                                        </div>
 		                                        <div class="mb-3">
 		                                            <label for="storedType">Item is stored as</label>
-		                                            <select class="form-control selectpicker" th:field="*{storedType}" id="storedType" disabled>
+		                                            <select class="form-control selectpicker" id="invalidStoredType" disabled>
 								                		<option th:each="storeType : ${T(com.southwicksstorage.southwicksstorage.constants.StorageType).values()}"
 								                				th:text = "${storeType.getStorageTypeName}"
 								                				th:value = "${storeType}">storeType
 								                		</option>
 								                	</select>
-		                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('storedType')}" th:errors="*{storedType}">Stored In error</div>
 		                                        </div>
 		                                        <div class="mb-3">
 		                                            <label for="vendor">Vendor For Item</label>
-		                                            <select class="form-control selectpicker" th:field="*{vendor}" id="vendor" disabled>
+		                                            <select class="form-control selectpicker" id="invalidVendor" disabled>
 								                		<option th:each="vendorEach : ${vendorList}"
 								                				th:text = "${vendorEach.vendorName}"
 								                				th:value = "${vendorEach.id}">vendorEach
 								                		</option>
 								                	</select>
-		                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('vendor')}" th:errors="*{vendor}">Vendor error</div>
 		                                        </div>
 		                                        <div class="mb-3">
 		                                            <label for="typeOfStorage">This item is stored in a</label>
 		                                            <div th:if="${typeOfStorageList != null}">
-		                                            	<select class="form-control selectpicker" th:field="*{typeOfStorage}" id="typeOfStorage" disabled>
+		                                            	<select class="form-control selectpicker" id="invalidTypeOfStorage" disabled>
 									                		<option value="-1">None</option>
 									                		<option th:each="typeOfStorageEach : ${typeOfStorageList}"
 									                				th:text = "${typeOfStorageEach.name}"
@@ -319,16 +285,14 @@
 		                                            </div>
 		                                            <div th:if="${typeOfStorageList == null}">
 		                                            	<span class="font-13 text-muted">To use this create a <a href="/create/typeOfStorage">type of storage</a></span>
-		                                            	<select class="form-control selectpicker" th:field="*{typeOfStorage}" id="typeOfStorage" disabled>
+		                                            	<select class="form-control selectpicker" id="invalidTypeOfStorage" disabled>
 									                		<option text="Not Available" value="-1"></option>
 									                	</select>
 		                                            </div>
-		                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('typeOfStorage')}" th:errors="*{typeOfStorage}">Type of Storage error</div>
 		                                        </div>
 		                                        <div class="mb-3">
 		                                            <label for="lastName">Additional Information</label>
-		                                            <textarea th:field="*{additionalInfo}" type="text" class="form-control" id="additionalInfo" placeholder="Additional Information" th:errorclass="is-invalid" disabled />
-		                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('additionalInfo')}" th:errors="*{additionalInfo}">Additional info error</div>
+		                                            <textarea type="text" class="form-control" id="invalidAdditionalInfo" placeholder="Additional Information" disabled />
 		                                        </div>
 		                                    </div>
 		                                </div>
@@ -348,17 +312,16 @@
     </main>
 
     <script layout:fragment="customJS">
-		// Datatable
-		
 		$.fn.dataTable.ext.buttons.create = {
 		    text: 'Create',
 		    action: function ( e, dt, node, config ) {
 		    	$('.createStorageItem #createModal').modal('show');
 		    }
 		};
-		
-        document.addEventListener("DOMContentLoaded", function() {
-			$('#datatables-basic').DataTable({
+
+		document.addEventListener("DOMContentLoaded", function() {
+        	
+			var table = $('#storageItemTable').DataTable({
 				lengthChange: !1,
 				buttons: ["create", {
 					extend: "print",
@@ -366,13 +329,84 @@
 						columns: [1, 2, 3, 4, 5, 6]
 					}
 				}],
-			}).buttons().container().appendTo("#datatables-basic_wrapper .col-md-6:eq(0)");
-		});
-		
-        var editButton = '';
-		var deleteButton = '';
-
-        $(document).ready(function() {
+				"processing": false,
+				"info": false,
+				"ajax": {
+		            "url": "/view/storageItem/getAllStorageItems",
+		            "type": "POST",
+		            "dataType": "json",
+		            "contentType": "application/json",
+		            "dataSrc": '',
+		            "data": function (d) {
+		                return JSON.stringify(d);
+		          	}
+				},
+				"columns": [
+					{"data": "id"},
+					{"data": "name"},
+					{"data": "amount"},
+					{"data": "amountExpected"},
+					{"data": "storedType"},
+					{"data": "typeOfStorage"},
+					{"data": "vendor.vendorName"},
+					{"data": "typeOfStorageEntity"}
+				],
+				"columnDefs": [
+					{
+						"targets": [0],
+						"visible": false,
+						"searchable": false
+					},
+					{
+						"targets": [8],
+						"searchable": false,
+						"defaultContent": '<button class="btn viewAdditionalInfo"><i class="align-middle fas fa-fw fa-eye"></i></button>'
+					},
+					{
+						"targets": [9],
+						"searchable": false,
+						"defaultContent": '<button class="btn editButton"><i class="align-middle fas fa-fw fa-pen"></i></button>' +
+										  '<button class="btn deleteButton"><i class="align-middle fas fa-fw fa-trash"></i></button>'
+					},
+					{
+						"targets": [7],
+						"visible": false,
+						"searchable": false
+					},
+				],
+				dom: 'Bfrtip',
+				"autoWidth": false
+			});
+			
+			$('#storageItemTable tbody').on('click', '.viewAdditionalInfo', function(event){
+				var data = table.row( $(this).parents('tr') ).data();
+				$('.additionalInfoModal #additionalInfoTextArea').val(data.additionalInfo);
+				$('.additionalInfoModal #additionalInfoModalSub').modal('show');
+			});
+			
+			$('#storageItemTable tbody').on('click', '.editButton', function(event){
+				var data = table.row( $(this).parents('tr') ).data();
+    			$('.editStorageItem #editStorageItemId').val(data.id);
+    			$('.editStorageItem #editStorageItemName').val(data.name);
+    			$('.editStorageItem #editAmount').val(data.amount);
+    			$('.editStorageItem #editAmountExpected').val(data.amountExpected);
+    			$('.editStorageItem #editstoredType').val(data.storedTypeEnum);
+    			$('.editStorageItem #editVendor').val(data.vendor.id);
+    			if(data.typeOfStorageEntity !== null) {
+    				$('.editStorageItem #editTypeOfStorage').val(data.typeOfStorageEntity.id);
+    			} else {
+    				$('.editStorageItem #editTypeOfStorage').val(-1);
+    			}
+    			$('.editStorageItem #editAdditionalInfo').val(data.additionalInfo);
+				$('.editStorageItem #editModal').modal('show');
+			});
+			
+			$('#storageItemTable tbody').on('click', '.deleteButton', function(event){
+				var data = table.row( $(this).parents('tr') ).data();
+				$('.deleteStorageItem #deleteStorageItemId').val(data.id);
+				$('.deleteStorageItem #deleteModal').modal('show');
+			});
+        	
         	// Prevent submit
         	$('#editStorageItemForm').on('submit', function(event){
         		event.preventDefault();
@@ -381,10 +415,16 @@
         	// Handle delete submit button function here since we are not using validation
         	$('#deleteStorageItemForm').on('submit', function(event){
         		event.preventDefault();
-        		$.post('/view/storageItem/deleteItem', {id: $('.deleteStorageItem #deleteStorageItemId').val()}, function(e){
-        			
+        		$.post('/view/storageItem/deleteItem', {id: $('.deleteStorageItem #deleteStorageItemId').val()}, function(data){
+        			if (data) {
+        				table.ajax.reload();
+        			} else {
+        				message = "You can't delete this storage item. You still have stand items associated to this storage item. If you wish to delete the storage item please delete all stand items associated to this storage item.";
+        				title = "Sorry!";
+        				type = "error";
+        			    toastr[type](message, title);
+        			}
         		});
-        		deleteButton.parent().parent().remove();
         		$('.deleteStorageItem #deleteModal').modal('hide');
         	});
         	
@@ -439,97 +479,103 @@
             		$.post('/view/storageItem/editItem', 
             				{id: storageItemId, name: storageItemName, amount: amount, amountExpected: amountExpected, storedType: storedType, vendor: vendor, typeOfStorage: typeOfStorage, additionalInfo: additionalInfo}, 
             				function(storageItem){
-            					console.log(storageItem);
-            					editButton.parent().parent().children().find(".storageItemNameClass").text(storageItem.name);
-            					editButton.parent().parent().children().find(".storageItemAmountClass").text(storageItem.amount);
-            					editButton.parent().parent().children().find(".storageItemAmountExpectedClass").text(storageItem.amountExpected);
-            					editButton.parent().parent().children().find(".storageItemstoredTypeClass").text(storageItem.storedType.getStorageTypeName);
-            					editButton.parent().parent().children().find(".storageItemVendorNameClass").text(storageItem.vendor.vendorName);            					if(storageItem.typeOfStorage !== null) {
-            						editButton.parent().parent().children().find(".storageItemTOSClass").text(storageItem.typeOfStorage.name);
-            					} else {
-            						editButton.parent().parent().children().find(".storageItemTOSClass").text("");
-            					}
+            					table.ajax.reload();
             				});
             		$('.editStorageItem #editModal').modal('hide');
 				}
         	});
         	
-        	// Take care of populating fields to edit
-        	$('.table .editButton').on('click', function(event) {
-        		event.preventDefault();
-        		var href = $(this).attr('href');
-        		editButton = $(this);
-        		$.get(href, function(storageItem, status){
-        			$('.editStorageItem #editStorageItemId').val(storageItem.id);
-        			$('.editStorageItem #editStorageItemName').val(storageItem.name);
-        			$('.editStorageItem #editAmount').val(storageItem.amount);
-        			$('.editStorageItem #editAmountExpected').val(storageItem.amountExpected);
-        			$('.editStorageItem #editstoredType').val(storageItem.storedType);
-        			$('.editStorageItem #editVendor').val(storageItem.vendor.id);
-        			if(storageItem.typeOfStorage !== null) {
-        				$('.editStorageItem #editTypeOfStorage').val(storageItem.typeOfStorage.id);
-        			} else {
-        				$('.editStorageItem #editTypeOfStorage').val(-1);
+        	// Validate the results of saving the changes to the vendor
+        	$("#submitValidForm").validate({
+        		rules: {
+        			name: {
+        				required: true,
+        				remote: {
+        					param: {
+        						url: '/view/storageItem/itemExists',
+        						type: 'POST',
+        						data: {
+        							vendorId: function() {
+            							return ($('#createVendor').val());
+            						}
+        						}
+        					}
+        				}
+        			},
+        			amount: {
+        				required: true,
+        				min: 0
+        			},
+        			amountExpected: {
+        				required: true,
+        				min: 0
+        			},
+        			additionalInfo: {
+        				max: 500
+        			},
+        			storedType: {
+        				required: true
+        			},
+        			vendor: {
+        				required: true
         			}
-        			$('.editStorageItem #editAdditionalInfo').val(storageItem.additionalInfo);
-        		});
-        		
-        		// Show edit modal
-        		$('.editStorageItem #editModal').modal('show');
-        		
-        	});
-        	
-        	// Populate delete vendor modal
-        	$('.table .deleteButton').on('click', function(event) {
-        		event.preventDefault();
-        		deleteButton = $(this);
-        		var href = $(this).attr('href');
-        		$.get(href, function(storage, status){
-        			$('.deleteStorageItem #deleteStorageItemId').val(storage.id);
-        		});
-        		
-        		$('.deleteStorageItem #deleteModal').modal('show');
-        	});
-        	
-        	// Bring up a modal to show different modals
-        	$('.table .viewAdditionalInfo').on('click', function(event) {
-        		event.preventDefault();
-        		var href = $(this).attr('href');
-        		$.get(href, function(vendor, status) {
-        			$('.additionalInfoModal #additionalInfoTextArea').val(vendor.additionalInfo);
-        		});
-        		
-        		$('.additionalInfoModal #additionalInfoModalSub').modal('show');
-        	});
-        	
-        	// Get all rows
-        	var rows = $($('.table').children('tbody').children('tr'));
-        	
-        	// Update the table (this is used to update all clients)
-        	function updateTable() {
-        		$.get('/view/storageItem/getAllStorageItems', function(data){
-            		for(index = 0; index < data.length; index++){
-            			for(innerIndex = 0; innerIndex < rows.length; innerIndex++){
-            				if($(rows[innerIndex]).find(".storageItemIdClass").text() == data[index].id){
-            					var tr = $(rows[innerIndex]);
-            					tr.find('.storageItemNameClass').text(data[index].name);
-            					tr.find('.storageItemAmountClass').text(data[index].amount);
-            					tr.find('.storageItemAmountExpectedClass').text(data[index].amountExpected);
-            					tr.find('.storageItemstoredTypeClass').text(data[index].storedType.getStorageTypeName);
-            					tr.find('.storageItemVendorNameClass').text(data[index].vendor.vendorName);
-            					if(data[index].typeOfStorage !== null) {
-            						tr.find('.storageItemTOSClass').text(data[index].typeOfStorage.name);
+        		},
+				messages: {
+					name: {
+						required: "Item name is required",
+						remote: "Item name for this vendor already exists"
+					},
+					amount: {
+						min: "Amount can not be less than 0",
+						required: "Amount can not be empty"
+					},
+					amountExpected: {
+						min: "Amount expected per week can not be less than 0",
+						required: "Amount expected per wekk can not be empty"
+					},
+					storedType: "Storage type can not be empty",
+					vendor: "Vendor can not be empty"
+				},
+        		// Errors
+				errorPlacement: function errorPlacement(error, element) {
+					error.addClass('jquery-validation-error small form-text invalid-feedback')
+					element.parent().append(error);
+				},
+				highlight: function(element) {
+					var $el = $(element);
+					var $parent = $el.parents(".error-placeholder");
+					$el.addClass("is-invalid");
+				},
+				unhighlight: function(element) {
+					$(element).parents().find(".is-invalid").removeClass("is-invalid");
+				},
+				submitHandler: function(form) {
+            		var storageItemName = $('#createName').val();
+            		var amount = $('#createAmount').val();
+            		var amountExpected = $('#createAmountExpected').val();
+            		var storedType = $('#createStoredType').val();
+            		var vendor = $('#createVendor').val();
+            		var typeOfStorage = $('#createTypeOfStorage').val();
+            		var additionalInfo = $('#createAdditionalInfo').val();
+            		$.post('/view/storageItem/addStorageItem', 
+            				{name: storageItemName, amount: amount, amountExpected: amountExpected, storedType: storedType, vendorId: vendor, typeOfStorageId: typeOfStorage, additionalInfo: additionalInfo}, 
+            				function(data){
+            					if(data) {
+            						table.ajax.reload();
             					} else {
-            						tr.find('.storageItemTOSClass').text('');
+            						message = "It looks like something went wrong on our end. Please try again. If this keeps happening please contact Kyle";
+        	        				title = "Sorry!";
+        	        				type = "error";
+        	        			    toastr[type](message, title);
             					}
-            				}
-            			}
-            		}
-            	});
-        	}
+            				});
+            		$('.createStorageItem #createModal').modal('hide');
+				}
+        	});
         	
-        	// Update every 5 seconds
-        	setInterval(updateTable, 5000);
+        	setInterval(function() {
+        		table.ajax.reload();
+        	}, 3000);
         	
         });
 

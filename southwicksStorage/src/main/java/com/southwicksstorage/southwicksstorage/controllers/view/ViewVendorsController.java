@@ -4,8 +4,8 @@
 package com.southwicksstorage.southwicksstorage.controllers.view;
 
 import java.util.List;
-import java.util.Optional;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.southwicksstorage.southwicksstorage.entities.VendorEntity;
-import com.southwicksstorage.southwicksstorage.models.VendorModel;
 import com.southwicksstorage.southwicksstorage.repositories.VendorDao;
 
 /**
@@ -27,6 +26,8 @@ public class ViewVendorsController {
 
 	@Autowired
 	private VendorDao dao;
+	
+	private Logger log = LoggerFactory.getLogger(ViewVendorsController.class);
 
 	@RequestMapping(value = "/view/vendor", method = RequestMethod.GET)
 	public ModelAndView getViewVendor(Model model) {
@@ -37,22 +38,20 @@ public class ViewVendorsController {
 		return new ModelAndView("view/viewvendor.html");
 	}
 
-	@RequestMapping(value = "/view/vendor/findById", method = RequestMethod.GET)
-	@ResponseBody
-	public VendorModel findByVendorId(Integer id) {
-		Optional<VendorEntity> vendorList = dao.findById(id);
-		VendorEntity vendor = vendorList.get();
-
-		return new VendorModel(vendor.getId(), vendor.getVendorName(), vendor.getContactName(),
-				vendor.getContactPhoneNumber(), vendor.getAdditionalInfo());
-	}
-
 	@RequestMapping(value = "/view/vendor/deleteVendor", method = RequestMethod.POST)
 	@ResponseBody
-	public List<VendorModel> deleteVendorById(Integer id) {
+	public boolean deleteVendorById(Integer id) {
+		boolean returnValue = true;
 		VendorEntity retreivedVendor = dao.findById(id).get();
-		dao.delete(retreivedVendor);
-		return null;
+		
+		try {
+			dao.delete(retreivedVendor);
+		} catch(Exception e) {
+			log.error("Can't delete vendor {} because there are items and reports connected to these items", retreivedVendor.getVendorName());
+			returnValue = false;
+		}
+		
+		return returnValue;
 	}
 
 	@RequestMapping(value = "/view/vendor/editVendor", method = RequestMethod.POST)
@@ -72,7 +71,7 @@ public class ViewVendorsController {
 		return vendorToEdit;
 	}
 	
-	@RequestMapping(value = "/view/vendor/getAllVendors", method = RequestMethod.GET)
+	@RequestMapping(value = "/view/vendor/getAllVendors", method = RequestMethod.POST)
 	@ResponseBody
 	public List<VendorEntity> getAllVendors() {
 		return dao.findAll();

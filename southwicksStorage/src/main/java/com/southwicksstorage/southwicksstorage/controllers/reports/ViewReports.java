@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.southwicksstorage.southwicksstorage.configurations.CommonMethods;
 import com.southwicksstorage.southwicksstorage.repositories.OrderReportDao;
+import com.southwicksstorage.southwicksstorage.repositories.StorageItemDao;
 import com.southwicksstorage.southwicksstorage.repositories.VendorDao;
 
 /**
@@ -26,8 +28,15 @@ public class ViewReports {
 	@Autowired
 	private OrderReportDao orderReportRepo;
 	
+	@Autowired
+	private StorageItemDao storageRepo;
+	
 	@RequestMapping(value = "/report/report", method = RequestMethod.GET)
 	public ModelAndView getReportByVendor(Model model) {
+		
+		// Update the order report
+		CommonMethods.updateOrderReport(storageRepo.findAll(), orderReportRepo);
+		
 		model.addAttribute("vendorList", vendorRepo.findAll());
 		model.addAttribute("orderReportList", orderReportRepo.findAll());
 		return new ModelAndView("reports/reportbyvendor.html");

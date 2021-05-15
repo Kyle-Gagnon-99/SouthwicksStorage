@@ -1,5 +1,7 @@
 package com.southwicksstorage.southwicksstorage.models;
 
+import com.southwicksstorage.southwicksstorage.constants.Roles;
+
 public class UserModel {
 	
 	private int id;
@@ -7,6 +9,7 @@ public class UserModel {
 	private String firstName;
 	private String lastName;
 	private String role;
+	private Roles roleEnum;
 	/**
 	 * @return the username
 	 */
@@ -56,16 +59,21 @@ public class UserModel {
 		this.role = role;
 	}
 	
-	public UserModel() {
-		/* Defualt Constructor */
+	public Roles getRoleEnum() {
+		return roleEnum;
 	}
 	
-	public UserModel(int id, String username, String firstName, String lastName, String role) {
+	public void setRoleEnum(Roles roleEnum) {
+		this.roleEnum = roleEnum;
+	}
+	
+	public UserModel(int id, String username, String firstName, String lastName, String role, Roles roleEnum) {
 		this.id = id;
 		this.username = username;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.role = role;
+		this.roleEnum = roleEnum;
 	}
 	/**
 	 * @return the id

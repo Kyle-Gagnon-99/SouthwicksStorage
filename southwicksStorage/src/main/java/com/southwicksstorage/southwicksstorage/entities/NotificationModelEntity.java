@@ -10,7 +10,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.southwicksstorage.southwicksstorage.constants.NotificationMessages;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.southwicksstorage.southwicksstorage.constants.NotificationTypes;
 
 @Entity()
@@ -22,8 +24,10 @@ public class NotificationModelEntity {
 	@Column(name = "id")
 	private int id;
 	
-	@Column(name = "notificationMessage")
-	private NotificationMessages message;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "notification_message_id", referencedColumnName="id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private NotificationMessageEntity message;
 	
 	@Column(name = "isRead")
 	private boolean isRead;
@@ -33,13 +37,14 @@ public class NotificationModelEntity {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", referencedColumnName="id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private UserModelEntity userModel;
 	
 	public NotificationModelEntity() {
 		/* Defualt Constructor */
 	}
 	
-	public NotificationModelEntity(NotificationMessages message, NotificationTypes notificationType, boolean isRead, UserModelEntity userModel) {
+	public NotificationModelEntity(NotificationMessageEntity message, NotificationTypes notificationType, boolean isRead, UserModelEntity userModel) {
 		this.message = message;
 		this.notificationType = notificationType;
 		this.isRead = isRead;
@@ -54,11 +59,11 @@ public class NotificationModelEntity {
 		this.id = id;
 	}
 
-	public NotificationMessages getMessage() {
+	public NotificationMessageEntity getMessage() {
 		return message;
 	}
 
-	public void setMessage(NotificationMessages message) {
+	public void setMessage(NotificationMessageEntity message) {
 		this.message = message;
 	}
 

@@ -3,53 +3,64 @@ package com.southwicksstorage.southwicksstorage.configurations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.southwicksstorage.southwicksstorage.constants.Constants;
 import com.southwicksstorage.southwicksstorage.constants.NotificationMessages;
-import com.southwicksstorage.southwicksstorage.constants.NotificationTypes;
 import com.southwicksstorage.southwicksstorage.constants.Roles;
 import com.southwicksstorage.southwicksstorage.constants.StorageType;
-import com.southwicksstorage.southwicksstorage.entities.NotificationModelEntity;
+import com.southwicksstorage.southwicksstorage.constants.SystemSettingsName;
+import com.southwicksstorage.southwicksstorage.entities.NotificationMessageEntity;
 import com.southwicksstorage.southwicksstorage.entities.StandEntity;
 import com.southwicksstorage.southwicksstorage.entities.StandItemEntity;
 import com.southwicksstorage.southwicksstorage.entities.StorageItemEntity;
+import com.southwicksstorage.southwicksstorage.entities.SystemSettingsEntity;
 import com.southwicksstorage.southwicksstorage.entities.TypeOfStorageEntity;
 import com.southwicksstorage.southwicksstorage.entities.UserModelEntity;
 import com.southwicksstorage.southwicksstorage.entities.VendorEntity;
 import com.southwicksstorage.southwicksstorage.repositories.NotificationDao;
+import com.southwicksstorage.southwicksstorage.repositories.NotificationMessageDao;
 import com.southwicksstorage.southwicksstorage.repositories.StandDao;
 import com.southwicksstorage.southwicksstorage.repositories.StandItemDao;
 import com.southwicksstorage.southwicksstorage.repositories.StorageItemDao;
+import com.southwicksstorage.southwicksstorage.repositories.SystemSettingsDao;
 import com.southwicksstorage.southwicksstorage.repositories.TypeOfStorageDao;
 import com.southwicksstorage.southwicksstorage.repositories.UserDao;
 import com.southwicksstorage.southwicksstorage.repositories.VendorDao;
 
 @Component
+@Order(value = 1)
 public class DataLoader implements ApplicationRunner {
 
 	private UserDao userRepo;
+	@SuppressWarnings("unused")
 	private NotificationDao notiRepo;
+	private NotificationMessageDao notiMessageRepo;
 	private VendorDao vendorRepo;
 	private TypeOfStorageDao storageRepo;
 	private StorageItemDao itemRepo;
 	private StandDao standRepo;
 	private StandItemDao standItemRepo;
+	private SystemSettingsDao systemSettingsRepo;
 	private PasswordEncoder bCryptPasswordEncoder;
 	
 	private static final String DEFAULT_PASSWORD = Constants.DEFAULT_PASSWORD;
 	
 	@Autowired
 	public DataLoader(UserDao userRepo, NotificationDao notiRepo, VendorDao vendorRepo, TypeOfStorageDao storageRepo,
-			StorageItemDao itemRepo, StandDao standRepo, StandItemDao standItemRepo, PasswordEncoder bCryptPasswordEncoder) {
+			StorageItemDao itemRepo, StandDao standRepo, StandItemDao standItemRepo, NotificationMessageDao notiMessageRepo, 
+			SystemSettingsDao systemSettingsRepo, PasswordEncoder bCryptPasswordEncoder) {
 		this.userRepo = userRepo;
 		this.notiRepo = notiRepo;
+		this.notiMessageRepo = notiMessageRepo;
 		this.vendorRepo = vendorRepo;
 		this.storageRepo = storageRepo;
 		this.itemRepo = itemRepo;
 		this.standRepo = standRepo;
 		this.standItemRepo = standItemRepo;
+		this.systemSettingsRepo = systemSettingsRepo;
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 	}
 	
@@ -82,14 +93,6 @@ public class DataLoader implements ApplicationRunner {
 		storageRepo.save(new TypeOfStorageEntity("Rack", "Used to store Claise breads"));
 		storageRepo.save(new TypeOfStorageEntity("Case", "These will be our default storage item"));
 		storageRepo.save(new TypeOfStorageEntity("Tub", "Used to store ice cream"));
-		
-		// Notification
-		notiRepo.save(new NotificationModelEntity(NotificationMessages.CHECK_STAND_STOCK, NotificationTypes.INFO, false, 
-				userRepo.findByUsername("lplumb").get()));
-		notiRepo.save(new NotificationModelEntity(NotificationMessages.CHECK_STAND_STOCK, NotificationTypes.INFO, false, 
-				userRepo.findByUsername("kgagnon").get()));
-		notiRepo.save(new NotificationModelEntity(NotificationMessages.ZEBRA_OUT_OF_STOCK_MESSAGE, NotificationTypes.ERROR, false, 
-				userRepo.findByUsername("rhorn").get()));
 		
 		// Stand
 		standRepo.save(new StandEntity("Zebra", null));
@@ -130,6 +133,20 @@ public class DataLoader implements ApplicationRunner {
 		standItemRepo.save(new StandItemEntity(1, 1, "Don't turn it to 0 until lettuce is half way out", itemRepo.findByName("Lettuce").get(), zebraStand));
 		standItemRepo.save(new StandItemEntity(1, 1, null, itemRepo.findByName("16\" Pizza Cardboard").get(), zebraStand));
 		standItemRepo.save(new StandItemEntity(1, 2, null, itemRepo.findByName("Mint Ice Cream").get(), iceCreamStand));
+		
+		// Add all constant notification messages
+		notiMessageRepo.save(new NotificationMessageEntity(NotificationMessages.DEFAULT_PASSWORD_MESSAGE.getMessage()));
+		
+		// Add any messages that have to do with the stand
+		CommonMethods.addStandListLowEmptyMessages(standRepo.findAll(), notiMessageRepo);
+		
+		// Add any other messages
+		
+		/*
+		 * Initialize the system settings
+		 */
+		systemSettingsRepo.save(new SystemSettingsEntity(SystemSettingsName.LOW_THRESHOLD, Constants.LOW_THRESHOLD_DEFAULT));
+		systemSettingsRepo.save(new SystemSettingsEntity(SystemSettingsName.OUT_THRESHOLD, Constants.OUT_THRESHOLD_DEFAULT));
 	}
 
 	

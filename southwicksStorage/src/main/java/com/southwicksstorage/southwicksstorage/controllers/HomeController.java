@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.southwicksstorage.southwicksstorage.configurations.SystemVariables;
 import com.southwicksstorage.southwicksstorage.constants.Constants;
 import com.southwicksstorage.southwicksstorage.constants.NotificationMessages;
 import com.southwicksstorage.southwicksstorage.entities.NotificationModelEntity;
@@ -20,6 +21,7 @@ import com.southwicksstorage.southwicksstorage.entities.UserModelEntity;
 import com.southwicksstorage.southwicksstorage.models.CustomUserDetails;
 import com.southwicksstorage.southwicksstorage.models.attribute.Modal;
 import com.southwicksstorage.southwicksstorage.repositories.NotificationDao;
+import com.southwicksstorage.southwicksstorage.repositories.NotificationMessageDao;
 import com.southwicksstorage.southwicksstorage.repositories.UserDao;
 
 @Controller
@@ -33,6 +35,9 @@ public class HomeController {
 	
 	@Autowired
 	private NotificationDao notiRepo;
+	
+	@Autowired
+	private NotificationMessageDao notiMessageRepo;
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public ModelAndView getIndex(Model model, Authentication auth, Principal authPrin) {
@@ -48,7 +53,7 @@ public class HomeController {
 			if(userOptional.isPresent()) {
 				UserModelEntity user = userOptional.get();
 				
-				Optional<NotificationModelEntity> notificationExists = notiRepo.findByMessageAndUserModel(NotificationMessages.DEFAULT_PASSWORD_MESSAGE, user);
+				Optional<NotificationModelEntity> notificationExists = notiRepo.findByMessageAndUserModel(notiMessageRepo.findByMessage(NotificationMessages.DEFAULT_PASSWORD_MESSAGE.getMessage()).get(), user);
 				
 				if(notificationExists.isPresent()) {
 					NotificationModelEntity notificationEntity = notificationExists.get();
@@ -58,6 +63,12 @@ public class HomeController {
 				}
 			}
 		}
+		
+		String lowValue = String.valueOf(SystemVariables.lowStandThreshold * 100) + "%";
+		String emptyValue = String.valueOf(SystemVariables.emptyStandThreshold * 100) + "%";
+		
+		model.addAttribute("lowThresholdValue", lowValue);
+		model.addAttribute("emptyThresholdValue", emptyValue);
 		
 		return new ModelAndView("index.html");
 	}

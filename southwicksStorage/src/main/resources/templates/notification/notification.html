@@ -42,7 +42,7 @@
 	                                    			<td>
 	                                    				<i class="align-middle fas fa-fw fa-1x fa-circle text-primary"></i>
 	                                    			</td>
-			                                        <td><p th:class="${!notifications.isRead ? 'fw-bolder' : 'fw-normal'}"><span class="spanClass" th:text="${notifications.message.getMessage()}">Notification Message</span></p></td>
+			                                        <td><p th:class="${!notifications.isRead ? 'fw-bolder' : 'fw-normal'}"><span class="spanClass" th:text="${notifications.message.message}">Notification Message</span></p></td>
 			                                        <td class="table-action">
 			                                            <a th:href="@{readNotification/(id=${notifications.id})}" class="btn readButton"><i class="align-middle fas fa-1x fa-fw fa-eye"></i></a>
 														<a th:href="@{findById/(id=${notifications.id})}" class="btn deleteButton"><i class="align-middle fas fa-1x fa-fw fa-trash"></i></a>
@@ -52,7 +52,7 @@
 	                                    			<td>
 	                                    				<i class="align-middle fas fa-fw fa-1x fa-check-circle text-success"></i>
 	                                    			</td>
-			                                        <td><p th:class="${!notifications.isRead ? 'fw-bolder' : 'fw-normal'}"><span class="spanClass" th:text="${notifications.message.getMessage()}">Notification Message</span></p></td>
+			                                        <td><p th:class="${!notifications.isRead ? 'fw-bolder' : 'fw-normal'}"><span class="spanClass" th:text="${notifications.message.message}">Notification Message</span></p></td>
 			                                        <td class="table-action">
 			                                            <a th:href="@{readNotification/(id=${notifications.id})}" class="btn readButton"><i class="align-middle fas fa-1x fa-fw fa-eye"></i></a>
 														<a th:href="@{findById/(id=${notifications.id})}" class="btn deleteButton"><i class="align-middle fas fa-1x fa-fw fa-trash"></i></a>
@@ -62,7 +62,7 @@
 	                                    			<td>
 	                                    				<i class="align-middle fas fa-fw fa-1x fa-exclamation-triangle text-warning"></i>
 	                                    			</td>
-			                                        <td><p th:class="${!notifications.isRead ? 'fw-bolder' : 'fw-normal'}"><span class="spanClass" th:text="${notifications.message.getMessage()}">Notification Message</span></p></td>
+			                                        <td><p th:class="${!notifications.isRead ? 'fw-bolder' : 'fw-normal'}"><span class="spanClass" th:text="${notifications.message.message}">Notification Message</span></p></td>
 			                                        <td class="table-action">
 			                                        	<a th:href="@{readNotification/(id=${notifications.id})}" class="btn readButton"><i class="align-middle fas fa-1x fa-fw fa-eye"></i></a>
 														<a th:href="@{findById/(id=${notifications.id})}" class="btn deleteButton"><i class="align-middle fas fa-1x fa-fw fa-trash"></i></a>
@@ -72,7 +72,7 @@
 			                                        <td>
 	                                    				<i class="align-middle fas fa-fw fa-1x fa-times-circle text-danger"></i>
 	                                    			</td>
-			                                        <td><p th:class="${!notifications.isRead ? 'fw-bolder' : 'fw-normal'}"><span class="spanClass" th:text="${notifications.message.getMessage()}">Notification Message</span></p></td>
+			                                        <td><p th:class="${!notifications.isRead ? 'fw-bolder' : 'fw-normal'}"><span class="spanClass" th:text="${notifications.message.message}">Notification Message</span></p></td>
 			                                        <td class="table-action">
 			                                            <a th:href="@{readNotification/(id=${notifications.id})}" class="btn readButton"><i class="align-middle fas fa-1x fa-fw fa-eye"></i></a>
 														<a th:href="@{findById/(id=${notifications.id})}" class="btn deleteButton"><i class="align-middle fas fa-1x fa-fw fa-trash"></i></a>

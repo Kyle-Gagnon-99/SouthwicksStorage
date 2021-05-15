@@ -1,6 +1,8 @@
 package com.southwicksstorage.southwicksstorage.constants;
 
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 
 public class Constants {
 	
@@ -27,14 +29,26 @@ public class Constants {
 	/* Error messages */
 	public static final String ERROR_500 = "Sorry about that! It seems like something went wrong on our end";
 	
-	/* Audit Log */
-	public static final String STORAGE_AUDIT_LOG = "audit_log_storage";
-	public static final String STAND_ITEM_AUDIT_LOG = "audit_log_stand_item";
-	
-	/* Notification Messages */
-	
 	/* Date / Time Formats */
-	public static final String DATE_TIME_FORMAT = "MM/dd/yyyy hh:mm";
+	public static final String DATE_TIME_FORMAT = "MM/dd/yyyy hh:mm a";
 	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
+	
+	/* Audit Log */
+	// In how many days should we delete the audit log entries?
+	public static final long DELETE_AUDIT_ENTRIES = 7;
+	public static final TemporalUnit DELETE_AUDIT_ENTRIES_TIME_UNIT = ChronoUnit.DAYS;
+	
+	/* Task Constants */
+	public static final String DELETE_OLD_LOGS_TASK_NAME = "Delete Old Logs";
+	public static final String UPDATE_ORDER_REPORT = "Update Order Report";
+	
+	/* Cron Schedule Constants */
+	public static final String EVERY_HOUR = "0 0 0/1 * * ?";
+	public static final String EVERY_FIFTEEN_MIN = "0 0/15 * * * ?";
+	public static final String EVERY_MINUTE = "0 0/1 * * * ?";
+	
+	/* System Settings Default Constants */
+	public static final String LOW_THRESHOLD_DEFAULT = "0.25";
+	public static final String OUT_THRESHOLD_DEFAULT = "0.0";
 
 }

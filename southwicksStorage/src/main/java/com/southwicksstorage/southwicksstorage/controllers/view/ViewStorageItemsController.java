@@ -3,32 +3,25 @@
  */
 package com.southwicksstorage.southwicksstorage.controllers.view;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
-import com.southwicksstorage.southwicksstorage.constants.Constants;
-import com.southwicksstorage.southwicksstorage.constants.NotificationTypes;
+import com.southwicksstorage.southwicksstorage.configurations.CommonMethods;
 import com.southwicksstorage.southwicksstorage.constants.StorageType;
 import com.southwicksstorage.southwicksstorage.entities.StorageItemEntity;
 import com.southwicksstorage.southwicksstorage.entities.TypeOfStorageEntity;
 import com.southwicksstorage.southwicksstorage.entities.VendorEntity;
+import com.southwicksstorage.southwicksstorage.models.StorageItemModel;
 import com.southwicksstorage.southwicksstorage.models.formModels.CreateStorageItemFormModel;
+import com.southwicksstorage.southwicksstorage.repositories.OrderReportDao;
 import com.southwicksstorage.southwicksstorage.repositories.StorageItemDao;
 import com.southwicksstorage.southwicksstorage.repositories.TypeOfStorageDao;
 import com.southwicksstorage.southwicksstorage.repositories.VendorDao;
@@ -49,6 +42,12 @@ public class ViewStorageItemsController {
 	@Autowired
 	private TypeOfStorageDao tosRepo;
 	
+	@Autowired
+	private OrderReportDao orderReportRepo;
+	
+	private List<StorageItemModel> storageItemList = null;
+	private Logger log = LoggerFactory.getLogger(ViewStorageItemsController.class);
+	
 	@RequestMapping(value = "/view/storageItem", method = RequestMethod.GET)
 	public ModelAndView getViewStorageItem(Model model) {
 		model.addAttribute("storageItemList", storageItemRepo.findAll());
@@ -67,17 +66,19 @@ public class ViewStorageItemsController {
 		return new ModelAndView("view/viewstorageitem.html");
 	}
 	
-	@RequestMapping(value = "/view/storageItem/findById", method = RequestMethod.GET)
-	@ResponseBody
-	public StorageItemEntity findStorageItemById(Integer id) {
-		return storageItemRepo.findById(id).get();
-	}
-	
 	@RequestMapping(value = "/view/storageItem/deleteItem", method = RequestMethod.POST)
 	@ResponseBody
-	public List<StorageItemEntity> deleteStorageItem(Integer id) {
-		storageItemRepo.delete(storageItemRepo.findById(id).get());
-		return storageItemRepo.findAll();
+	public boolean deleteStorageItem(Integer id) {	
+		try {
+			storageItemRepo.delete(storageItemRepo.findById(id).get());
+		} catch(Exception e) {
+			log.error("Can not delete storage item {} because there are still stand items associated to this storage item (FK Constraint).", 
+					storageItemRepo.findById(id).get().getName());
+			return false;
+		}
+		
+		updateStorageItemList();
+		return true;
 	}
 	
 	@RequestMapping(value = "/view/storageItem/editItem", method = RequestMethod.POST)
@@ -99,117 +100,85 @@ public class ViewStorageItemsController {
 		}
 		item.setAdditionalInfo(additionalInfo);
 		
-		storageItemRepo.save(item);
+		storageItemRepo.saveAndFlush(item);
+		
+		CommonMethods.addToOrderReport(item, orderReportRepo);
+		updateStorageItemList();
 		
 		return item;
 	}
 	
-	@RequestMapping(value = "/view/storageItem/getAllStorageItems", method = RequestMethod.GET)
+	@RequestMapping(value = "/view/storageItem/getAllStorageItems", method = RequestMethod.POST)
 	@ResponseBody
-	public List<StorageItemEntity> getAllItems() {
-		return storageItemRepo.findAll();
+	public List<StorageItemModel> getAllItems() {
+		
+		if(storageItemList == null) {
+			updateStorageItemList();
+		} else {
+			if(storageItemList.size() == 0) {
+				updateStorageItemList();
+			}
+		}
+			
+		return storageItemList;
+		
 	}
 	
-	@RequestMapping(value = "/view/storageItem", method = RequestMethod.POST)
-	public ModelAndView postViewStorageItem(@ModelAttribute("createStorageItemForm") CreateStorageItemFormModel itemForm, BindingResult bindingResult,
-			Model model, RedirectAttributes redirectAttribute) {
-		
-		String showModal = "true";
-		String modalTitle = "Sorry!";
-		String modalType = NotificationTypes.ERROR.getType().toLowerCase();
-		String modalMessage = Constants.ERROR_500;
-		
-		if(storageItemRepo.existsByNameAndVendor(itemForm.getName(), vendorRepo.findById(itemForm.getVendor()).get())) {
-			List<VendorEntity> vendorList = vendorRepo.findAll();
-			List<TypeOfStorageEntity> typeOfStorageList = tosRepo.findAll();
-			showModal = "true";
-			modalTitle = "Error";
-			modalType = NotificationTypes.ERROR.getType().toLowerCase();
-			modalMessage = "That item already exists";
-			model.addAttribute(Constants.SHOW_MODAL, showModal);
-			model.addAttribute(Constants.MODAL_TITLE, modalTitle);
-			model.addAttribute(Constants.MODAL_TYPE, modalType);
-			model.addAttribute(Constants.MODAL_MESSAGE, modalMessage);
-			if(vendorList.size() > 0) {
-				model.addAttribute("vendorList", vendorList);
-			}
-			if(typeOfStorageList.size() > 0) {
-				model.addAttribute("typeOfStorageList", typeOfStorageList);
-			}
-			model.addAttribute("storageItemList", storageItemRepo.findAll());
-			return new ModelAndView("view/viewstorageitem.html");
+	@RequestMapping(value = "/view/storageItem/addStorageItem", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean postViewStorageItem(String name, Integer amount, Integer amountExpected, String storedType, Integer vendorId, Integer typeOfStorageId,
+			String additionalInfo) {
+		TypeOfStorageEntity typeOfStorage = null;
+		if(typeOfStorageId != -1) {
+			typeOfStorage = tosRepo.findById(typeOfStorageId).get();
 		}
 		
-		VendorEntity vendorToRetreive = null;
-		TypeOfStorageEntity tosToRetreive = null;
-		
-		vendorToRetreive = vendorRepo.findById(itemForm.getVendor()).get();
-		Optional<TypeOfStorageEntity> optionalTos = tosRepo.findById(itemForm.getTypeOfStorage());
-		
-		if(optionalTos.isPresent()) {
-			tosToRetreive = optionalTos.get();
-		}
-		
-		StorageItemEntity createItem = new StorageItemEntity(itemForm.getName(), itemForm.getAmount(), itemForm.getAmountExpected(),
-				StorageType.valueOf(itemForm.getStoredType()), itemForm.getAdditionalInfo(), vendorToRetreive, tosToRetreive);
+		StorageItemEntity createStorageItem = new StorageItemEntity(name, amount, amountExpected, StorageType.valueOf(storedType),  additionalInfo,
+				vendorRepo.findById(vendorId).get(), typeOfStorage);
 		
 		try {
-			if(!bindingResult.hasErrors()) {
-				storageItemRepo.saveAndFlush(createItem);
-			}
+			storageItemRepo.save(createStorageItem);
 		} catch(Exception e) {
-			System.out.print(e);
-			if (e.getCause() instanceof ConstraintViolationException || e instanceof ConstraintViolationException) {
-				Set<ConstraintViolation<?>> constraintViolations = ((ConstraintViolationException) e)
-						.getConstraintViolations();
-
-				Iterator<ConstraintViolation<?>> iterator = constraintViolations.iterator();
-				ConstraintViolation<?> violation;
-
-				while (iterator.hasNext()) {
-					violation = iterator.next();
-					bindingResult.rejectValue(violation.getPropertyPath().toString(), "error.createStorageItemForm",
-							violation.getMessage());
-				}
-			}
+			log.error("Unable to create storage item {}", name);
+			log.error(e.getMessage());
 		}
 		
-		List<VendorEntity> vendorList = vendorRepo.findAll();
-		List<TypeOfStorageEntity> typeOfStorageList = tosRepo.findAll();
+		updateStorageItemList();
+		return true;
+	}
+	
+	@RequestMapping(value = "/view/storageItem/itemExists", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean checkIfItemExists(String name, Integer vendorId) {
 		
-		if (bindingResult.hasErrors()) {
-			showModal = "true";
-			modalTitle = "Error";
-			modalType = NotificationTypes.ERROR.getType().toLowerCase();
-			modalMessage = "There was an error in creating the item";
-			model.addAttribute(Constants.SHOW_MODAL, showModal);
-			model.addAttribute(Constants.MODAL_TITLE, modalTitle);
-			model.addAttribute(Constants.MODAL_TYPE, modalType);
-			model.addAttribute(Constants.MODAL_MESSAGE, modalMessage);
-			if(vendorList.size() > 0) {
-				model.addAttribute("vendorList", vendorList);
-			}
-			if(typeOfStorageList.size() > 0) {
-				model.addAttribute("typeOfStorageList", typeOfStorageList);
-			}
-			model.addAttribute("storageItemList", storageItemRepo.findAll());
-			return new ModelAndView("view/viewstorageitem.html");
+		if(vendorRepo.findById(vendorId).isEmpty()) {
+			log.error("vendorId was passed to the controller with an invalid value of {}", vendorId);
+			return false;
+		}
+		
+		return !storageItemRepo.existsByNameAndVendor(name, vendorRepo.findById(vendorId).get());
+	}
+	
+	private void updateStorageItemList() {
+		List<StorageItemEntity> storageList = storageItemRepo.findAll();
+		
+		if(storageItemList == null) {
+			storageItemList = new ArrayList<StorageItemModel>();
 		} else {
-			showModal = "true";
-			modalTitle = "Success!";
-			modalType = NotificationTypes.SUCCESS.getType().toLowerCase();
-			modalMessage = "Successfully added " + itemForm.getName() + " to the item list";
+			storageItemList.clear();
 		}
 		
-		redirectAttribute.addFlashAttribute(Constants.SHOW_MODAL, showModal);
-		redirectAttribute.addFlashAttribute(Constants.MODAL_TITLE, modalTitle);
-		redirectAttribute.addFlashAttribute(Constants.MODAL_TYPE, modalType);
-		redirectAttribute.addFlashAttribute(Constants.MODAL_MESSAGE, modalMessage);
-		redirectAttribute.addFlashAttribute("vendorList", vendorList);
-		redirectAttribute.addFlashAttribute("typeOfStorageList", typeOfStorageList);
-		redirectAttribute.addFlashAttribute("storageItemList", storageItemRepo.findAll());
-		
-		return new ModelAndView("redirect:/view/storageItem");
+		storageList.stream().forEach((storageItem) -> {
+			String typeOfStorage = null;
+			
+			if(storageItem.getTypeOfStorage() != null) {
+				typeOfStorage = storageItem.getTypeOfStorage().getName();
+			}
+			
+			storageItemList.add(new StorageItemModel(storageItem.getId(), storageItem.getName(), storageItem.getAmount(), storageItem.getAmountExpected(),
+					storageItem.getStoredType().getStorageTypeName(), storageItem.getAdditionalInfo(), storageItem.getVendor(), typeOfStorage, 
+					storageItem.getTypeOfStorage(), storageItem.getStoredType()));
+		});
 	}
 	
 }
