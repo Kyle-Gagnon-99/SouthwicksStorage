@@ -25,7 +25,7 @@ import com.southwicksstorage.southwicksstorage.constants.Constants;
 import com.southwicksstorage.southwicksstorage.constants.NotificationTypes;
 import com.southwicksstorage.southwicksstorage.entities.VendorEntity;
 import com.southwicksstorage.southwicksstorage.models.formModels.CreateEditVendorModel;
-import com.southwicksstorage.southwicksstorage.repositories.VendorDao;
+import com.southwicksstorage.southwicksstorage.services.VendorService;
 
 /**
  * @author kyle
@@ -35,7 +35,7 @@ import com.southwicksstorage.southwicksstorage.repositories.VendorDao;
 public class CreateVendorController {
 
 	@Autowired
-	private VendorDao vendorDao;
+	private VendorService vendorService;
 
 	@RequestMapping(value = "/create/vendor", method = RequestMethod.GET)
 	public ModelAndView getCreateVendor(Model model) {
@@ -57,7 +57,7 @@ public class CreateVendorController {
 		VendorEntity vendor = new VendorEntity(vendorFormModel.getVendorName(), vendorFormModel.getContactName(),
 				vendorFormModel.getContactPhoneNumber(), vendorFormModel.getAdditionalInfo());
 
-		List<VendorEntity> vendorList = vendorDao.findAll();
+		List<VendorEntity> vendorList = vendorService.findAll();
 		List<String> vendorNames = new ArrayList<String>();
 		
 		if(vendorList.size() > 0) {
@@ -75,7 +75,7 @@ public class CreateVendorController {
 		
 		try {
 			if(!duplicate) {
-				vendorDao.saveAndFlush(vendor);
+				vendorService.save(vendor);
 			} else {
 				bindingResult.rejectValue("vendorName", "error.createEditVendorForm", "Vendor already exists");
 			}

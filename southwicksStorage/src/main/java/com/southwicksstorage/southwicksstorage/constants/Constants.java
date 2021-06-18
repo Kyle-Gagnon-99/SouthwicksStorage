@@ -32,6 +32,8 @@ public class Constants {
 	/* Date / Time Formats */
 	public static final String DATE_TIME_FORMAT = "MM/dd/yyyy hh:mm a";
 	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
+	public static final String DATE_FORMAT = "MM/dd/yyyy";
+	public static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
 	
 	/* Audit Log */
 	// In how many days should we delete the audit log entries?
@@ -46,9 +48,22 @@ public class Constants {
 	public static final String EVERY_HOUR = "0 0 0/1 * * ?";
 	public static final String EVERY_FIFTEEN_MIN = "0 0/15 * * * ?";
 	public static final String EVERY_MINUTE = "0 0/1 * * * ?";
+	public static final String EVERY_THIRTY_SECONDS = "0/30 * * * * ?";
 	
 	/* System Settings Default Constants */
 	public static final String LOW_THRESHOLD_DEFAULT = "0.25";
 	public static final String OUT_THRESHOLD_DEFAULT = "0.0";
+	
+	/* Constraint Constants */
+	public static final int USERNAME_MAX_LENGTH = 30;
+	public static final int USER_FNAME_LNAME_MAX_LENGTH = 45;
+	public static final int ADDITIONAL_INFO_MAX_LENGTH = 500;
+	
+	/* Testing Constants */
+	public static final int TEST_USERNAME_EXCEED_MAX = USERNAME_MAX_LENGTH + 1;
+	public static final int TEST_USER_FNAME_LNAME_EXCEED_MAX = USER_FNAME_LNAME_MAX_LENGTH + 1;
+	public static final int TEST_ADDITIONAL_INFO_EXCEED_MAX = ADDITIONAL_INFO_MAX_LENGTH + 1;
+	
+
 
 }

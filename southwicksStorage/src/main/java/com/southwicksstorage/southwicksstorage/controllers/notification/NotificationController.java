@@ -18,17 +18,17 @@ import com.southwicksstorage.southwicksstorage.entities.NotificationModelEntity;
 import com.southwicksstorage.southwicksstorage.entities.UserModelEntity;
 import com.southwicksstorage.southwicksstorage.models.CustomUserDetails;
 import com.southwicksstorage.southwicksstorage.models.NotificationModel;
-import com.southwicksstorage.southwicksstorage.repositories.NotificationDao;
-import com.southwicksstorage.southwicksstorage.repositories.UserDao;
+import com.southwicksstorage.southwicksstorage.services.NotificationService;
+import com.southwicksstorage.southwicksstorage.services.UserService;
 
 @Controller
 public class NotificationController {
 
 	@Autowired
-	private NotificationDao notiRepo;
+	private NotificationService notiService;
 	
 	@Autowired
-	private UserDao userRepo;
+	private UserService userService;
 	
 	@RequestMapping(value = "/notification/notification", method = RequestMethod.GET)
 	public ModelAndView getNotificationView(Model model) {
@@ -38,9 +38,9 @@ public class NotificationController {
 		if(!getSecContext.getName().equals(Constants.NOT_LOGGED_IN)) {
 			CustomUserDetails getUserDetails = (CustomUserDetails) getSecContext.getPrincipal();
 			
-			if(userRepo.findById(getUserDetails.getId()).isPresent()) {
-				UserModelEntity user = userRepo.findById(getUserDetails.getId()).get();
-				List<NotificationModelEntity> userNotifications = notiRepo.findAllByUserModel(user);
+			if(userService.findById(getUserDetails.getId()) != null) {
+				UserModelEntity user = userService.findById(getUserDetails.getId());
+				List<NotificationModelEntity> userNotifications = notiService.findNotisByUser(user);
 				
 				model.addAttribute("userNotifications", userNotifications);
 			}
@@ -54,10 +54,10 @@ public class NotificationController {
 	@RequestMapping(value = "/notification/readNotification", method = RequestMethod.GET)
 	@ResponseBody
 	public NotificationModel getNotificationById(Integer id) {
-		NotificationModelEntity notification = notiRepo.findById(id).get();
+		NotificationModelEntity notification = notiService.findById(id);
 		
 		notification.setRead(true);
-		notiRepo.save(notification);
+		notiService.save(notification);
 		
 		NotificationModel returnModel = new NotificationModel(id, notification.getNotificationType().getType(),
 				notification.getMessage().getMessage(), notification.getIsRead());
@@ -67,7 +67,7 @@ public class NotificationController {
 	@RequestMapping(value = "/notification/findById", method = RequestMethod.GET)
 	@ResponseBody
 	public NotificationModel findNotificationById(Integer id) {
-		NotificationModelEntity notification = notiRepo.findById(id).get();
+		NotificationModelEntity notification = notiService.findById(id);
 		
 		NotificationModel returnModel = new NotificationModel(id, notification.getNotificationType().getType(),
 				notification.getMessage().getMessage(), notification.getIsRead());
@@ -80,9 +80,9 @@ public class NotificationController {
 		Authentication getSecContext = SecurityContextHolder.getContext().getAuthentication();
 		CustomUserDetails getUserDetails = (CustomUserDetails) getSecContext.getPrincipal();
 		List<NotificationModel> returnList = new ArrayList<NotificationModel>();
-		if(userRepo.findById(getUserDetails.getId()).isPresent()) {
-			UserModelEntity userModel = userRepo.findById(getUserDetails.getId()).get();
-			List<NotificationModelEntity> getAllNotificationsByUserId = notiRepo.findAllByUserModelAndIsRead(userModel, false);
+		if(userService.findById(getUserDetails.getId()) != null) {
+			UserModelEntity userModel = userService.findById(getUserDetails.getId());
+			List<NotificationModelEntity> getAllNotificationsByUserId = notiService.findNotisByUserandIsRead(userModel, false);
 			
 			for(int index = 0; index < getAllNotificationsByUserId.size(); index++) {
 				NotificationModelEntity addNoti = getAllNotificationsByUserId.get(index);
@@ -100,13 +100,13 @@ public class NotificationController {
 	public List<NotificationModel> getAllNotReadNotificationsAfterDelete(Integer id) {
 		Authentication getSecContext = SecurityContextHolder.getContext().getAuthentication();
 		CustomUserDetails getUserDetails = (CustomUserDetails) getSecContext.getPrincipal();
-		UserModelEntity userModel = userRepo.findById(getUserDetails.getId()).get();
+		UserModelEntity userModel = userService.findById(getUserDetails.getId());
 		List<NotificationModel> returnList = new ArrayList<NotificationModel>();
-		NotificationModelEntity findNotificationToDelete = notiRepo.findById(id).get();
+		NotificationModelEntity findNotificationToDelete = notiService.findById(id);
 		
-		notiRepo.delete(findNotificationToDelete);
+		findNotificationToDelete.setIsVisible(false);
 		
-		List<NotificationModelEntity> getAllNotificationsByUserId = notiRepo.findAllByUserModelAndIsRead(userModel, false);
+		List<NotificationModelEntity> getAllNotificationsByUserId = notiService.findNotisByUserIsReadAndIsVisible(userModel, false, true);
 		for(int index = 0; index < getAllNotificationsByUserId.size(); index++) {
 			NotificationModelEntity addNoti = getAllNotificationsByUserId.get(index);
 			

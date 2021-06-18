@@ -5,6 +5,7 @@ package com.southwicksstorage.southwicksstorage.controllers.view;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
 import com.southwicksstorage.southwicksstorage.configurations.CommonMethods;
 import com.southwicksstorage.southwicksstorage.constants.StorageType;
 import com.southwicksstorage.southwicksstorage.entities.StorageItemEntity;
@@ -21,10 +23,10 @@ import com.southwicksstorage.southwicksstorage.entities.TypeOfStorageEntity;
 import com.southwicksstorage.southwicksstorage.entities.VendorEntity;
 import com.southwicksstorage.southwicksstorage.models.StorageItemModel;
 import com.southwicksstorage.southwicksstorage.models.formModels.CreateStorageItemFormModel;
-import com.southwicksstorage.southwicksstorage.repositories.OrderReportDao;
-import com.southwicksstorage.southwicksstorage.repositories.StorageItemDao;
-import com.southwicksstorage.southwicksstorage.repositories.TypeOfStorageDao;
-import com.southwicksstorage.southwicksstorage.repositories.VendorDao;
+import com.southwicksstorage.southwicksstorage.services.OrderReportService;
+import com.southwicksstorage.southwicksstorage.services.StorageItemService;
+import com.southwicksstorage.southwicksstorage.services.TypeOfStorageService;
+import com.southwicksstorage.southwicksstorage.services.VendorService;
 
 /**
  * @author kyle
@@ -34,26 +36,26 @@ import com.southwicksstorage.southwicksstorage.repositories.VendorDao;
 public class ViewStorageItemsController {
 
 	@Autowired
-	private StorageItemDao storageItemRepo;
+	private StorageItemService storageItemService;
 	
 	@Autowired
-	private VendorDao vendorRepo;
+	private VendorService vendorService;
 	
 	@Autowired
-	private TypeOfStorageDao tosRepo;
+	private TypeOfStorageService tosService;
 	
 	@Autowired
-	private OrderReportDao orderReportRepo;
+	private OrderReportService orderReportService;
 	
 	private List<StorageItemModel> storageItemList = null;
 	private Logger log = LoggerFactory.getLogger(ViewStorageItemsController.class);
 	
 	@RequestMapping(value = "/view/storageItem", method = RequestMethod.GET)
 	public ModelAndView getViewStorageItem(Model model) {
-		model.addAttribute("storageItemList", storageItemRepo.findAll());
+		model.addAttribute("storageItemList", storageItemService.findAll());
 		model.addAttribute("createStorageItemForm", new CreateStorageItemFormModel());
-		List<VendorEntity> vendorList = vendorRepo.findAll();
-		List<TypeOfStorageEntity> typeOfStorageList = tosRepo.findAll();
+		List<VendorEntity> vendorList = vendorService.findAll();
+		List<TypeOfStorageEntity> typeOfStorageList = tosService.findAll();
 		
 		if(vendorList.size() > 0) {
 			model.addAttribute("vendorList", vendorList);
@@ -61,6 +63,8 @@ public class ViewStorageItemsController {
 		
 		if(typeOfStorageList.size() > 0) {
 			model.addAttribute("typeOfStorageList", typeOfStorageList);
+		} else {
+			model.addAttribute("typeOfStorageList", null);
 		}
 		
 		return new ModelAndView("view/viewstorageitem.html");
@@ -70,10 +74,10 @@ public class ViewStorageItemsController {
 	@ResponseBody
 	public boolean deleteStorageItem(Integer id) {	
 		try {
-			storageItemRepo.delete(storageItemRepo.findById(id).get());
+			storageItemService.delete(storageItemService.findById(id));
 		} catch(Exception e) {
 			log.error("Can not delete storage item {} because there are still stand items associated to this storage item (FK Constraint).", 
-					storageItemRepo.findById(id).get().getName());
+					storageItemService.findById(id).getName());
 			return false;
 		}
 		
@@ -86,23 +90,23 @@ public class ViewStorageItemsController {
 	public StorageItemEntity editStorageItem(Integer id, String name, Integer amount, Integer amountExpected,
 			String storedType, Integer vendor, Integer typeOfStorage, String additionalInfo) {
 		
-		StorageItemEntity item = storageItemRepo.findById(id).get();
+		StorageItemEntity item = storageItemService.findById(id);
 		
 		item.setName(name);
 		item.setAmount(amount);
 		item.setAmountExpected(amountExpected);
 		item.setStoredType(StorageType.valueOf(storedType));
-		item.setVendor(vendorRepo.findById(vendor).get());
-		if(tosRepo.findById(typeOfStorage).isPresent()) {
-			item.setTypeOfStorage(tosRepo.findById(typeOfStorage).get());
+		item.setVendor(vendorService.findById(vendor));
+		if(tosService.findById(typeOfStorage) != null) {
+			item.setTypeOfStorage(tosService.findById(typeOfStorage));
 		} else if(typeOfStorage == -1) {
 			item.setTypeOfStorage(null);
 		}
 		item.setAdditionalInfo(additionalInfo);
 		
-		storageItemRepo.saveAndFlush(item);
+		storageItemService.save(item);
 		
-		CommonMethods.addToOrderReport(item, orderReportRepo);
+		CommonMethods.addToOrderReport(item, orderReportService);
 		updateStorageItemList();
 		
 		return item;
@@ -130,14 +134,14 @@ public class ViewStorageItemsController {
 			String additionalInfo) {
 		TypeOfStorageEntity typeOfStorage = null;
 		if(typeOfStorageId != -1) {
-			typeOfStorage = tosRepo.findById(typeOfStorageId).get();
+			typeOfStorage = tosService.findById(typeOfStorageId);
 		}
 		
 		StorageItemEntity createStorageItem = new StorageItemEntity(name, amount, amountExpected, StorageType.valueOf(storedType),  additionalInfo,
-				vendorRepo.findById(vendorId).get(), typeOfStorage);
+				vendorService.findById(vendorId), typeOfStorage);
 		
 		try {
-			storageItemRepo.save(createStorageItem);
+			storageItemService.save(createStorageItem);
 		} catch(Exception e) {
 			log.error("Unable to create storage item {}", name);
 			log.error(e.getMessage());
@@ -151,16 +155,16 @@ public class ViewStorageItemsController {
 	@ResponseBody
 	public boolean checkIfItemExists(String name, Integer vendorId) {
 		
-		if(vendorRepo.findById(vendorId).isEmpty()) {
+		if(vendorService.findById(vendorId) == null) {
 			log.error("vendorId was passed to the controller with an invalid value of {}", vendorId);
 			return false;
 		}
 		
-		return !storageItemRepo.existsByNameAndVendor(name, vendorRepo.findById(vendorId).get());
+		return !storageItemService.existsByNameAndVendor(name, vendorService.findById(vendorId));
 	}
 	
 	private void updateStorageItemList() {
-		List<StorageItemEntity> storageList = storageItemRepo.findAll();
+		List<StorageItemEntity> storageList = storageItemService.findAll();
 		
 		if(storageItemList == null) {
 			storageItemList = new ArrayList<StorageItemModel>();

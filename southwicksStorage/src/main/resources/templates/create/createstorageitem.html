@@ -2,7 +2,7 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   layout:decorate="~{template/navbar.html}">
 <head>
-    <title>Title</title>
+    <title>Create Storage Item</title>
 </head>
 <body>
     <main class="content" layout:fragment="mainSection">
@@ -31,7 +31,7 @@
 	                                    <div class="col-md-8">
 	                                        <div class="mb-3">
 	                                            <label for="name">Storage Item Name</label>
-	                                            <input th:field="*{name}" type="text" class="form-control" id="name" placeholder="Storage Item Name" th:errorclass="is-invalid">
+	                                            <input th:field="*{name}" type="text" class="form-control" id="name" placeholder="Storage Item Name" th:errorclass="is-invalid" required="true">
 	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Storage Item Name error</div>
 	                                        </div>
 	                                        <div class="mb-3">
@@ -77,14 +77,14 @@
 	                                            <div th:if="${typeOfStorageList == null}">
 	                                            	<span class="font-13 text-muted">To use this create a <a href="/create/typeOfStorage">type of storage</a></span>
 	                                            	<select class="form-control selectpicker" th:field="*{typeOfStorage}" id="typeOfStorage" disabled>
-								                		<option text="Not Available" value="" </option>
+								                		<option text="Not Available" value="-1"> </option>
 								                	</select>
 	                                            </div>
 	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('typeOfStorage')}" th:errors="*{typeOfStorage}">Type of Storage error</div>
 	                                        </div>
 	                                        <div class="mb-3">
 	                                            <label for="lastName">Additional Information</label>
-	                                            <textarea th:field="*{additionalInfo}" type="text" class="form-control" id="additionalInfo" placeholder="Additional Information" th:errorclass="is-invalid" />
+	                                            <textarea th:field="*{additionalInfo}" type="text" class="form-control" id="additionalInfo" placeholder="Additional Information" th:errorclass="is-invalid"></textarea>
 	                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('additionalInfo')}" th:errors="*{additionalInfo}">Additional info error</div>
 	                                        </div>
 	                                    </div>
@@ -96,6 +96,7 @@
                             	<form method = "POST" action = "#" th:action = "@{/create/storageItem}" th:object = "${createStorageItemForm}">
                                 	<div class="row">
 	                                    <div class="col-md-8">
+	                                    	<p class="fw-bold">To create an item please create a <a href="/create/vendor">vendor</a> first</p>
 	                                        <div class="mb-3">
 	                                            <label for="name">Storage Item Name</label>
 	                                            <input th:field="*{name}" type="text" class="form-control" id="name" placeholder="Storage Item Name" th:errorclass="is-invalid" disabled>

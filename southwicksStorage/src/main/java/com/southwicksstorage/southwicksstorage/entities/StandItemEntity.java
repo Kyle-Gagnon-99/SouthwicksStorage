@@ -58,6 +58,7 @@ public class StandItemEntity {
 	@NotNull(message = "Stand name can not be empty")
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "stand", referencedColumnName="id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private StandEntity stand;
 	
 	public StandItemEntity() {

@@ -5,7 +5,6 @@ package com.southwicksstorage.southwicksstorage.controllers.create;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -28,9 +27,9 @@ import com.southwicksstorage.southwicksstorage.entities.StorageItemEntity;
 import com.southwicksstorage.southwicksstorage.entities.TypeOfStorageEntity;
 import com.southwicksstorage.southwicksstorage.entities.VendorEntity;
 import com.southwicksstorage.southwicksstorage.models.formModels.CreateStorageItemFormModel;
-import com.southwicksstorage.southwicksstorage.repositories.StorageItemDao;
-import com.southwicksstorage.southwicksstorage.repositories.TypeOfStorageDao;
-import com.southwicksstorage.southwicksstorage.repositories.VendorDao;
+import com.southwicksstorage.southwicksstorage.services.StorageItemService;
+import com.southwicksstorage.southwicksstorage.services.TypeOfStorageService;
+import com.southwicksstorage.southwicksstorage.services.VendorService;
 
 /**
  * @author kyle
@@ -40,19 +39,19 @@ import com.southwicksstorage.southwicksstorage.repositories.VendorDao;
 public class CreateStorageItemController {
 
 	@Autowired
-	private StorageItemDao repo;
+	private StorageItemService storageItemService;
 	
 	@Autowired
-	private VendorDao vendorRepo;
+	private VendorService vendorService;
 	
 	@Autowired
-	private TypeOfStorageDao typeOfStorageRepo;
+	private TypeOfStorageService typeOfStorageService;
 	
 	@RequestMapping(value = "/create/storageItem", method = RequestMethod.GET)
 	public ModelAndView getCreateStorageItem(Model model) {
 		
-		List<VendorEntity> vendorList = vendorRepo.findAll();
-		List<TypeOfStorageEntity> typeOfStorageList = typeOfStorageRepo.findAll();
+		List<VendorEntity> vendorList = vendorService.findAll();
+		List<TypeOfStorageEntity> typeOfStorageList = typeOfStorageService.findAll();
 		model.addAttribute("createStorageItemForm", new CreateStorageItemFormModel());
 		
 		if(vendorList.size() > 0) {
@@ -79,9 +78,9 @@ public class CreateStorageItemController {
 				itemForm.getName(), itemForm.getAmount(), itemForm.getAmountExpected(), itemForm.getStoredType(), itemForm.getVendor(), 
 				itemForm.getTypeOfStorage(), itemForm.getAdditionalInfo());
 		
-		if(repo.existsByNameAndVendor(itemForm.getName(), vendorRepo.findById(itemForm.getVendor()).get())) {
-			List<VendorEntity> vendorList = vendorRepo.findAll();
-			List<TypeOfStorageEntity> typeOfStorageList = typeOfStorageRepo.findAll();
+		if(storageItemService.existsByNameAndVendor(itemForm.getName(), vendorService.findById(itemForm.getVendor()))) {
+			List<VendorEntity> vendorList = vendorService.findAll();
+			List<TypeOfStorageEntity> typeOfStorageList = typeOfStorageService.findAll();
 			showModal = "true";
 			modalTitle = "Error";
 			modalType = NotificationTypes.ERROR.getType().toLowerCase();
@@ -93,22 +92,15 @@ public class CreateStorageItemController {
 			return new ModelAndView("create/createstorageitem.html");
 		}
 		
-		VendorEntity vendorToRetreive = null;
-		TypeOfStorageEntity tosToRetreive = null;
-		
-		vendorToRetreive = vendorRepo.findById(itemForm.getVendor()).get();
-		Optional<TypeOfStorageEntity> optionalTos = typeOfStorageRepo.findById(itemForm.getTypeOfStorage());
-		
-		if(optionalTos.isPresent()) {
-			tosToRetreive = optionalTos.get();
-		}
+		VendorEntity vendorToRetreive = vendorService.findById(itemForm.getVendor());
+		TypeOfStorageEntity tosToRetreive = typeOfStorageService.findById(itemForm.getTypeOfStorage());
 		
 		StorageItemEntity createItem = new StorageItemEntity(itemForm.getName(), itemForm.getAmount(), itemForm.getAmountExpected(),
 				StorageType.valueOf(itemForm.getStoredType()), itemForm.getAdditionalInfo(), vendorToRetreive, tosToRetreive);
 		
 		try {
 			if(!bindingResult.hasErrors()) {
-				repo.saveAndFlush(createItem);
+				storageItemService.save(createItem);
 			}
 		} catch(Exception e) {
 			System.out.print(e);
@@ -127,8 +119,8 @@ public class CreateStorageItemController {
 			}
 		}
 		
-		List<VendorEntity> vendorList = vendorRepo.findAll();
-		List<TypeOfStorageEntity> typeOfStorageList = typeOfStorageRepo.findAll();
+		List<VendorEntity> vendorList = vendorService.findAll();
+		List<TypeOfStorageEntity> typeOfStorageList = typeOfStorageService.findAll();
 		
 		if (bindingResult.hasErrors()) {
 			showModal = "true";

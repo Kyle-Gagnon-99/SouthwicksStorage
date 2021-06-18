@@ -34,6 +34,7 @@
 	                                        <th>Last Name</th>
 	                                        <th>Role</th>
 	                                        <th>Username</th>
+	                                        <th>Phone Number</th>
 	                                        <th>Actions</th>
 	                                    </tr>
 	                                </thead>
@@ -68,6 +69,11 @@
 	                                <label for="lastName">Last Name</label>
 	                                <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Last Name">
 	                            </div>
+                                <div class="mb-3">
+                                	<label for="phoneNumber">Phone Number</label>
+                                    <input type="text" class="form-control" id="phoneNumber" name="phoneNumber" placeholder="Phone Number" data-mask="(000) 000-0000">
+                                    <small class="form-text text-muted">Optional</small>
+                                </div>
 	                            <div class="mb-3">
 	                                <label for="role">Position</label>
 	                                <select class="form-control selectpicker" id="role">
@@ -121,10 +127,12 @@
 
     <script layout:fragment="customJS">
 
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function() {        	
         	var table = $('#userTable').DataTable({
         		"processing": false,
 				"info": false,
+				"autoWidth": false,
+				"lengthChange": false,
 				"ajax": {
 		            "url": "/view/users/getAllUsers",
 		            "type": "POST",
@@ -139,11 +147,12 @@
 					{"data": "firstName"},
 					{"data": "lastName"},
 					{"data": "role"},
-					{"data": "username"}
+					{"data": "username"},
+					{"data": "phoneNumber"}
 				],
 				"columnDefs": [
 					{
-						"targets": [4],
+						"targets": [5],
 						"searchable": false,
 						"defaultContent": '<button class="btn editButton"><i class="align-middle fas fa-fw fa-pen"></i></button>' +
 										  '<button class="btn deleteButton"><i class="align-middle fas fa-fw fa-trash"></i></button>'
@@ -157,6 +166,7 @@
 				$('.editUser #username').val(data.username);
     			$('.editUser #firstName').val(data.firstName);
     			$('.editUser #lastName').val(data.lastName);
+    			$('.editUser #phoneNumber').val(data.phoneNumber);
     			$('.editUser #role').val(data.roleEnum);
     			$('.editUser #editUserId').val(data.id);
 				$('.editUser #editModal').modal('show');
@@ -188,10 +198,27 @@
         			},
         			lastName: {
         				required: true
+        			},
+        			phoneNumber: {
+        				maxlength: {
+        					depends: function(element) {
+        						return ($(element).val().length > 0);
+        					},
+        					param: 14
+        				},
+        				minlength: {
+        					depends: function(element) {
+        						return ($(element).val().length > 0);
+        					},
+        					param: 14
+        				}
         			}
         		},
 				messages: {
-					firstName: "First name is required"
+					firstName: "First name is required",
+					lastName: "Last name is required",
+					username: "Username must not exist and not be empty",
+					phoneNumber: "Invalid phone number"
 				},
         		// Errors
 				errorPlacement: function errorPlacement(error, element) {
@@ -212,9 +239,10 @@
 	        		var username = $('.editUser #username').val();
 	        		var firstName = $('.editUser #firstName').val();
 	        		var lastName = $('.editUser #lastName').val();
+	        		var phoneNumber = $('.editUser #phoneNumber').val();
 	        		var role = $('.editUser #role').val();
 	        		var resetPassword = $('.editUser #resetPassword').is(':checked')
-	        		$.post('/view/users/editUser', {id: userId, username: username, firstName: firstName, lastName: lastName, role: role, resetPassword: resetPassword}, function(data){
+	        		$.post('/view/users/editUser', {id: userId, username: username, firstName: firstName, lastName: lastName, phoneNumber: phoneNumber, role: role, resetPassword: resetPassword}, function(data){
 	        			if(data) {
 	        				table.ajax.reload();
 	        			} else {

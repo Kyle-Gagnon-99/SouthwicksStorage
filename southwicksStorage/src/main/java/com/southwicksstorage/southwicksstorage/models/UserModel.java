@@ -10,6 +10,7 @@ public class UserModel {
 	private String lastName;
 	private String role;
 	private Roles roleEnum;
+	private String phoneNumber;
 	/**
 	 * @return the username
 	 */
@@ -67,13 +68,14 @@ public class UserModel {
 		this.roleEnum = roleEnum;
 	}
 	
-	public UserModel(int id, String username, String firstName, String lastName, String role, Roles roleEnum) {
+	public UserModel(int id, String username, String firstName, String lastName, String role, Roles roleEnum, String phoneNumber) {
 		this.id = id;
 		this.username = username;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.role = role;
 		this.roleEnum = roleEnum;
+		this.phoneNumber = phoneNumber;
 	}
 	/**
 	 * @return the id
@@ -86,6 +88,12 @@ public class UserModel {
 	 */
 	public void setId(int id) {
 		this.id = id;
+	}
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 
 }

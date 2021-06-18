@@ -23,7 +23,7 @@ import com.southwicksstorage.southwicksstorage.constants.Constants;
 import com.southwicksstorage.southwicksstorage.constants.NotificationTypes;
 import com.southwicksstorage.southwicksstorage.entities.StandEntity;
 import com.southwicksstorage.southwicksstorage.models.formModels.CreateStandFormModel;
-import com.southwicksstorage.southwicksstorage.repositories.StandDao;
+import com.southwicksstorage.southwicksstorage.services.StandService;
 
 /**
  * @author kyle
@@ -33,7 +33,7 @@ import com.southwicksstorage.southwicksstorage.repositories.StandDao;
 public class CreateStandController {
 	
 	@Autowired
-	private StandDao repo;
+	private StandService standService;
 
 	@RequestMapping(value = "/create/stand", method = RequestMethod.GET)
 	public ModelAndView getCreateStand(Model model) {
@@ -50,11 +50,11 @@ public class CreateStandController {
 		String modalMessage = Constants.ERROR_500;
 		
 		StandEntity standToCreate = new StandEntity(standForm.getName(), standForm.getAdditionalInfo());
-		boolean standExists = repo.existsByName(standForm.getName());
+		boolean standExists = standService.existsByName(standForm.getName());
 		
 		try {
 			if(!standExists) {
-				repo.saveAndFlush(standToCreate);
+				standService.save(standToCreate);
 			}
 		} catch(Exception e) {
 			if (e.getCause() instanceof ConstraintViolationException || e instanceof ConstraintViolationException) {

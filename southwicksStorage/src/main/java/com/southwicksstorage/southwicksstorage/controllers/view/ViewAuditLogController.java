@@ -23,8 +23,6 @@ import com.southwicksstorage.southwicksstorage.entities.AuditedRevisionEntity;
 import com.southwicksstorage.southwicksstorage.entities.StandItemEntity;
 import com.southwicksstorage.southwicksstorage.entities.StorageItemEntity;
 import com.southwicksstorage.southwicksstorage.models.attribute.AuditLogModel;
-import com.southwicksstorage.southwicksstorage.repositories.StandItemDao;
-import com.southwicksstorage.southwicksstorage.repositories.StorageItemDao;
 
 /**
  * @author kyle
@@ -32,15 +30,7 @@ import com.southwicksstorage.southwicksstorage.repositories.StorageItemDao;
  */
 @Controller
 public class ViewAuditLogController {
-	
-	@SuppressWarnings("unused")
-	@Autowired
-	private StorageItemDao storageItemRepo;
-	
-	@SuppressWarnings("unused")
-	@Autowired
-	private StandItemDao standItemRepo;
-	
+		
 	@Autowired
 	private EntityManagerFactory emf;
 	
@@ -86,8 +76,10 @@ public class ViewAuditLogController {
 			
 			if(revNumbers.size() > 1) {
 				StorageItemEntity prevStorageItem = auditReader.find(StorageItemEntity.class, currentRevStorageItem.getId(), revNumbers.get(revNumbers.size() - 2));
-				auditLog.add(new AuditLogModel(currentRevInfo.getUsername(), currentRevInfo.getDateModified(), currentRevStorageItem.getName(),
-						"Storage", prevStorageItem.getAmount(), currentRevStorageItem.getAmount(), isInsert, isModify, isDelete));
+				if(!(isModify && currentRevStorageItem.getAmount() == prevStorageItem.getAmount())) {
+					auditLog.add(new AuditLogModel(currentRevInfo.getUsername(), currentRevInfo.getDateModified(), currentRevStorageItem.getName(),
+							"Storage", prevStorageItem.getAmount(), currentRevStorageItem.getAmount(), isInsert, isModify, isDelete));
+				}
 			} else {
 				auditLog.add(new AuditLogModel(currentRevInfo.getUsername(), currentRevInfo.getDateModified(), currentRevStorageItem.getName(),
 						"Storage", null, currentRevStorageItem.getAmount(), isInsert, isModify, isDelete));

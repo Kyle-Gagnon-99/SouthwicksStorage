@@ -8,10 +8,9 @@ import org.springframework.stereotype.Repository;
 import com.southwicksstorage.southwicksstorage.entities.TypeOfStorageEntity;
 
 @Repository
-public interface TypeOfStorageDao extends JpaRepository<TypeOfStorageEntity, Long> {
+public interface TypeOfStorageDao extends JpaRepository<TypeOfStorageEntity, Integer> {
 
 	boolean existsByName(String name);
-	Optional<TypeOfStorageEntity> findById(int id);
 	Optional<TypeOfStorageEntity> findByName(String name);
 	
 }

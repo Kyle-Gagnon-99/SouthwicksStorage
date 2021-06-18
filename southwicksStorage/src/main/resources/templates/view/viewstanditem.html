@@ -44,7 +44,7 @@
 												<th>Id</th>
 		                                        <th>Name</th>
 		                                        <th>Amount in Stand</th>
-		                                        <th>Amount Expected</th>
+		                                        <th>Amount Expected Per Day</th>
 		                                        <th>View Additional Information</th>
 		                                        <th>Actions</th>
 											</tr>
@@ -90,7 +90,7 @@
 							<div class="modal-body m-3">
 								<div class="mb-3">
 									<p>Are you sure you want to delete stand item?</p>
-									<p>WARNING: Deleting this stand item will delete it forever</p> 
+									<p><span class="fw-bold text-danger">WARNING:</span> Deleting this stand item will delete it forever</p> 
 									<input type="hidden" id="deleteStandItemId">
 	                            </div>
 							</div>
@@ -123,7 +123,7 @@
                                     <input type="number" class="form-control" id="editStandItemAmount" name="editStandItemAmount" placeholder="0">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="amount">Amount Expected</label>
+                                    <label for="amount">Amount Expected Per Day</label>
                                     <input type="number" class="form-control" id="editStandItemAmountExpected" name="editStandItemAmountExpected" placeholder="0">
                                 </div>
 	                            <div class="mb-3">
@@ -178,7 +178,7 @@
                                     <input type="number" class="form-control" id="createStandItemAmount" name="createStandItemAmount" placeholder="0">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="createStandItemAmountExpected">Amount Expected</label>
+                                    <label for="createStandItemAmountExpected">Amount Expected Per Day</label>
                                     <input type="number" class="form-control" id="createStandItemAmountExpected" name="createStandItemAmountExpected" placeholder="0">
                                 </div>
 	                            <div class="mb-3">
@@ -448,7 +448,7 @@
         	
         	function updateTable() {
         		tables.forEach(function(item){
-    				item.ajax.reload();
+    				item.ajax.reload(null, false);
     			});
         	}
         	

@@ -115,8 +115,7 @@
 							<div class="modal-body m-3">
 								<div class="mb-3">
 									<p>Are you sure you want to delete this vendor?</p>
-									<p>WARNING: Deleting this vendor will remove the vendor from all products associated to this vendor</p>
-									<p>The products will still be there but the vendor will be gone</p> 
+									<p class="fw-bold text-danger">WARNING: You can only delete this vendor if there are NO storage items associated to this otherwise you can't delete this vendor.</p> 
 									<input type="hidden" id="deleteVendorId">
 	                            </div>
 							</div>
@@ -140,6 +139,7 @@
 			var table = $('#vendorTable').DataTable({
 				"processing": false,
 				"info": false,
+				"autoWidth": false,
 				"ajax": {
 		            "url": "/view/vendor/getAllVendors",
 		            "type": "POST",

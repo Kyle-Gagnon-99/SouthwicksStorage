@@ -10,8 +10,6 @@ import javax.persistence.Query;
 
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
-import org.hibernate.envers.RevisionType;
-import org.hibernate.envers.query.AuditQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +21,8 @@ import com.southwicksstorage.southwicksstorage.entities.AuditedRevisionEntity;
 import com.southwicksstorage.southwicksstorage.entities.StandItemEntity;
 import com.southwicksstorage.southwicksstorage.entities.StorageItemEntity;
 import com.southwicksstorage.southwicksstorage.models.system.LogTask;
-import com.southwicksstorage.southwicksstorage.repositories.OrderReportDao;
-import com.southwicksstorage.southwicksstorage.repositories.StorageItemDao;
+import com.southwicksstorage.southwicksstorage.services.OrderReportService;
+import com.southwicksstorage.southwicksstorage.services.StorageItemService;
 
 /**
  * @author kyle
@@ -37,12 +35,13 @@ public class ScheduledTask {
 	private EntityManagerFactory emf;
 	
 	@Autowired
-	private OrderReportDao orderReportRepo;
+	private OrderReportService orderReportService;
 	
 	@Autowired
-	private StorageItemDao storageItemRepo;
+	private StorageItemService storageItemService;
 	
 	private static Logger log = LoggerFactory.getLogger(ScheduledTask.class);
+
 	
 	/**
 	 * At the top of every hour get all audit log entries and then format the time each revision was created at
@@ -63,11 +62,13 @@ public class ScheduledTask {
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
 		AuditReader auditReader = AuditReaderFactory.get(em);
-		AuditQuery query;
 		String deleteFromStorageAuditString = "DELETE FROM storage_item_aud WHERE id = :entityId ; DELETE FROM audited_revision_entity WHERE id = :revId ;";
 		String deleteFromStandAuditString = "DELETE FROM stand_item_aud WHERE id = :entityId ; DELETE FROM audited_revision_entity WHERE id = :revId ;";
+		String deleteOtherAudTableString = "DELETE FROM vendor_aud; DELETE FROM type_of_storage_aud; DELETE FROM stand_aud";
 		Query deleteStorageAuditEntry = em.createNativeQuery(deleteFromStorageAuditString);
 		Query deleteStandAuditEntry = em.createNativeQuery(deleteFromStandAuditString);
+		Query deleteOtherAuditTable = em.createNativeQuery(deleteOtherAudTableString);
+		deleteOtherAuditTable.executeUpdate();
 		
 		List<Object[]> auditStorageItems = (List<Object[]>) auditReader.createQuery().forRevisionsOfEntity(StorageItemEntity.class, false, true).getResultList();
 		List<Object[]> auditStandItems = (List<Object[]>) auditReader.createQuery().forRevisionsOfEntity(StandItemEntity.class, false, true).getResultList();
@@ -75,8 +76,6 @@ public class ScheduledTask {
 		auditStorageItems.stream().forEach((auditItem) -> {
 			StorageItemEntity storageItem = (StorageItemEntity) auditItem[0];
 			AuditedRevisionEntity currentRevInfo = (AuditedRevisionEntity) auditItem[1];
-			RevisionType currentRevType = (RevisionType) auditItem[2];
-			
 			LocalDateTime currentRevTime = LocalDateTime.parse(currentRevInfo.getDateModified(), Constants.formatter);
 			LocalDateTime dateAhead = currentRevTime.plus(Constants.DELETE_AUDIT_ENTRIES, Constants.DELETE_AUDIT_ENTRIES_TIME_UNIT);
 			String currentTimeUnformatted = LocalDateTime.now().format(Constants.formatter);
@@ -96,8 +95,6 @@ public class ScheduledTask {
 		auditStandItems.stream().forEach((auditItem) -> {
 			StandItemEntity standItem = (StandItemEntity) auditItem[0];
 			AuditedRevisionEntity currentRevInfo = (AuditedRevisionEntity) auditItem[1];
-			RevisionType currentRevType = (RevisionType) auditItem[2];
-			
 			LocalDateTime currentRevTime = LocalDateTime.parse(currentRevInfo.getDateModified(), Constants.formatter);
 			LocalDateTime dateAhead = currentRevTime.plus(Constants.DELETE_AUDIT_ENTRIES, Constants.DELETE_AUDIT_ENTRIES_TIME_UNIT);
 			String currentTimeUnformatted = LocalDateTime.now().format(Constants.formatter);
@@ -127,7 +124,7 @@ public class ScheduledTask {
 	public void updateOrderReport() {
 		LogTask logTask = new LogTask(ScheduledTask.class, Constants.UPDATE_ORDER_REPORT);
 		logTask.startTaskLog();
-		CommonMethods.updateOrderReport(storageItemRepo.findAll(), orderReportRepo);
+		CommonMethods.updateOrderReport(storageItemService.findAll(), orderReportService);
 		logTask.endTaskLog();
 	}
 

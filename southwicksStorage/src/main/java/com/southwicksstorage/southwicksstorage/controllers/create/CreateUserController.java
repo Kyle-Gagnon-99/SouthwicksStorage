@@ -21,7 +21,7 @@ import com.southwicksstorage.southwicksstorage.constants.Constants;
 import com.southwicksstorage.southwicksstorage.constants.Roles;
 import com.southwicksstorage.southwicksstorage.entities.UserModelEntity;
 import com.southwicksstorage.southwicksstorage.models.formModels.CreateEditUserFormModel;
-import com.southwicksstorage.southwicksstorage.repositories.UserDao;
+import com.southwicksstorage.southwicksstorage.services.UserService;
 
 @Controller
 public class CreateUserController {
@@ -30,7 +30,7 @@ public class CreateUserController {
 	private PasswordEncoder bCryptPasswordEncoder;
 	
 	@Autowired
-	private UserDao userRepo;
+	private UserService userService;
 	
 	private static final String DEFAULT_PASSWORD = Constants.DEFAULT_PASSWORD;
 	
@@ -44,17 +44,17 @@ public class CreateUserController {
 	public ModelAndView postCreateUser(@ModelAttribute("createEditUserForm") CreateEditUserFormModel createEditUserForm, BindingResult result, 
 			Model model, RedirectAttributes redirectAttributes) {
 
-		if(userRepo.existsByUsername(createEditUserForm.getUsername())) {
+		if(userService.existsByUsername(createEditUserForm.getUsername())) {
 			result.rejectValue("username", "error.createEditUserForm", "Username already exists");
 		}
 		
 		String encodedPassword = bCryptPasswordEncoder.encode(DEFAULT_PASSWORD);
 		
 		UserModelEntity addUser = new UserModelEntity(createEditUserForm.getFirstName(), createEditUserForm.getLastName(), createEditUserForm.getUsername(), 
-				encodedPassword, Roles.valueOf(createEditUserForm.getRole()));
+				encodedPassword, Roles.valueOf(createEditUserForm.getRole()), createEditUserForm.getPhoneNumber());
 		
 		try {
-			userRepo.saveAndFlush(addUser);
+			userService.save(addUser);
 		} catch(Exception e) {
 		   if (e.getCause() instanceof ConstraintViolationException || e instanceof ConstraintViolationException) {
 		        Set<ConstraintViolation<?>> constraintViolations = ((ConstraintViolationException) e).getConstraintViolations();

@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.southwicksstorage.southwicksstorage.configurations.CommonMethods;
-import com.southwicksstorage.southwicksstorage.repositories.OrderReportDao;
-import com.southwicksstorage.southwicksstorage.repositories.StorageItemDao;
-import com.southwicksstorage.southwicksstorage.repositories.VendorDao;
+import com.southwicksstorage.southwicksstorage.services.OrderReportService;
+import com.southwicksstorage.southwicksstorage.services.StorageItemService;
+import com.southwicksstorage.southwicksstorage.services.VendorService;
 
 /**
  * @author kyle
@@ -23,22 +23,22 @@ import com.southwicksstorage.southwicksstorage.repositories.VendorDao;
 public class ViewReports {
 	
 	@Autowired
-	private VendorDao vendorRepo;
+	private VendorService vendorService;
 	
 	@Autowired
-	private OrderReportDao orderReportRepo;
+	private OrderReportService orderReportService;
 	
 	@Autowired
-	private StorageItemDao storageRepo;
+	private StorageItemService storageItemService;
 	
 	@RequestMapping(value = "/report/report", method = RequestMethod.GET)
 	public ModelAndView getReportByVendor(Model model) {
 		
 		// Update the order report
-		CommonMethods.updateOrderReport(storageRepo.findAll(), orderReportRepo);
+		CommonMethods.updateOrderReport(storageItemService.findAll(), orderReportService);
 		
-		model.addAttribute("vendorList", vendorRepo.findAll());
-		model.addAttribute("orderReportList", orderReportRepo.findAll());
+		model.addAttribute("vendorList", vendorService.findAll());
+		model.addAttribute("orderReportList", orderReportService.findAll());
 		return new ModelAndView("reports/reportbyvendor.html");
 	}
 

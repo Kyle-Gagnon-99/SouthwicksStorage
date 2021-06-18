@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{template/navbar.html}">
+<head>
+    <title>Title</title>
+</head>
+<body>
+    <main class="content" layout:fragment="mainSection">
+        <div class="container-fluid">
+            <div class="header">
+                <h1 class="header-title">
+                    View Stand
+                </h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Report By Vendor</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                           	<h5 class="card-title" style="display:inline-block">View Report by Vendor</h5>
+                           	<button type="button" class="btn btn-primary float-end"><i class="fas fa-question-circle"></i></button>
+                           	<h6 class="card-subtitle text-muted">View reports by vendor</h6>
+                        </div>
+                        <div class="card-body">
+							<div class="mb-4 text-center">
+                        		<p>View Report by</p>
+	                        	<select class="form-control selectpicker" id="selectReportToView">
+	                        		<option value="normalStandReport">None</option>
+	                        		<option value="showReportByStand">Stand</option>
+	                        	</select>
+                        	</div>
+                        	<div id="showNormalReport">
+                        		<div class="table-responsive">
+                        			<table id="normalStandReport" class="table table-striped">
+                        				<thead>
+                        					<tr>
+		                                        <th>Name</th>
+		                                        <th>Amount to Deliver</th>
+		                                        <th>Amount in Stand</th>
+		                                        <th>Amount Expected in Stand</th>
+		                                        <th>Stand</th>
+		                                    </tr>
+                        				</thead>
+                        				<tbody>
+                        					<tr th:each="standItem : ${standItemList}">
+                        						<td><span th:text="${standItem.storageItem.name}">Name</span></td>
+                        						<td><span th:text="${standItem.amountExpected - standItem.amount}">Amount to Deliver</span></td>
+                        						<td><span th:text="${standItem.amount}">Amount in Stand</span></td>
+                        						<td><span th:text="${standItem.amountExpected}">Amount Expected in Stand</span></td>
+                        						<td><span th:text="${standItem.stand.name}">Stand Name</span></td>
+                        					</tr>
+                        				</tbody>
+                        			</table>
+                        		</div>
+                        	</div>
+                        	<div id="showReportByStand">
+                        		<div th:each="stand : ${standList}">
+                        			<h1><span th:text="${stand.name}"></span></h1>
+                        			<div class="table-responsive">
+                        				<table class="table table-striped" th:id="'standReportTable' + ${stand.id}">
+                        					<thead>
+                        						<tr>
+                        							<th>Name</th>
+                        							<th>Amount to Deliver</th>
+                        							<th>Amount in Stand</th>
+                        							<th>Amount Expected in Stand</th>
+                        							<th>Stand</th>
+                        						</tr>
+                        					</thead>
+                        					<tbody>
+                        						<tr th:each="standItem : ${standItemList}" th:if="${standItem.stand} eq ${stand}">
+                        						    <td><span th:text="${standItem.storageItem.name}">Name</span></td>
+	                        						<td><span th:text="${standItem.amountExpected - standItem.amount}">Amount to Deliver</span></td>
+	                        						<td><span th:text="${standItem.amount}">Amount in Stand</span></td>
+	                        						<td><span th:text="${standItem.amountExpected}">Amount Expected in Stand</span></td>
+	                        						<td><span th:text="${standItem.stand.name}">Stand Name</span></td>
+                        						</tr>
+                        					</tbody>
+                        				</table>
+                        			</div>
+                        		</div>
+                        	</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script layout:fragment="customJS" th:inline="javascript">
+    
+    	var standList = [[${standList}]];
+    	var standId = [];
+    	
+    	standList.forEach(function(item){
+    		standId.push(item.id);
+    	});
+    	
+    	document.addEventListener("DOMContentLoaded", function() {
+    		
+			$('#showReportByStand').hide();
+    		
+    		$('#selectReportToView').on('change', function(value){
+    			$('#normalStandReport').hide();
+    			$('#showReportByStand').hide();
+    			
+    			$('#'.concat($(this).val())).show();
+    		});
+    		
+    		$('#normalStandReport').DataTable({
+    			
+    		});
+    		
+    		standId.forEach(function(item){
+    			$('#standReportTable'.concat(item)).DataTable({
+    				
+    			});
+    		});
+    		
+    		
+    	});
+
+    </script>
+</body>
+</html>

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.southwicksstorage.southwicksstorage.constants.StorageType;
 import com.southwicksstorage.southwicksstorage.entities.StorageItemEntity;
+import com.southwicksstorage.southwicksstorage.entities.TypeOfStorageEntity;
 import com.southwicksstorage.southwicksstorage.entities.VendorEntity;
 
 /**
@@ -18,13 +19,13 @@ import com.southwicksstorage.southwicksstorage.entities.VendorEntity;
  *
  */
 @Repository
-public interface StorageItemDao extends JpaRepository<StorageItemEntity, Long> {
+public interface StorageItemDao extends JpaRepository<StorageItemEntity, Integer> {
 	
-	public Optional<StorageItemEntity> findById(int id);
 	public boolean existsByNameAndVendor(String name, VendorEntity vendor);
 	public boolean existsByName(String name);
-	public Optional<StorageItemEntity> findByName(String name);
 	public Optional<StorageItemEntity> findByNameAndVendor(String name, VendorEntity vendor);
 	public List<StorageItemEntity> findAllByStoredType(StorageType storedType);
+	public Optional<StorageItemEntity> findByName(String name);
+	public List<StorageItemEntity> findAllByTypeOfStorage(TypeOfStorageEntity typeOfStorage);
 
 }

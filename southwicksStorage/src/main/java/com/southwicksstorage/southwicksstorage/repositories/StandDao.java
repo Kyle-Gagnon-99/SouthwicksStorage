@@ -8,10 +8,9 @@ import org.springframework.stereotype.Repository;
 import com.southwicksstorage.southwicksstorage.entities.StandEntity;
 
 @Repository
-public interface StandDao extends JpaRepository<StandEntity, Long> {
+public interface StandDao extends JpaRepository<StandEntity, Integer> {
 	
 	boolean existsByName(String name);
-	Optional<StandEntity> findById(int id);
 	Optional<StandEntity> findByName(String name);
 
 }

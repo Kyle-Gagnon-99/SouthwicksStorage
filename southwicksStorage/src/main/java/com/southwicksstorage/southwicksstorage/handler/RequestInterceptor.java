@@ -1,11 +1,11 @@
 package com.southwicksstorage.southwicksstorage.handler;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.catalina.connector.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +17,12 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.southwicksstorage.southwicksstorage.constants.Constants;
-import com.southwicksstorage.southwicksstorage.constants.NotificationMessages;
 import com.southwicksstorage.southwicksstorage.constants.NotificationTypes;
-import com.southwicksstorage.southwicksstorage.entities.NotificationMessageEntity;
 import com.southwicksstorage.southwicksstorage.entities.NotificationModelEntity;
 import com.southwicksstorage.southwicksstorage.entities.UserModelEntity;
 import com.southwicksstorage.southwicksstorage.models.CustomUserDetails;
-import com.southwicksstorage.southwicksstorage.repositories.NotificationDao;
-import com.southwicksstorage.southwicksstorage.repositories.NotificationMessageDao;
-import com.southwicksstorage.southwicksstorage.repositories.UserDao;
+import com.southwicksstorage.southwicksstorage.services.NotificationService;
+import com.southwicksstorage.southwicksstorage.services.UserService;
 
 @Component
 public class RequestInterceptor implements HandlerInterceptor {
@@ -34,13 +31,10 @@ public class RequestInterceptor implements HandlerInterceptor {
 	private PasswordEncoder bCryptPasswordEncoder;
 	
 	@Autowired
-	private NotificationDao notiRepo;
+	private NotificationService notiService;
 	
 	@Autowired
-	private UserDao userRepo;
-	
-	@Autowired
-	private NotificationMessageDao notiMessageRepo;
+	private UserService userService;
 	
 	@SuppressWarnings("unused")
 	private static Logger logger = LogManager.getLogger(RequestInterceptor.class);
@@ -50,7 +44,6 @@ public class RequestInterceptor implements HandlerInterceptor {
 			throws Exception {
 		
 		UserModelEntity user = null;
-		Optional<UserModelEntity> userOptional = null;
 		List<NotificationModelEntity> notifications = null;
 		int notificationWithPriority = 0;
 		
@@ -58,43 +51,13 @@ public class RequestInterceptor implements HandlerInterceptor {
 		 * Only the following operations can be performed if the user is logged in
 		 */
 		if(isUserLoggedIn()) {
-			userOptional = userRepo.findById(getUserDetailsLogged().getId());
-			
-			/*
-			 * If the user is found lets add the notification that if the password is still default change it
-			 * Don't add more than one
-			 */
-			if(userOptional.isPresent()) {
-				
-				user = userOptional.get();
-				
-				/*
-				 * If the user's password is the default password
-				 */
-				if(bCryptPasswordEncoder.matches(Constants.DEFAULT_PASSWORD, user.getPassword())) {
-					/*
-					 * Get the default password message
-					 */
-					NotificationMessageEntity defaultPasswordMessage = notiMessageRepo.findByMessage(NotificationMessages.DEFAULT_PASSWORD_MESSAGE.getMessage()).get();
-					Optional<NotificationModelEntity> defaultPasswordNotificationOptional = notiRepo.findByMessageAndUserModel(defaultPasswordMessage, user);
-					
-					/*
-					 * If there is no notification for the user about the default password
-					 */
-					if(defaultPasswordNotificationOptional.isEmpty()) {
-						NotificationModelEntity addNoti = new NotificationModelEntity(defaultPasswordMessage, NotificationTypes.WARNING, false, user);
-						notiRepo.save(addNoti);
-					}
-				}
-				
-			}
+			user = userService.findById(getUserDetailsLogged().getId());
 			
 			/*
 			 * Find the highest priority badge for this user and add the badge to the navbar
 			 */
-			if(userOptional.isPresent()) {
-				user = userOptional.get();
-				notifications = notiRepo.findAllByUserModelAndIsRead(user, false);
+			if(user != null) {
+				notifications = notiService.findNotisByUserandIsRead(user, false);
 				
 				if(notifications != null) {
 					for(int index = 0; index < notifications.size(); index++) {
@@ -117,8 +80,35 @@ public class RequestInterceptor implements HandlerInterceptor {
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			@Nullable ModelAndView modelAndView) throws Exception {
-		
-		
+		UserModelEntity user = null;
+		if(isUserLoggedIn()) {
+			user = userService.findById(getUserDetailsLogged().getId());
+			
+			/*
+			 * If the user is found lets add the notification that if the password is still default change it
+			 * Don't add more than one
+			 */
+			if(user != null) {
+				
+				
+				/*
+				 * If the user's password is the default password
+				 */
+				if(bCryptPasswordEncoder.matches(Constants.DEFAULT_PASSWORD, user.getPassword())) {
+					
+					if(!request.getRequestURI().equals("/auth/resetpassword")) {
+						try {
+							response.sendRedirect("/auth/resetpassword");
+						} catch(Exception e) {
+							/* Ignore */
+						}
+						response.setStatus(Response.SC_OK);
+					}
+				}
+				
+			}
+			
+		}
 		
 	}
 	

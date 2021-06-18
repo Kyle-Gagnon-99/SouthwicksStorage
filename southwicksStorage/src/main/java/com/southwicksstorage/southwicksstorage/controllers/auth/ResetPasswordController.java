@@ -2,8 +2,6 @@ package com.southwicksstorage.southwicksstorage.controllers.auth;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Optional;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -23,7 +21,7 @@ import com.southwicksstorage.southwicksstorage.entities.UserModelEntity;
 import com.southwicksstorage.southwicksstorage.models.CustomUserDetails;
 import com.southwicksstorage.southwicksstorage.models.attribute.Modal;
 import com.southwicksstorage.southwicksstorage.models.formModels.ResetPasswordFormModel;
-import com.southwicksstorage.southwicksstorage.repositories.UserDao;
+import com.southwicksstorage.southwicksstorage.services.UserService;
 import com.southwicksstorage.southwicksstorage.validation.ValidatePassword;
 
 @Controller
@@ -33,7 +31,7 @@ public class ResetPasswordController {
 	private PasswordEncoder bCryptPasswordEncoder;
 	
 	@Autowired
-	private UserDao userRepo;
+	private UserService userService;
 	
 	@RequestMapping(value = "/auth/resetpassword", method = RequestMethod.GET)
 	public ModelAndView getResetPassowrd(Model model) {
@@ -77,11 +75,10 @@ public class ResetPasswordController {
 		
 		String newEncodedPassword = bCryptPasswordEncoder.encode(resetPasswordForm.getNewPassword());
 		
-		Optional<UserModelEntity> userById = userRepo.findById(userCred.getId());
-		if(userById.isPresent()) {
-			UserModelEntity user = userById.get();
+		UserModelEntity user = userService.findById(userCred.getId());
+		if(user != null) {
 			user.setPassword(newEncodedPassword);
-			userRepo.saveAndFlush(user);
+			userService.save(user);
 		} else {
 			modal = new Modal("true", NotificationTypes.ERROR.getType().toLowerCase(), "Sorry!", "Sorry about that! It seems like something went wrong on our end");
 			redirectAttributes.addFlashAttribute("modal", modal);

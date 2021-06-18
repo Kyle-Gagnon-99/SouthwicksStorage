@@ -103,8 +103,8 @@
                                     </div>
                                     <div th:if="${typeOfStorageList == null}">
                                     	<span class="font-13 text-muted">To use this create a <a href="/create/typeOfStorage">type of storage</a></span>
-                                    	<select class="form-control selectpicker" th:field="*{typeOfStorage}" id="typeOfStorage" disabled>
-						               		<option text="Not Available" value="" </option>
+                                    	<select class="form-control selectpicker" id="editTypeOfStorage" disabled>
+						               		<option text="Not Available" value="-1"> </option>
 						               	</select>
                                     </div>
                                 </div>
@@ -155,7 +155,7 @@
 							<div class="modal-body m-3">
 								<div class="mb-3">
 									<p>Are you sure you want to delete this item?</p>
-									<p>WARNING: By deleting the stand you will delete the item forever and you will delete the items in the stands</p>
+									<p><span class="fw-bold text-danger">WARNING:</span> By deleting the stand you will delete the item forever and you will delete the items in the stands</p>
 									<input type="hidden" id="deleteStorageItemId">
 	                            </div>
 							</div>
@@ -226,7 +226,7 @@
 		                                            <div th:if="${typeOfStorageList == null}">
 		                                            	<span class="font-13 text-muted">To use this create a <a href="/create/typeOfStorage">type of storage</a></span>
 		                                            	<select class="form-control selectpicker" id="createTypeOfStorage" name="typeOfStorage" disabled>
-									                		<option text="Not Available" value="-1" </option>
+									                		<option text="Not Available" value="-1"> </option>
 									                	</select>
 		                                            </div>
 		                                        </div>
@@ -242,6 +242,7 @@
 									<form>
 	                                	<div class="row">
 		                                    <div class="col-md-8">
+		                                    	<p class="fw-bold">To create an item please create a <a href="/create/vendor">vendor</a> first</p>
 		                                        <div class="mb-3">
 		                                            <label for="name">Storage Item Name</label>
 		                                            <input type="text" class="form-control" id="invalidName" placeholder="Storage Item Name" disabled>
@@ -292,11 +293,10 @@
 		                                        </div>
 		                                        <div class="mb-3">
 		                                            <label for="lastName">Additional Information</label>
-		                                            <textarea type="text" class="form-control" id="invalidAdditionalInfo" placeholder="Additional Information" disabled />
+		                                            <textarea type="text" class="form-control" id="invalidAdditionalInfo" placeholder="Additional Information" disabled></textarea>
 		                                        </div>
 		                                    </div>
 		                                </div>
-		                                <button type="submit" class="btn btn-primary">Save changes</button>
 	                            	</form>	
 								</div>
                             </div>

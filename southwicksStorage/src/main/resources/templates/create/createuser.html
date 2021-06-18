@@ -44,6 +44,12 @@
                                             <div class="invalid-feedback" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}">Last name error</div>
                                         </div>
                                         <div class="mb-3">
+                                            <label for="phoneNumber">Phone Number</label>
+                                            <input th:field="*{phoneNumber}" type="text" class="form-control" id="phoneNumber" placeholder="Phone Number" th:errorclass="is-invalid" data-mask="(000) 000-0000">
+                                            <small class="form-text text-muted">Optional</small>
+                                            <div class="invalid-feedback" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}">Phone Number error</div>
+                                        </div>
+                                        <div class="mb-3">
                                             <label for="role">Position</label>
                                             <select class="form-control selectpicker" th:field="*{role}" id="role">
                                                 <option th:value = "MANAGER">Manager</option>

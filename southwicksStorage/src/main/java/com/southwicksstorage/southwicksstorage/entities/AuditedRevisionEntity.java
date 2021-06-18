@@ -22,7 +22,7 @@ import com.southwicksstorage.southwicksstorage.constants.Constants;
  *
  */
 @Entity
-@EntityScan(basePackages = {"com.southwicksstorage.southwicksstorage.entities","com.southwicksstorage.southwicksstorage.envers.entity"})
+@EntityScan(basePackages = {"com.southwicksstorage.southwicksstorage.entities", "com.southwicksstorage.southwicksstorage.envers.entity"})
 @RevisionEntity(AuditingRevisionListener.class)
 public class AuditedRevisionEntity extends DefaultRevisionEntity {
 	

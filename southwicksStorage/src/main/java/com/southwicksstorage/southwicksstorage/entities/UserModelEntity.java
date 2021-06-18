@@ -10,7 +10,9 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.southwicksstorage.southwicksstorage.constants.Constants;
 import com.southwicksstorage.southwicksstorage.constants.Roles;
+import com.southwicksstorage.southwicksstorage.validation.Phone;
 
 @Entity
 @Table(name = "users")
@@ -22,17 +24,17 @@ public class UserModelEntity {
 	private int id;
 	
 	@NotEmpty(message = "First name can not be empty")
-	@Size(max = 45, message = "First name can not be greater than 45 characters")
+	@Size(max = Constants.USER_FNAME_LNAME_MAX_LENGTH, message = "First name can not be greater than 45 characters")
 	@Column(name = "firstName")
 	private String firstName;
 	
 	@NotEmpty(message = "Last name can not be empty")
-	@Size(max = 45, message = "Last name can not be greater than 45 charcters")
+	@Size(max = Constants.USER_FNAME_LNAME_MAX_LENGTH, message = "Last name can not be greater than 45 charcters")
 	@Column(name = "lastName")
 	private String lastName;
 	
 	@NotEmpty(message = "Username can not be empty")
-	@Size(max = 30, message = "Username can not exceed 30 characters")
+	@Size(max = Constants.USERNAME_MAX_LENGTH, message = "Username can not exceed 30 characters")
 	@Column(name = "username")
 	private String username;
 	
@@ -40,19 +42,24 @@ public class UserModelEntity {
 	@Column(name = "password")
 	private String password;
 	
+	@NotNull(message = "Role can not be empty")
 	@Column(name = "role")
 	private Roles role;
+	
+	@Phone
+	private String phoneNumber;
 	
 	public UserModelEntity() {
 		/* Default Constructor */
 	}
 	
-	public UserModelEntity(String firstName, String lastName, String username, String password, Roles role) {
+	public UserModelEntity(String firstName, String lastName, String username, String password, Roles role, String phoneNumber) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = username;
 		this.password = password;
 		this.role = role;
+		this.phoneNumber = phoneNumber;
 	}
 
 	public int getId() {
@@ -101,6 +108,14 @@ public class UserModelEntity {
 
 	public void setRole(Roles role) {
 		this.role = role;
+	}
+	
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+	
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 	
 }

@@ -24,7 +24,7 @@ import com.southwicksstorage.southwicksstorage.constants.Constants;
 import com.southwicksstorage.southwicksstorage.constants.NotificationTypes;
 import com.southwicksstorage.southwicksstorage.entities.TypeOfStorageEntity;
 import com.southwicksstorage.southwicksstorage.models.formModels.CreateTypeOfStorageFormModel;
-import com.southwicksstorage.southwicksstorage.repositories.TypeOfStorageDao;
+import com.southwicksstorage.southwicksstorage.services.TypeOfStorageService;
 
 /**
  * @author kyle
@@ -34,7 +34,7 @@ import com.southwicksstorage.southwicksstorage.repositories.TypeOfStorageDao;
 public class CreateTypeOfStorageController {
 	
 	@Autowired
-	private TypeOfStorageDao dao;
+	private TypeOfStorageService tosService;
 
 	@RequestMapping(value = "/create/typeOfStorage", method = RequestMethod.GET)
 	public ModelAndView getTypeOfStorage(Model model) {
@@ -53,12 +53,12 @@ public class CreateTypeOfStorageController {
 		boolean duplicate = false;
 		
 		TypeOfStorageEntity storageToSave = new TypeOfStorageEntity(tosForm.getName(), tosForm.getAdditionalInfo());
-		boolean findStorage = dao.existsByName(tosForm.getName());
+		boolean findStorage = tosService.existsByName(tosForm.getName());
 		
 		try {
 			if(!StringUtils.isEmpty(tosForm.getName())) {
 				if(!findStorage) {
-					dao.saveAndFlush(storageToSave);
+					tosService.save(storageToSave);
 				} else {
 					bindingResult.rejectValue("name", "error.createTypeOfStorageForm", "Type of storage already exists");
 				}

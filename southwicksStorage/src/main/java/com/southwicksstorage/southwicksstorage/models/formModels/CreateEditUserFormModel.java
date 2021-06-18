@@ -8,17 +8,19 @@ public class CreateEditUserFormModel {
 	private String role;
 	private String firstName;
 	private String lastName;
+	private String phoneNumber;
 	
 	public CreateEditUserFormModel() {
 		/* Default Constructor */
 	}
 	
-	public CreateEditUserFormModel(String username, String password, String role, String firstName, String lastName) {
+	public CreateEditUserFormModel(String username, String password, String role, String firstName, String lastName, String phoneNumber) {
 		this.setUsername(username);
 		this.setPassword(password);
 		this.setRole(role);
 		this.setFirstName(firstName);
 		this.setLastName(lastName);
+		this.setPhoneNumber(phoneNumber);
 	}
 
 	/**
@@ -89,6 +91,14 @@ public class CreateEditUserFormModel {
 	 */
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
 	}
 	
 }

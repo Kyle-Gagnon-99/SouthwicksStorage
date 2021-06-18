@@ -15,6 +15,7 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 	<script src="/js/settings.js"></script>
 	<script src="/js/jquery.validate.js"></script>
 	<script src="/js/additional-methods.js"></script>
+	<link rel="shortcut icon" type="image/jpg" href="/img/mainImgs/favicon.ico"/>
 </head>
 <body>
 	<div class="splash active" th:fragment="navbar-header">
@@ -75,7 +76,7 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 						<ul id="create" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
 							<li class="sidebar-item"><a class="sidebar-link" href="/create/user">User</a></li>
 							<li class="sidebar-item"><a class="sidebar-link" href="/create/vendor">Vendor</a></li>
-							<li class="sidebar-item"><a class="sidebar-link" href="/create/storageItem">Item</a></li>
+							<li class="sidebar-item"><a class="sidebar-link" href="/create/storageItem">Storage Item</a></li>
 							<li class="sidebar-item"><a class="sidebar-link" href="/create/stand">Stand</a></li>
 							<li class="sidebar-item"><a class="sidebar-link" href="/create/typeOfStorage">Type of Storage</a></li>
 						</ul>
@@ -117,6 +118,7 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 						</a>
 						<ul id="reports" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
 							<li class="sidebar-item"><a class="sidebar-link" href="/report/report">Order Report</a></li>
+							<li class="sidebar-item"><a class="sidebar-link" href="/report/standReport">Stand Report</a></li>
 						</ul>
 					</li>
 					<li class="sidebar-header">
@@ -127,7 +129,7 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 							<i class="align-middle me-2 fas fa-fw fa-cog"></i> <span class="align-middle">Settings</span>
 						</a>
 						<ul id="settings" class="sidebar-dropdown list-unstyled collapse " data-bs-parent="#sidebar">
-							<li sec:authorize="hasRole('MANAGER')" class="sidebar-item"><a class="sidebar-link" href="/settings">Settings</a></li>
+							<li class="sidebar-item"><a class="sidebar-link" href="/settings">Settings</a></li>
 							<li class="sidebar-item"><a class="sidebar-link" href="/auth/resetpassword">Reset Password</a></li>
 						</ul>
 					</li>
@@ -146,9 +148,7 @@ xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 								<i class="align-middle fas fa-cog"></i>
 							</a>
 							<div class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-								<a class="dropdown-item" href="/auth/login"><i class="align-middle me-1 fas fa-fw fa-user"></i>Sign In</a>
-								<div class="dropdown-divider"></div>
-								<a class="dropdown-item" href="/logout"><i class="align-middle me-1 fas fa-fw fa-arrow-alt-circle-right"></i> Sign out</a>
+								<a class="dropdown-item" id="logoutButton" href="/logout"><i class="align-middle me-1 fas fa-fw fa-arrow-alt-circle-right"></i> Sign out</a>
 							</div>
 						</li>
 					</ul>

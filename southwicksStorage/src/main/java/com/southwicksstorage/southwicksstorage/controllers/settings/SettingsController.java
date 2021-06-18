@@ -14,7 +14,12 @@ import org.springframework.web.servlet.ModelAndView;
 import com.southwicksstorage.southwicksstorage.configurations.SystemVariables;
 import com.southwicksstorage.southwicksstorage.constants.SystemSettingsName;
 import com.southwicksstorage.southwicksstorage.entities.SystemSettingsEntity;
-import com.southwicksstorage.southwicksstorage.repositories.SystemSettingsDao;
+import com.southwicksstorage.southwicksstorage.entities.UserModelEntity;
+import com.southwicksstorage.southwicksstorage.handler.RequestInterceptor;
+import com.southwicksstorage.southwicksstorage.models.CustomUserDetails;
+import com.southwicksstorage.southwicksstorage.models.UserModel;
+import com.southwicksstorage.southwicksstorage.services.SystemSettingsService;
+import com.southwicksstorage.southwicksstorage.services.UserService;
 
 /**
  * @author kyle
@@ -24,7 +29,10 @@ import com.southwicksstorage.southwicksstorage.repositories.SystemSettingsDao;
 public class SettingsController {
 
 	@Autowired
-	private SystemSettingsDao repo;
+	private SystemSettingsService systemSettingsService;
+	
+	@Autowired
+	private UserService userService;
 	
 	@RequestMapping(value = "/settings", method = RequestMethod.GET)
 	public ModelAndView getSettingsPage(Model model) {
@@ -37,17 +45,56 @@ public class SettingsController {
 	@ResponseBody
 	public boolean updateSettings(Integer lowThresholdInput, Integer emptyThresholdInput) {
 		
-		SystemSettingsEntity lowThreshold = repo.findBySettingsName(SystemSettingsName.LOW_THRESHOLD).get();
-		SystemSettingsEntity emptyThreshold = repo.findBySettingsName(SystemSettingsName.OUT_THRESHOLD).get();
+		SystemSettingsEntity lowThreshold = systemSettingsService.findBySettingsName(SystemSettingsName.LOW_THRESHOLD);
+		SystemSettingsEntity emptyThreshold = systemSettingsService.findBySettingsName(SystemSettingsName.OUT_THRESHOLD);
 		
-		lowThreshold.setSettingsValue(String.valueOf(((double)lowThresholdInput / 100)));
-		emptyThreshold.setSettingsValue(String.valueOf(((double)emptyThresholdInput / 100)));
+		lowThreshold.setSettingsValue(String.valueOf((lowThresholdInput / 100)));
+		emptyThreshold.setSettingsValue(String.valueOf((emptyThresholdInput / 100)));
 		
-		repo.save(lowThreshold);
-		repo.save(emptyThreshold);
+		systemSettingsService.save(lowThreshold);
+		systemSettingsService.save(emptyThreshold);
 		
 		SystemVariables.updateSystemVariables();
 		return true;
+	}
+	
+	@RequestMapping(value = "/settings/updateAccountSettings", method = RequestMethod.POST)
+	@ResponseBody
+	public boolean updateAccountSettings(String phoneNumber) {
+		
+		CustomUserDetails userDetails = null;
+		
+		if(RequestInterceptor.isUserLoggedIn()) {
+			userDetails = RequestInterceptor.getUserDetailsLogged();
+			
+			UserModelEntity user = userService.findById(userDetails.getId());
+			
+			if(user != null) {
+				user.setPhoneNumber(phoneNumber);
+				userService.save(user);
+			}
+		}
+		
+		return true;
+	}
+	
+	@RequestMapping(value = "/settings/getUserDetails", method = RequestMethod.GET)
+	@ResponseBody
+	public UserModel getUserDetails() {
+		CustomUserDetails userDetails = null;
+		UserModel returnUser = null;
+		if(RequestInterceptor.isUserLoggedIn()) {
+			userDetails = RequestInterceptor.getUserDetailsLogged();
+			
+			UserModelEntity user = userService.findById(userDetails.getId());
+			
+			if(user != null) {
+				returnUser = new UserModel(user.getId(), user.getUsername(), user.getFirstName(), user.getLastName(), user.getRole().getRole(),
+						user.getRole(), user.getPhoneNumber());
+			}
+		}
+		
+		return returnUser;
 	}
 	
 }

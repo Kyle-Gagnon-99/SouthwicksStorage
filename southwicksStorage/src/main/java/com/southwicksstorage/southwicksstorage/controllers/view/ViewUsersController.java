@@ -19,7 +19,7 @@ import com.southwicksstorage.southwicksstorage.constants.Constants;
 import com.southwicksstorage.southwicksstorage.constants.Roles;
 import com.southwicksstorage.southwicksstorage.entities.UserModelEntity;
 import com.southwicksstorage.southwicksstorage.models.UserModel;
-import com.southwicksstorage.southwicksstorage.repositories.UserDao;
+import com.southwicksstorage.southwicksstorage.services.UserService;
 
 @Controller
 @Validated
@@ -29,7 +29,7 @@ public class ViewUsersController {
 	private PasswordEncoder bCryptPasswordEncoder;
 	
 	@Autowired
-	private UserDao repo;
+	private UserService userService;
 	
 	private List<UserModel> usersList = null;
 	private Logger log = LoggerFactory.getLogger(ViewUsersController.class);
@@ -41,19 +41,19 @@ public class ViewUsersController {
 	
 	@RequestMapping(value = "/view/users/editUser", method = RequestMethod.POST)
 	@ResponseBody
-	public boolean updateUser(Integer id, String username, String firstName, String lastName, String role, Boolean resetPassword) {
-		UserModelEntity getUser = repo.findById(id).get();
-		
+	public boolean updateUser(Integer id, String username, String firstName, String lastName, String phoneNumber, String role, Boolean resetPassword) {
+		UserModelEntity getUser = userService.findById(id);
 		getUser.setUsername(username);
 		getUser.setFirstName(firstName);
 		getUser.setLastName(lastName);
+		getUser.setPhoneNumber(phoneNumber);
 		getUser.setRole(Roles.valueOf(role));
 		if(resetPassword) {
 			getUser.setPassword(bCryptPasswordEncoder.encode(Constants.DEFAULT_PASSWORD));
 		}
 		
 		try {
-			repo.save(getUser);
+			userService.save(getUser);
 		} catch(Exception e) {
 			log.error("Can not update user. Stacktrace follows.");
 			log.error(e.getMessage());
@@ -66,14 +66,14 @@ public class ViewUsersController {
 	@RequestMapping(value = "/view/users/userExists", method = RequestMethod.POST)
 	@ResponseBody
 	public boolean checkIfUserExists(String username) {
-		return !repo.existsByUsername(username);
+		return !userService.existsByUsername(username);
 	}
 	
 	@RequestMapping(value = "/view/users/deleteUser", method = RequestMethod.POST)
 	@ResponseBody
 	public boolean deleteUser(Integer id) {
 		try {
-			repo.delete(repo.findById(id).get());
+			userService.delete(userService.findById(id));
 		} catch(Exception e) {
 			log.error("Can not update user. Stacktrace follows.");
 			log.error(e.getMessage());
@@ -96,7 +96,7 @@ public class ViewUsersController {
 	}
 	
 	private void setUsersList() {
-		List<UserModelEntity> listOfUsers = repo.findAll();
+		List<UserModelEntity> listOfUsers = userService.findAll();
 		
 		if(usersList != null) {
 			usersList.clear();
@@ -106,7 +106,7 @@ public class ViewUsersController {
 		
 		listOfUsers.stream().forEach((user) -> {
 			usersList.add(new UserModel(user.getId(), user.getUsername(), user.getFirstName(), user.getLastName(),
-					user.getRole().toString(), user.getRole()));
+					user.getRole().toString(), user.getRole(), user.getPhoneNumber()));
 		});
 	}
 	

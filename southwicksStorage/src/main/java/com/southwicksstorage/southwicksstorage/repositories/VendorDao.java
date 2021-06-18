@@ -15,9 +15,8 @@ import com.southwicksstorage.southwicksstorage.entities.VendorEntity;
  *
  */
 @Repository
-public interface VendorDao extends JpaRepository<VendorEntity, Long> {
+public interface VendorDao extends JpaRepository<VendorEntity, Integer> {
 
 	public boolean existsByVendorName(String vendorName);
-	public Optional<VendorEntity> findById(int id);
 	public Optional<VendorEntity> findByVendorName(String name);
 }

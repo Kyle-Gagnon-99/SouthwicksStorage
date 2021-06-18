@@ -18,6 +18,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.envers.Audited;
 import org.hibernate.validator.constraints.Range;
 
@@ -67,6 +69,7 @@ public class StorageItemEntity implements Serializable{
 	@NotNull(message = "You need to have a vendor associated to this item")
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "vendor_id", referencedColumnName="id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private VendorEntity vendor;
 	
 	@ManyToOne(fetch = FetchType.EAGER)

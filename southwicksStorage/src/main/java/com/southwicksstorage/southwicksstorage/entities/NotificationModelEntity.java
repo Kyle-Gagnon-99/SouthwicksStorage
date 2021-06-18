@@ -1,5 +1,7 @@
 package com.southwicksstorage.southwicksstorage.entities;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,8 +31,14 @@ public class NotificationModelEntity {
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private NotificationMessageEntity message;
 	
-	@Column(name = "isRead")
+	@Column(name = "is_read")
 	private boolean isRead;
+	
+	@Column(name = "is_visible")
+	private boolean isVisible;
+	
+	@Column(name = "date_created")
+	private LocalDateTime dateCreated;
 	
 	@Column(name = "notificationType")
 	private NotificationTypes notificationType;
@@ -44,10 +52,13 @@ public class NotificationModelEntity {
 		/* Defualt Constructor */
 	}
 	
-	public NotificationModelEntity(NotificationMessageEntity message, NotificationTypes notificationType, boolean isRead, UserModelEntity userModel) {
+	public NotificationModelEntity(NotificationMessageEntity message, NotificationTypes notificationType, boolean isRead, boolean isVisible, 
+			LocalDateTime dateCreated, UserModelEntity userModel) {
 		this.message = message;
 		this.notificationType = notificationType;
 		this.isRead = isRead;
+		this.isVisible = isVisible;
+		this.dateCreated = dateCreated;
 		this.userModel = userModel;
 	}
 
@@ -81,6 +92,22 @@ public class NotificationModelEntity {
 
 	public void setRead(boolean isRead) {
 		this.isRead = isRead;
+	}
+	
+	public boolean getIsVisible() {
+		return isVisible;
+	}
+	
+	public void setIsVisible(boolean isVisible) {
+		this.isVisible = isVisible;
+	}
+	
+	public LocalDateTime getDateCreated() {
+		return dateCreated;
+	}
+	
+	public void setDateCreated(LocalDateTime dateCreated) {
+		this.dateCreated = dateCreated;
 	}
 
 	public UserModelEntity getUserModel() {

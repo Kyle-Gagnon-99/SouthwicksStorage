@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.southwicksstorage.southwicksstorage.entities.StandEntity;
-import com.southwicksstorage.southwicksstorage.repositories.StandDao;
+import com.southwicksstorage.southwicksstorage.services.StandService;
 
 /**
  * @author kyle
@@ -26,13 +26,13 @@ import com.southwicksstorage.southwicksstorage.repositories.StandDao;
 public class ViewStandController {
 
 	@Autowired
-	private StandDao repo;
+	private StandService standService;
 	
 	private Logger log = LoggerFactory.getLogger(ViewStandController.class);
 	
 	@RequestMapping(value = "/view/stand", method = RequestMethod.GET)
 	public ModelAndView getViewStand(Model model) {
-		model.addAttribute("standList", repo.findAll());		
+		model.addAttribute("standList", standService.findAll());		
 		return new ModelAndView("view/viewstand.html");
 	}
 	
@@ -41,9 +41,9 @@ public class ViewStandController {
 	public boolean deleteStandById(Integer id) {
 		
 		try {
-			repo.delete(repo.findById(id).get());
+			standService.delete(standService.findById(id));
 		} catch(Exception e) {
-			log.error("Can't delete stand {} as it still has items associated to it which violates a foreign key constraint", repo.findById(id).get().getName());
+			log.error("Can't delete stand {} as it still has items associated to it which violates a foreign key constraint", standService.findById(id).getName());
 			return false;
 		}
 		
@@ -53,17 +53,17 @@ public class ViewStandController {
 	@RequestMapping(value = "/view/stand/editStand", method = RequestMethod.POST)
 	@ResponseBody
 	public List<StandEntity> editStand(Integer id, String name, String additionalInfo) {
-		StandEntity retreivedStand = repo.findById(id).get();
+		StandEntity retreivedStand = standService.findById(id);
 		retreivedStand.setName(name);
 		retreivedStand.setAdditionalInfo(additionalInfo);
-		repo.save(retreivedStand);
-		return repo.findAll();
+		standService.save(retreivedStand);
+		return standService.findAll();
 	}
 	
 	@RequestMapping(value = "/view/stand/getAllStands", method = RequestMethod.POST)
 	@ResponseBody
 	public List<StandEntity> getAllStands() {
-		return repo.findAll();
+		return standService.findAll();
 	}
 	
 	

@@ -2,16 +2,84 @@
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   layout:decorate="~{template/navbar.html}">
 <head>
-    <title>Title</title>
+    <title>Southwick's Storage</title>
 </head>
 <body>
 	<main class="content" layout:fragment="mainSection">
-		
-		<p>Main content here
-		<p>Low Value: <span th:text="${lowThresholdValue}"></span></p>
-		<p>Empty Value: <span th:text="${emptyThresholdValue}"></span></p>
-		<p></p>
-		
+		<div class="container-fluid">
+			<div class="header">
+                <h1 class="header-title">
+                    Southwick's Storage
+                </h1>
+            </div>
+            <div class="row">
+            	<div class="col-12">
+            		<div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Home</h5>
+                        </div>
+                        <div class="card-body">
+                        	<div class="col-12">
+                        		<p>Welcome <span sec:authentication="principal.firstName"></span>! Check out the quickstart guide below or get right to work!</p>
+	                        	<div sec:authorize="hasRole('MANAGER')" class="text-center">
+	                        		<p>Manager Quickstart Guide: <a href="/help/manager" target="_blank" rel="noopener noreferrer">Guide</a></p>
+	                        		<p>Team Member Quickstart Guide: <a href="/help/teamMember" target="_blank" rel="noopener noreferrer">Guide</a><p>
+	                        	</div>
+	                        	<div sec:authorize="hasRole('TEAM_MEMBER')" class="text-center">
+	                        		<p>Team Member Quickstart Guide: <a href="/help/teamMember" target="_blank" rel="noopener noreferrer">Guide</a><p>
+	                        	</div>
+                        	</div>
+                        	<div class="col-12">
+                        		<p>Here is a list of all employees! If you need to contact someone and the employee has chosen to add their phone number it can
+                        		be found here. 
+                        		If you want to add your phone number you can add it <a href="/settings">here</a>
+                        		<div class="table-responsive">
+                        			<div class="table-responsive">
+			                            <table id="employeeTable" class="table table-striped">
+			                                <thead>
+			                                    <tr>
+			                                        <th>First Name</th>
+			                                        <th>Last Name</th>
+			                                        <th>Phone Number</th>
+			                                    </tr>
+			                                </thead>
+		                            	</table>
+		                            </div>
+                        		</div>
+                        	</div>
+                        </div>
+                	</div>
+            	</div>
+            </div>
+		</div>
 	</main>
+	    <script layout:fragment="customJS">
+
+        document.addEventListener("DOMContentLoaded", function() {        	
+        	var table = $('#employeeTable').DataTable({
+        		"processing": false,
+				"info": false,
+				"autoWidth": false,
+				"lengthChange": false,
+				"ajax": {
+		            "url": "/getAllUsers",
+		            "type": "POST",
+		            "dataType": "json",
+		            "contentType": "application/json",
+		            "dataSrc": '',
+		            "data": function (d) {
+		                return JSON.stringify(d);
+		          	}
+				},
+				"columns": [
+					{"data": "firstName"},
+					{"data": "lastName"},
+					{"data": "phoneNumber"}
+				]
+			});
+        	
+        });
+
+    </script>
 </body>
 </html>

@@ -27,7 +27,7 @@ public class PhoneConstraintValidator implements ConstraintValidator<Phone, Stri
 		try {
 			phoneNumber = phoneNumberUtil.parse(checkPhoneNumber, "US");
 		} catch (NumberParseException e) {
-			e.printStackTrace();
+			return false;
 		}
     	boolean resultIsPossible = phoneNumberUtil.isPossibleNumber(phoneNumber);
     	

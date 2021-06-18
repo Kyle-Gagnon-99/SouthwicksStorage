@@ -22,11 +22,14 @@
             	<div class="col-md-3 col-xl-2">
 					<div class="card">
 						<div class="card-header">
-							<h5 class="card-title mb-0">Profile Settings</h5>
+							<h5 class="card-title mb-0">System / Account Settings</h5>
 						</div>
 		
 						<div class="list-group list-group-flush" role="tablist">
-							<a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="#warningDanger" role="tab" sec:authorize="hasRole('MANAGER')">
+							<a class="list-group-item list-group-item-action active" data-bs-toggle="list" href="#accountInfo" role="tab">
+								Account Information
+							</a>
+							<a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#warningDanger" role="tab" sec:authorize="hasRole('MANAGER')">
 								Low and Empty Stand Stock Notifications
 							</a>
 							<a class="list-group-item list-group-item-action" data-bs-toggle="list" href="#customNotifications" role="tab" sec:authorize="hasRole('MANAGER')">
@@ -37,7 +40,27 @@
                 </div>
                 <div class="col-md-9 col-xl-10">
 					<div class="tab-content">
-						<div class="tab-pane fade show active" id="warningDanger" role="tabpanel">
+						<div class="tab-pane fade show active" id="accountInfo" role="tabpanel">
+							<div class="card">
+								<div class="card-header">
+									<h5 class="card-title mb-0">Account Information</h5>
+								</div>
+								<div class="card-body">
+									<form method="POST" id="updateAccountSettings">
+										<div class="row">
+											<div class="col-md-12">
+												<label for="phoneNumber">Phone Number</label>
+												<div class="mb-3">
+													<input type="text" class="form-control" id="phoneNumber" name="phoneNumber" data-mask="(000) 000-0000">
+												</div>
+											</div>
+										</div>
+										<button type="submit" class="btn btn-primary">Save</button>
+									</form>
+								</div>
+							</div>
+						</div>
+						<div class="tab-pane fade show" id="warningDanger" role="tabpanel">
 							<div class="card">
 								<div class="card-header">
 									<h5 class="card-title mb-0">Low and Empty Stand Notification Threshold</h5>
@@ -58,7 +81,7 @@
 												</div>
 											</div>
 										</div>
-										<button type="submit" class="btn btn-primary">Save changes</button>
+										<button type="submit" class="btn btn-primary">Save Changes</button>
 									</form>
 								</div>
 							</div>
@@ -85,6 +108,13 @@
 	<script layout:fragment="customJS" th:inline="javascript">
 	
 		document.addEventListener("DOMContentLoaded", function() {
+			
+			$.get('/settings/getUserDetails', function(user) {
+				if(user !== null) {
+					$('#phoneNumber').val(user.phoneNumber);
+				}
+			});
+			
         	$("#systemSettings").validate({
         		rules: {
         			lowThresholdInput: {
@@ -128,6 +158,44 @@
             		var emptyThresholdInput = $('#emptyThresholdInput').val();
             		$.post('/settings/updateSettings', 
             				{lowThresholdInput: lowThresholdInput, emptyThresholdInput: emptyThresholdInput}, 
+            				function(returnedData){
+            					
+            				});
+				}
+        	});
+        	
+        	$("#updateAccountSettings").validate({
+        		rules: {
+        			phoneNumber: {
+        				required: true,
+        				minlength: 14,
+        				maxlength: 14
+        			}
+        		},
+				messages: {
+					lowThresholdInput: {
+						required: "This field is required",
+						minlength: "Invalid phone number",
+						maxlength: "Invalid phone number"
+					}
+				},
+        		// Errors
+				errorPlacement: function errorPlacement(error, element) {
+					error.addClass('jquery-validation-error small form-text invalid-feedback')
+					element.parent().append(error);
+				},
+				highlight: function(element) {
+					var $el = $(element);
+					var $parent = $el.parents(".error-placeholder");
+					$el.addClass("is-invalid");
+				},
+				unhighlight: function(element) {
+					$(element).parents().find(".is-invalid").removeClass("is-invalid");
+				},
+				submitHandler: function(form) {
+            		var phoneNumber = $('#phoneNumber').val();
+            		$.post('/settings/updateAccountSettings', 
+            				{phoneNumber: phoneNumber}, 
             				function(returnedData){
             					
             				});

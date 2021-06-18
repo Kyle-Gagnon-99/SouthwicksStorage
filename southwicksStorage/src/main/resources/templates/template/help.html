@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="Southwick's Storage">
+	<meta name="author" content="Kyle Gagnon">
+
+	<title>[[${helpPageTitle}]]</title>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<link href="/css/modern.css" rel="stylesheet">
+	<script src="/js/settings.js"></script>
+	<script src="/js/jquery.validate.js"></script>
+	<script src="/js/additional-methods.js"></script>
+	<link rel="shortcut icon" type="image/jpg" href="/img/mainImgs/favicon.ico"/>
+</head>
+<body>
+<div class="wrapper">
+	<div class="main">
+		<main class="content">
+			<div class="container-fluid">
+				<div class="header">
+					<h1 class="header-title">
+						<span th:text="${helpPageTitle}"></span>
+					</h1>
+					<nav aria-label="breadcrumb">
+						<ol class="breadcrumb">
+							<li class="breadcrumb-item"><a href="/">Home</a></li>
+							<li class="breadcrumb-item"><a th:href="@{'/' + ${helpPageOfLink}}"><span th:text="${helpPageOfTitle}"></span></a></li>
+							<li class="breadcrumb-item active" aria-current="page"><span th:text="${helpPageTitle}"></span></li>
+						</ol>
+					</nav>
+				</div>
+				<div class="card">
+					<div class="card-header">
+						<h2 class="card-title" style="display:inline-block"><span th:text="${helpPageTitle}"></span></h2>
+						<button type="button" class="btn btn-danger float-end" id="closeWindow" onclick="window.open('','_self').close()"><i class="fas fa-window-close"></i></button>
+					</div>
+					<div class="card-body">
+						<!--  <div layout:fragment="mainSection"></div> -->
+						<div class="row" th:each="helpContent : ${helpContentList}">
+							<div class="col-md-12">
+								<div class="card-head">
+									<h2><span th:text="${helpContent.title}"></span></h2>
+								</div>
+								<div class="card-body">
+									<div th:utext="${helpContent.content}"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+	</div>
+</div>
+<script src="/js/app.js"></script>
+</body>
+</html>
