@@ -64,6 +64,9 @@ public class Constants {
 	public static final int TEST_USER_FNAME_LNAME_EXCEED_MAX = USER_FNAME_LNAME_MAX_LENGTH + 1;
 	public static final int TEST_ADDITIONAL_INFO_EXCEED_MAX = ADDITIONAL_INFO_MAX_LENGTH + 1;
 	
+	/* Debug Constants */
+	public static final boolean DEBUG_MODE = false;
+	
 
 
 }

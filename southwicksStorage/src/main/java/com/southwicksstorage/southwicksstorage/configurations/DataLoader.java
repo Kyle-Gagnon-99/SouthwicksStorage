@@ -128,7 +128,7 @@ public class DataLoader implements ApplicationRunner {
 		standItemService.save(new StandItemEntity(1, 2, null, itemService.findByName("Lettuce"), deliStand));
 		standItemService.save(new StandItemEntity(1, 1, "Don't turn it to 0 until lettuce is half way out", itemService.findByName("Lettuce"), zebraStand));
 		standItemService.save(new StandItemEntity(1, 1, null, itemService.findByName("16\" Pizza Cardboard"), zebraStand));
-		standItemService.save(new StandItemEntity(1, 2, null, itemService.findByName("Mint Ice Cream"), iceCreamStand)); */
+		standItemService.save(new StandItemEntity(1, 2, null, itemService.findByName("Mint Ice Cream"), iceCreamStand));*/
 		
 		// Add all constant notification messages
 		if(notiMessageService.findByMessage(NotificationMessages.DEFAULT_PASSWORD_MESSAGE.getMessage()) == null) {

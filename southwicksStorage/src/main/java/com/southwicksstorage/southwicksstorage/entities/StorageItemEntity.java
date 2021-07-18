@@ -33,7 +33,7 @@ import com.southwicksstorage.southwicksstorage.constants.StorageType;
 @Entity
 @Table(name = "storage_item")
 @Audited
-public class StorageItemEntity implements Serializable{
+public class StorageItemEntity implements Serializable {
 
 	/**
 	 * 

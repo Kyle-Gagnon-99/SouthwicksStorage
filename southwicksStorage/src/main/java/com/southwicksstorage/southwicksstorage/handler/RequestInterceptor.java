@@ -81,33 +81,37 @@ public class RequestInterceptor implements HandlerInterceptor {
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			@Nullable ModelAndView modelAndView) throws Exception {
 		UserModelEntity user = null;
-		if(isUserLoggedIn()) {
-			user = userService.findById(getUserDetailsLogged().getId());
-			
-			/*
-			 * If the user is found lets add the notification that if the password is still default change it
-			 * Don't add more than one
-			 */
-			if(user != null) {
-				
+	
+		if(!Constants.DEBUG_MODE) {
+			if(isUserLoggedIn()) {
+				user = userService.findById(getUserDetailsLogged().getId());
 				
 				/*
-				 * If the user's password is the default password
+				 * If the user is found lets add the notification that if the password is still default change it
+				 * Don't add more than one
 				 */
-				if(bCryptPasswordEncoder.matches(Constants.DEFAULT_PASSWORD, user.getPassword())) {
+				if(user != null) {		
 					
-					if(!request.getRequestURI().equals("/auth/resetpassword")) {
-						try {
-							response.sendRedirect("/auth/resetpassword");
-						} catch(Exception e) {
-							/* Ignore */
+					/*
+					 * If the user's password is the default password
+					 */
+					if(bCryptPasswordEncoder.matches(Constants.DEFAULT_PASSWORD, user.getPassword())) {
+						
+						if(!request.getRequestURI().equals("/auth/resetpassword")) {
+							try {
+								response.sendRedirect("/auth/resetpassword");
+							} catch(Exception e) {
+								/* Ignore */
+							}
+							response.setStatus(Response.SC_OK);
 						}
-						response.setStatus(Response.SC_OK);
 					}
+					
 				}
 				
 			}
-			
+		} else {
+			logger.warn("RESETTING PASSWORD IS DISABLED DUE TO DEBUG MODE BEING ACTIVE. PLEASE ENSURE THIS IS NOT ENABLED IN PRODUCTION!");
 		}
 		
 	}

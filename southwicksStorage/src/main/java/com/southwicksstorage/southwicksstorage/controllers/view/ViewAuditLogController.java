@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 
 import org.hibernate.envers.AuditReader;
 import org.hibernate.envers.AuditReaderFactory;
@@ -92,6 +93,10 @@ public class ViewAuditLogController {
 			AuditedRevisionEntity currentRevInfo = (AuditedRevisionEntity) revisionInfo[1];
 			RevisionType currentRevType = (RevisionType) revisionInfo[2];
 			
+			Query getStandName = em.createNativeQuery("SELECT name FROM stand_aud WHERE id = :standId ;");
+			getStandName.setParameter("standId", currentRevStandItem.getStand().getId());
+			List<String> standName = (List<String>) getStandName.getResultList();
+			
 			boolean isInsert = false,
 					isModify = false,
 					isDelete = false;
@@ -115,10 +120,10 @@ public class ViewAuditLogController {
 			if(revNumbers.size() > 1) {
 				StandItemEntity prevStorageItem = auditReader.find(StandItemEntity.class, currentRevStandItem.getId(), revNumbers.get(revNumbers.size() - 2));
 				auditLog.add(new AuditLogModel(currentRevInfo.getUsername(), currentRevInfo.getDateModified(), currentRevStandItem.getStorageItem().getName(),
-						currentRevStandItem.getStand().getName(), prevStorageItem.getAmount(), currentRevStandItem.getAmount(), isInsert, isModify, isDelete));
+						standName.get(0), prevStorageItem.getAmount(), currentRevStandItem.getAmount(), isInsert, isModify, isDelete));
 			} else {
 				auditLog.add(new AuditLogModel(currentRevInfo.getUsername(), currentRevInfo.getDateModified(), currentRevStandItem.getStorageItem().getName(),
-						currentRevStandItem.getStand().getName(), null, currentRevStandItem.getAmount(), isInsert, isModify, isDelete));
+						standName.get(0), null, currentRevStandItem.getAmount(), isInsert, isModify, isDelete));
 			}
 			
 		});

@@ -50,13 +50,13 @@ public class StandItemEntity {
 	private String additionalInfo;
 	
 	@NotNull(message = "Storage item can not be empty")
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinColumn(name = "storage_item_id", referencedColumnName="id")
 	private StorageItemEntity storageItem;
 	
 	@NotNull(message = "Stand name can not be empty")
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "stand", referencedColumnName="id")
 	@OnDelete(action = OnDeleteAction.CASCADE)
 	private StandEntity stand;

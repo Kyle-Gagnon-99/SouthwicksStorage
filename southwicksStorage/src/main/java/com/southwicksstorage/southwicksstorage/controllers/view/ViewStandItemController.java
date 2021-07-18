@@ -122,6 +122,8 @@ public class ViewStandItemController {
 		if(itemPercent <= SystemVariables.lowStandThreshold) {
 			CommonMethods.addAnyNotifications(userService.findAllByRole(Roles.MANAGER), standItemService.findAll(), notiService, notiMessageService);
 			CommonMethods.removeAnyNotifications(standService, standItemService, userService, notiService, notiMessageService);
+		} else {
+			CommonMethods.removeAnyNotifications(standService, standItemService, userService, notiService, notiMessageService);
 		}
 		
 		standItemService.save(editStandItem);

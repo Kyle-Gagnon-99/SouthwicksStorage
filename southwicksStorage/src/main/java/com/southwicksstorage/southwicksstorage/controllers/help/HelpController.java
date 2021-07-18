@@ -23,6 +23,8 @@ import com.southwicksstorage.southwicksstorage.models.attribute.HelpTableObject;
  */
 @Controller
 public class HelpController {
+	
+	
 
 	/*
 	 * Quickstart Guide for Team Members
@@ -54,6 +56,47 @@ public class HelpController {
 		helpContentList.add(new HelpContent("Manager Quickstart Guide Overview",
 				"<p>Welcome to the quickstart guide for managers! This quickstart guide will help you with everything you need to know to manage stock here " +
 				"at Southwick's Zoo! You should find everthing you need here in this quickstart guide"));
+		helpContentList.add(new HelpContent("Getting Started",
+				"First thing to know is what is the goal of this? The goal of this site is to make managing inventory easier amongst everyone and giving " +
+				"the most recent reports to help with ordering with greater accurcy for the week. So this site keeps track of items that are located in storage " +
+				"and items in each of the stands. So let's start creating our first item. In order to make our first item we need to create a vendor first. " +
+				"We need a vendor because a vendor is required to be used for sorting, searching, and showing up on the reports. After a vendor is created " +
+				" it is <ins><strong>suggested</strong></ins> that you create a type of storage. A type of storage describes how the item is held in. For " +
+				"example fries are in cases while tubs of ice cream are held in tubs. After you create a vendor and/or a type of storage you need to " + 
+				"create a stand. The stand is required to be able to tell the site what items are in what stand. After that we are on our way to create " +
+				"storage items and stand items! Here are the steps with links to help pages to go through below: </p>" +
+				"<p><ol>" +
+				"		<li>Create a <a href=\"/help/manager\">vendor</a></li>" +
+				"		<li>(Optional) Create a <a href=\"/help/manager\">type of storage</a></li>" +
+				"		<li>Create a <a href=\"/help/manager\">stand</a></li>" +
+				"		<li>Create a <a href=\"/help/manager\">storage item</a></li>" +
+				"		<li>Create a <a href=\"/help/manager\">stand item</a></li>" +
+				"</ol></p>" +
+				"<p>After you are setup you will be able to view/edit your items in their respective storage (storage or stand). So let's get started with a " +
+				"more in depth guide on how to create an item."));
+		helpContentList.add(new HelpContent("Creating A Vendor", 
+				"<p>Vendors are one of the most important things to help organize all items and get most things to work. Without adding a vendor you won't be " +
+				"able to create any items or view any reports. To create a vendor you need to visit the <a href=\"/create/vendor\">create a vendor</a> page." +
+				"<p>To create a vendor you need the vendor name (required), the vendor's contact person's name (optional), the contact's or vendor's phone " +
+				"number, and any additional information that you wish to add like account numbers. For more information you can view the help page " +
+				"<a href=\"/help/manager\">here</a>"));
+		helpContentList.add(new HelpContent("(Optional) Creating A Type of Storage", 
+				"<p>When the term Type of Storage is used it is used to refer what is the storage item stored in? For example bags of fries are stored in " +
+				"cases and ice cream tubs are stored in tubs. To create a type of storage visit <a href=\"/create/typeOfStorage\">create type of storage</a> page. " +
+				"<p>To create a type of storage you will need the name of the type of storage and any additional information you wish to share. Easy as that! " +
+				"After you create this type you can use it when creating storage items or editing existing ones. " +
+				"For more infiromation you can view the help page <a href=\"/help/manager\">here</a>"));
+		helpContentList.add(new HelpContent("Creating A Stand", 
+				"<p>Stands are one of the other most important things to help organize all items and get most things to work as well. Without adding a stand " +
+				"you won't be able to add items to stands and get any useful reports. To create a stand you need to visit the " +
+				"<a href=\"/create/stand\">create a stand</a> page." +
+				"<p>To create a stand you need to add the name of a stand and any additional information you would like. For more information you can view " +
+				"the help page <a href=\"/help/manager\">here</a>"));
+		helpContentList.add(new HelpContent("Creating A Storage Item", 
+				"<p>Creating/viewing storage items is the real power of the website. Creating storage items will help you create stand items which use the " +
+				"storage items. Creating storage items are a little more complicated then what was described above so it is highly recommended that you " +
+				"visit the help page directly <a href=\"/help/create/storageItem\">here</a>"));
+		helpContentList.add(new HelpContent("Creating A Stand Item", ""));
 		
 		model.addAttribute("helpContentList", helpContentList);
 		model.addAttribute("helpPageTitle", "Manager Quickstart Guide");
