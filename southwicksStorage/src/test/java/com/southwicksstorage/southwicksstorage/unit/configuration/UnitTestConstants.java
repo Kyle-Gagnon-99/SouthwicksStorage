@@ -5,6 +5,7 @@ package com.southwicksstorage.southwicksstorage.unit.configuration;
 
 import com.southwicksstorage.southwicksstorage.constants.Roles;
 import com.southwicksstorage.southwicksstorage.constants.StorageType;
+import com.southwicksstorage.southwicksstorage.entities.NotificationMessageEntity;
 import com.southwicksstorage.southwicksstorage.entities.StandEntity;
 import com.southwicksstorage.southwicksstorage.entities.StandItemEntity;
 import com.southwicksstorage.southwicksstorage.entities.StorageItemEntity;
@@ -81,6 +82,9 @@ public class UnitTestConstants {
 	public static final StandItemEntity STAND_ITEM_PEPSI_IC_OBJECT = new StandItemEntity(1, 1, null, STORAGE_ITEM_PEPSI_OBJECT, STAND_ICE_CREAM_OBJECT);
 	public static final StandItemEntity STAND_ITEM_MINT_IC_IC_OBJECT = new StandItemEntity(1, 2, null, STORAGE_ITEM_MINT_IC_OBJECT, STAND_ICE_CREAM_OBJECT);
 	public static final StandItemEntity STAND_ITEM_LETTUCE_DELI_OBJECT = new StandItemEntity(1, 1, null, STORAGE_ITEM_LETTUCE_OBJECT, STAND_DELI_OBJECT);
+	
+	// Notification Message Entity
+	public static final NotificationMessageEntity NOTIFICATION_MESSAGE_TEST = new NotificationMessageEntity("Test Notification");
 	
 	/**
 	 * Test constants
