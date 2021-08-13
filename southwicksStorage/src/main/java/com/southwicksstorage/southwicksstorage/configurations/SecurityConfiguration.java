@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
+import com.southwicksstorage.southwicksstorage.constants.Constants;
 import com.southwicksstorage.southwicksstorage.constants.Roles;
 import com.southwicksstorage.southwicksstorage.services.CustomUserDetailsService;
 
@@ -41,16 +42,26 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeRequests()
-		.antMatchers("/").hasAnyAuthority(MANAGER, TEAM_MEMBER)
-		.antMatchers("/auth/resetpassword").hasAnyAuthority(MANAGER, TEAM_MEMBER)
-		.antMatchers("/notification/**").hasAnyAuthority(MANAGER, TEAM_MEMBER)
-		.antMatchers("/view/auditLog").hasAnyAuthority(MANAGER)
-		.antMatchers("/view/users/**").hasAnyAuthority(MANAGER)
-		.antMatchers("/create/vendor/**").hasAnyAuthority(MANAGER)
-		.antMatchers("/view/vendor/**").hasAnyAuthority(MANAGER)
-		.antMatchers("/report/**").hasAnyAuthority(MANAGER)
-		.and().formLogin().loginPage("/auth/login").permitAll().and().logout().permitAll();
+		if(!Constants.DEBUG_MODE) {
+			http.csrf().disable().authorizeRequests()
+			.antMatchers("/").hasAnyAuthority(MANAGER, TEAM_MEMBER)
+			.antMatchers("/auth/resetpassword/**").hasAnyAuthority(MANAGER, TEAM_MEMBER)
+			.antMatchers("/notification/**").hasAnyAuthority(MANAGER, TEAM_MEMBER)
+			.antMatchers("/view/standItem/**").hasAnyAuthority(MANAGER, TEAM_MEMBER)
+			.antMatchers("/settings/**").hasAnyAuthority(MANAGER, TEAM_MEMBER)
+			.antMatchers("/view/storageItem/**").hasAnyAuthority(MANAGER)
+			.antMatchers("/view/vendor/**").hasAnyAuthority(MANAGER)
+			.antMatchers("/view/auditLog/**").hasAnyAuthority(MANAGER)
+			.antMatchers("/view/users/**").hasAnyAuthority(MANAGER)
+			.antMatchers("/view/stand/**").hasAnyAuthority(MANAGER)
+			.antMatchers("/create/user/**").hasAnyAuthority(MANAGER)
+			.antMatchers("/create/storageItem/**").hasAnyAuthority(MANAGER)
+			.antMatchers("/create/stand/**").hasAnyAuthority(MANAGER)
+			.antMatchers("/create/typeOfStorage/**").hasAnyAuthority(MANAGER)
+			.antMatchers("/create/vendor/**").hasAnyAuthority(MANAGER)
+			.antMatchers("/report/**").hasAnyAuthority(MANAGER)
+			.and().formLogin().loginPage("/auth/login").permitAll().and().logout().permitAll();
+		}
 	}
 
 }
